@@ -68,7 +68,7 @@ export default function GuideListItem({ guide, index }: GuideListItemProps) {
           </svg>
           {guide.views} ПРОСМОТРОВ
         </span>
-        <span className="text-black">— {guide.author}</span>
+        <span className="text-black">— {guide.author || guide.author_name || "Unknown"}</span>
       </div>
     </Link>
   );

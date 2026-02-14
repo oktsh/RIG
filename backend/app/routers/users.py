@@ -3,19 +3,28 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.db import User
-from app.models.schemas import UserCreate, UserUpdate, UserResponse
+from app.models.schemas import UserCreate, UserUpdate, UserResponse, PaginatedUsers
 from app.middleware.auth import require_role
 from app.services.auth import hash_password
+from app.utils.pagination import paginate
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
 
-@router.get("/", response_model=list[UserResponse])
+@router.get("/", response_model=PaginatedUsers)
 def list_users(
+    search: str | None = None,
+    page: int = 1,
+    limit: int = 20,
     db: Session = Depends(get_db),
     _: User = Depends(require_role("ADMIN")),
 ):
-    return db.query(User).all()
+    query = db.query(User)
+    if search:
+        term = f"%{search}%"
+        query = query.filter(User.name.ilike(term) | User.email.ilike(term))
+    query = query.order_by(User.created_at.desc())
+    return paginate(query, page, limit)
 
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)

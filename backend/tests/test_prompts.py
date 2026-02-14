@@ -16,10 +16,13 @@ class TestListPrompts:
     """Tests for listing published prompts."""
 
     def test_list_prompts_empty(self, client):
-        """When there are no prompts the endpoint returns an empty list."""
+        """When there are no prompts the endpoint returns an empty paginated result."""
         resp = client.get("/api/prompts/")
         assert resp.status_code == 200
-        assert resp.json() == []
+        body = resp.json()
+        assert body["items"] == []
+        assert body["total"] == 0
+        assert body["page"] == 1
 
     def test_list_prompts_returns_only_published(self, client, db_session, admin_user):
         """Only prompts with status='published' are returned."""
@@ -57,8 +60,10 @@ class TestListPrompts:
 
         resp = client.get("/api/prompts/")
         assert resp.status_code == 200
-        prompts = resp.json()
+        body = resp.json()
+        prompts = body["items"]
         assert len(prompts) == 1
+        assert body["total"] == 1
         assert prompts[0]["title"] == "Published Prompt"
         assert prompts[0]["status"] == "published"
 

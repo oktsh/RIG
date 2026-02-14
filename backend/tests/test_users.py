@@ -18,8 +18,9 @@ class TestListUsers:
         """An admin should be able to list all users."""
         resp = client.get("/api/users/", headers=admin_headers)
         assert resp.status_code == 200
-        users = resp.json()
-        assert isinstance(users, list)
+        body = resp.json()
+        assert "items" in body
+        users = body["items"]
         # At least the admin user exists
         assert len(users) >= 1
         emails = [u["email"] for u in users]
@@ -193,7 +194,7 @@ class TestDeleteUser:
 
         # Verify the user is gone
         list_resp = client.get("/api/users/", headers=admin_headers)
-        emails = [u["email"] for u in list_resp.json()]
+        emails = [u["email"] for u in list_resp.json()["items"]]
         assert "user@test.com" not in emails
 
     def test_delete_nonexistent_user(self, client, admin_user, admin_headers):

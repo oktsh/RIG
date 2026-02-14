@@ -47,10 +47,10 @@ export default function PromptCard({ prompt }: PromptCardProps) {
       <div className="mt-auto flex items-center justify-between pt-6 border-t border-black">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-black flex items-center justify-center text-[10px] font-bold text-white">
-            {prompt.author.charAt(0)}
+            {(prompt.author || prompt.author_name || "?").charAt(0)}
           </div>
           <span className="text-xs font-bold text-black uppercase">
-            {prompt.author}
+            {prompt.author || prompt.author_name || "Unknown"}
           </span>
         </div>
 

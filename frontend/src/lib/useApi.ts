@@ -10,7 +10,7 @@ interface UseApiResult<T> {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-export function useApi<T>(endpoint: string, fallback: T): UseApiResult<T> & { data: T } {
+export function useApi<T>(endpoint: string, fallback: T, token?: string): UseApiResult<T> & { data: T } {
   const [data, setData] = useState<T>(fallback);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +20,10 @@ export function useApi<T>(endpoint: string, fallback: T): UseApiResult<T> & { da
 
     fetch(`${API_BASE}${endpoint}`, {
       signal: controller.signal,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
     })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -41,7 +44,7 @@ export function useApi<T>(endpoint: string, fallback: T): UseApiResult<T> & { da
       });
 
     return () => controller.abort();
-  }, [endpoint]);
+  }, [endpoint, token]);
 
   return { data, loading, error };
 }

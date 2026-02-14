@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.db import Proposal, User
-from app.models.schemas import ProposalCreate, ProposalResponse
+from app.models.schemas import ProposalCreate, ProposalResponse, PaginatedProposals
 from app.middleware.auth import require_role
+from app.utils.pagination import paginate
 
 router = APIRouter(prefix="/api/proposals", tags=["proposals"])
 
@@ -25,12 +26,27 @@ def create_proposal(data: ProposalCreate, db: Session = Depends(get_db)):
     return proposal
 
 
-@router.get("/", response_model=list[ProposalResponse])
+@router.get("/", response_model=PaginatedProposals)
 def list_proposals(
+    search: str | None = None,
+    status: str | None = None,
+    page: int = 1,
+    limit: int = 20,
     db: Session = Depends(get_db),
     _: User = Depends(require_role("ADMIN", "MODERATOR")),
 ):
-    return db.query(Proposal).order_by(Proposal.created_at.desc()).all()
+    query = db.query(Proposal)
+    if status:
+        query = query.filter(Proposal.status == status)
+    if search:
+        term = f"%{search}%"
+        query = query.filter(
+            Proposal.title.ilike(term)
+            | Proposal.description.ilike(term)
+            | Proposal.email.ilike(term)
+        )
+    query = query.order_by(Proposal.created_at.desc())
+    return paginate(query, page, limit)
 
 
 @router.patch("/{proposal_id}/status")

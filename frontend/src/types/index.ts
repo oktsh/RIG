@@ -2,22 +2,29 @@ export interface Prompt {
   id: number;
   title: string;
   desc: string;
-  author: string;
+  author?: string;
+  author_name?: string | null;
   copies: string;
   tags: string[];
   tech: string;
   content: string;
+  status?: string;
+  created_at?: string;
 }
 
 export interface Guide {
   id: number;
   title: string;
   desc: string;
-  author: string;
+  author?: string;
+  author_name?: string | null;
   category: string;
   time: string;
   views: string;
   date: string;
+  content?: string | null;
+  status?: string;
+  created_at?: string;
 }
 
 export interface Ruleset {
@@ -43,7 +50,7 @@ export interface Event {
   location: string;
 }
 
-export type ContentStatus = "published" | "draft" | "pending";
+export type ContentStatus = "published" | "draft" | "pending" | "rejected";
 
 export interface ContentItem {
   emoji: string;
@@ -65,6 +72,18 @@ export interface ContentProposal {
   timestamp: string;
 }
 
+export interface Proposal {
+  id: number;
+  type: string;
+  title: string;
+  description: string | null;
+  content: string | null;
+  email: string;
+  tags: string[];
+  status: string;
+  created_at: string;
+}
+
 export interface HeaderConfig {
   title: string;
   subtitle: string;
@@ -75,9 +94,19 @@ export type UserRole = "USER" | "MODERATOR" | "ADMIN";
 export type UserStatus = "ACTIVE" | "INACTIVE";
 
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
   role: UserRole;
-  status: UserStatus;
+  is_active: boolean;
+  requires_approval: boolean;
+  created_at: string;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
 }

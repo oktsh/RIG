@@ -4,14 +4,16 @@ import { User } from "@/types";
 
 interface UserTableProps {
   users: User[];
-  onChangeRole: (id: string) => void;
-  onDelete: (id: string) => void;
+  onChangeRole: (id: number) => void;
+  onDelete: (id: number) => void;
+  onToggleActive: (id: number) => void;
 }
 
 export default function UserTable({
   users,
   onChangeRole,
   onDelete,
+  onToggleActive,
 }: UserTableProps) {
   return (
     <div className="bg-white border-t-2 border-l-2 border-black">
@@ -42,7 +44,7 @@ export default function UserTable({
           <div className="p-4 border-r-2 border-b-2 border-black">
             <span
               className={`px-2 py-1 text-[10px] font-bold border border-black ${
-                user.role === "ADMIN" ? "bg-[#FFE600]" : "bg-white"
+                user.role === "ADMIN" ? "bg-[#FFE600]" : user.role === "MODERATOR" ? "bg-[#B4FF00]" : "bg-white"
               }`}
             >
               {user.role}
@@ -51,19 +53,25 @@ export default function UserTable({
           <div className="p-4 border-r-2 border-b-2 border-black">
             <div className="flex items-center gap-2">
               <div
-                className={`w-1.5 h-1.5 ${user.status === "ACTIVE" ? "bg-green-500" : "bg-red-500"}`}
+                className={`w-1.5 h-1.5 ${user.is_active ? "bg-green-500" : "bg-red-500"}`}
               ></div>
               <span className="text-[10px] font-bold font-mono">
-                {user.status}
+                {user.is_active ? "ACTIVE" : "INACTIVE"}
               </span>
             </div>
           </div>
-          <div className="p-4 border-r-2 border-b-2 border-black flex gap-2">
+          <div className="p-4 border-r-2 border-b-2 border-black flex gap-2 flex-wrap">
             <button
               onClick={() => onChangeRole(user.id)}
               className="text-[10px] font-bold underline hover:text-blue-600 uppercase"
             >
               Роль
+            </button>
+            <button
+              onClick={() => onToggleActive(user.id)}
+              className="text-[10px] font-bold underline hover:text-orange-600 uppercase"
+            >
+              {user.is_active ? "Откл." : "Вкл."}
             </button>
             <button
               onClick={() => onDelete(user.id)}

@@ -3,15 +3,45 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.db import Prompt, User
-from app.models.schemas import PromptCreate, PromptUpdate, PromptResponse
+from app.models.schemas import PromptCreate, PromptUpdate, PromptResponse, PaginatedPrompts
 from app.middleware.auth import get_current_user, require_role
+from app.utils.pagination import paginate
 
 router = APIRouter(prefix="/api/prompts", tags=["prompts"])
 
 
-@router.get("/", response_model=list[PromptResponse])
-def list_prompts(db: Session = Depends(get_db)):
-    return db.query(Prompt).filter(Prompt.status == "published").all()
+@router.get("/", response_model=PaginatedPrompts)
+def list_prompts(
+    search: str | None = None,
+    page: int = 1,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+):
+    query = db.query(Prompt).filter(Prompt.status == "published")
+    if search:
+        term = f"%{search}%"
+        query = query.filter(Prompt.title.ilike(term) | Prompt.desc.ilike(term))
+    query = query.order_by(Prompt.created_at.desc())
+    return paginate(query, page, limit)
+
+
+@router.get("/moderation/pending", response_model=PaginatedPrompts)
+def list_moderation_prompts(
+    status: str = "pending",
+    search: str | None = None,
+    page: int = 1,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_role("ADMIN", "MODERATOR")),
+):
+    query = db.query(Prompt)
+    if status != "all":
+        query = query.filter(Prompt.status == status)
+    if search:
+        term = f"%{search}%"
+        query = query.filter(Prompt.title.ilike(term) | Prompt.desc.ilike(term))
+    query = query.order_by(Prompt.created_at.desc())
+    return paginate(query, page, limit)
 
 
 @router.get("/{prompt_id}", response_model=PromptResponse)

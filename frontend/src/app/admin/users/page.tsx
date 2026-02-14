@@ -2,16 +2,26 @@
 
 import { useState, useEffect, useCallback } from "react";
 import UserTable from "@/components/admin/UserTable";
-import { users as staticUsers } from "@/data/users";
+import Pagination from "@/components/ui/Pagination";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { User, UserRole } from "@/types";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { useDebounce } from "@/lib/useDebounce";
+import {
+  getUsers,
+  createUser,
+  updateUser,
+  deleteUserApi,
+} from "@/lib/api";
+import type { User, UserRole, PaginatedResponse } from "@/types";
 
 export default function AdminUsersPage() {
   const { token } = useAuth();
-  const [users, setUsers] = useState<User[]>(staticUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,149 +29,107 @@ export default function AdminUsersPage() {
     role: "USER" as UserRole,
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 300);
 
-  const fetchUsers = useCallback(() => {
+  const fetchUsers = useCallback(async () => {
     if (!token) return;
-    fetch(`${API_BASE}/api/users`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed");
-        return res.json();
-      })
-      .then((data) => {
-        setUsers(
-          data.map((u: { id: number; name: string; email: string; role: string; is_active: boolean }) => ({
-            id: String(u.id),
-            name: u.name,
-            email: u.email,
-            role: u.role as UserRole,
-            status: u.is_active ? "ACTIVE" : "INACTIVE",
-          })),
-        );
-      })
-      .catch(() => {
-        // Keep static fallback
-      });
-  }, [token]);
+    setLoading(true);
+    try {
+      const data = (await getUsers(token, {
+        search: debouncedSearch || undefined,
+        page,
+        limit: 20,
+      })) as PaginatedResponse<User>;
+      setUsers(data.items);
+      setTotal(data.total);
+      setPages(data.pages);
+    } catch {
+      setError("Не удалось загрузить пользователей");
+    } finally {
+      setLoading(false);
+    }
+  }, [token, debouncedSearch, page]);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
   const openAddUserModal = () => {
     setFormData({ name: "", email: "", password: "", role: "USER" });
+    setError("");
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ name: "", email: "", password: "", role: "USER" });
+    setError("");
   };
 
-  const saveUser = () => {
-    if (!formData.name || !formData.email) return;
+  const saveUser = async () => {
+    if (!formData.name || !formData.email) {
+      setError("Имя и email обязательны");
+      return;
+    }
+    if (!formData.password || formData.password.length < 6) {
+      setError("Пароль обязателен (минимум 6 символов)");
+      return;
+    }
+    if (!token) return;
 
-    if (token) {
-      fetch(`${API_BASE}/api/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password || "changeme123",
-          role: formData.role,
-        }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed");
-          return res.json();
-        })
-        .then(() => {
-          fetchUsers();
-          closeModal();
-        })
-        .catch(() => {
-          const newUser: User = {
-            id: `RG-${Math.floor(Math.random() * 900) + 100}`,
-            name: formData.name,
-            email: formData.email,
-            role: formData.role,
-            status: "ACTIVE",
-          };
-          setUsers([...users, newUser]);
-          closeModal();
-        });
-    } else {
-      const newUser: User = {
-        id: `RG-${Math.floor(Math.random() * 900) + 100}`,
+    try {
+      await createUser(token, {
         name: formData.name,
         email: formData.email,
+        password: formData.password,
         role: formData.role,
-        status: "ACTIVE",
-      };
-      setUsers([...users, newUser]);
+      });
       closeModal();
+      fetchUsers();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Ошибка создания пользователя");
     }
   };
 
-  const deleteUser = (id: string) => {
-    if (window.confirm("УДАЛИТЬ ПОЛЬЗОВАТЕЛЯ ИЗ БАЗЫ?")) {
-      if (token) {
-        fetch(`${API_BASE}/api/users/${id}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        })
-          .then(() => fetchUsers())
-          .catch(() => {
-            setUsers(users.filter((u) => u.id !== id));
-          });
-      } else {
-        setUsers(users.filter((u) => u.id !== id));
-      }
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("УДАЛИТЬ ПОЛЬЗОВАТЕЛЯ ИЗ БАЗЫ?")) return;
+    if (!token) return;
+    try {
+      await deleteUserApi(token, id);
+      fetchUsers();
+    } catch {
+      setError("Не удалось удалить пользователя");
     }
   };
 
-  const changeRole = (id: string) => {
+  const handleChangeRole = async (id: number) => {
+    if (!token) return;
     const roles: UserRole[] = ["USER", "MODERATOR", "ADMIN"];
     const user = users.find((u) => u.id === id);
     if (!user) return;
     const nextRole = roles[(roles.indexOf(user.role) + 1) % roles.length];
-
-    if (token) {
-      fetch(`${API_BASE}/api/users/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ role: nextRole }),
-      })
-        .then(() => fetchUsers())
-        .catch(() => {
-          setUsers(
-            users.map((u) =>
-              u.id === id ? { ...u, role: nextRole } : u,
-            ),
-          );
-        });
-    } else {
-      setUsers(
-        users.map((u) =>
-          u.id === id ? { ...u, role: nextRole } : u,
-        ),
-      );
+    try {
+      await updateUser(token, id, { role: nextRole });
+      fetchUsers();
+    } catch {
+      setError("Не удалось сменить роль");
     }
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const handleToggleActive = async (id: number) => {
+    if (!token) return;
+    const user = users.find((u) => u.id === id);
+    if (!user) return;
+    try {
+      await updateUser(token, id, { is_active: !user.is_active });
+      fetchUsers();
+    } catch {
+      setError("Не удалось изменить статус");
+    }
+  };
 
   return (
     <>
@@ -171,7 +139,7 @@ export default function AdminUsersPage() {
             ПОЛЬЗОВАТЕЛИ
           </h1>
           <p className="font-mono text-[10px] text-gray-500 uppercase tracking-widest mt-1">
-            Управление доступом и ролями
+            Управление доступом и ролями / {total} пользователей
           </p>
         </div>
 
@@ -195,11 +163,26 @@ export default function AdminUsersPage() {
       </header>
 
       <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
-        <UserTable
-          users={filteredUsers}
-          onChangeRole={changeRole}
-          onDelete={deleteUser}
-        />
+        {loading ? (
+          <div className="text-center py-20 font-mono text-sm text-gray-500 uppercase">
+            Загрузка...
+          </div>
+        ) : (
+          <>
+            <UserTable
+              users={users}
+              onChangeRole={handleChangeRole}
+              onDelete={handleDelete}
+              onToggleActive={handleToggleActive}
+            />
+            <Pagination
+              page={page}
+              pages={pages}
+              total={total}
+              onPageChange={setPage}
+            />
+          </>
+        )}
       </div>
 
       {isModalOpen && (
@@ -213,6 +196,11 @@ export default function AdminUsersPage() {
             <h2 className="text-3xl font-bold mb-6 uppercase tracking-tight font-display">
               Добавить пользователя
             </h2>
+            {error && (
+              <div className="mb-4 p-3 bg-[#FF6B6B] text-white text-xs font-bold uppercase font-mono border border-black">
+                {error}
+              </div>
+            )}
             <div className="space-y-4">
               <div>
                 <label className="block text-[10px] font-bold uppercase mb-1 font-mono">
@@ -242,7 +230,7 @@ export default function AdminUsersPage() {
               </div>
               <div>
                 <label className="block text-[10px] font-bold uppercase mb-1 font-mono">
-                  Пароль
+                  Пароль (мин. 6 символов)
                 </label>
                 <input
                   type="password"
@@ -250,7 +238,6 @@ export default function AdminUsersPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  placeholder="changeme123"
                   className="w-full border-2 border-black p-3 text-sm font-medium focus:bg-[#FFE600]/10 outline-none"
                 />
               </div>

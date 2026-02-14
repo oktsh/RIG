@@ -68,9 +68,9 @@ class TestListProposals:
 
         resp = client.get("/api/proposals/", headers=admin_headers)
         assert resp.status_code == 200
-        proposals = resp.json()
-        assert isinstance(proposals, list)
-        assert len(proposals) >= 1
+        body = resp.json()
+        assert "items" in body
+        assert len(body["items"]) >= 1
 
     def test_moderator_can_list_proposals(
         self, client, moderator_user, moderator_headers
@@ -81,9 +81,9 @@ class TestListProposals:
 
         resp = client.get("/api/proposals/", headers=moderator_headers)
         assert resp.status_code == 200
-        proposals = resp.json()
-        assert isinstance(proposals, list)
-        assert len(proposals) >= 1
+        body = resp.json()
+        assert "items" in body
+        assert len(body["items"]) >= 1
 
     def test_regular_user_cannot_list_proposals(
         self, client, regular_user, user_headers
@@ -109,7 +109,8 @@ class TestListProposals:
 
         resp = client.get("/api/proposals/", headers=admin_headers)
         assert resp.status_code == 200
-        proposals = resp.json()
+        body = resp.json()
+        proposals = body["items"]
         assert len(proposals) >= 2
         # The second proposal should appear before the first (newest first)
         titles = [p["title"] for p in proposals]

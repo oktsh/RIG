@@ -69,10 +69,10 @@ export default function PromptModal({ prompt, onClose }: PromptModalProps) {
       <div className="p-6 border-t-2 border-black bg-white flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-black flex items-center justify-center text-[10px] font-bold text-white">
-            {prompt.author.charAt(0)}
+            {(prompt.author || prompt.author_name || "?").charAt(0)}
           </div>
           <span className="text-xs text-[#555] font-mono font-bold uppercase">
-            ДОБАВЛЕНО {prompt.author}
+            ДОБАВЛЕНО {prompt.author || prompt.author_name || "Unknown"}
           </span>
         </div>
         <button className="btn-primary px-8 py-3 text-xs">

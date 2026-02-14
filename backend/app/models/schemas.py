@@ -159,8 +159,59 @@ class ProposalResponse(BaseModel):
     type: str
     title: str
     description: str | None
+    content: str | None
     email: str
+    tags: list[str]
     status: str
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+# Paginated responses
+class PaginatedPrompts(BaseModel):
+    items: list[PromptResponse]
+    total: int
+    page: int
+    limit: int
+    pages: int
+
+
+class PaginatedGuides(BaseModel):
+    items: list[GuideResponse]
+    total: int
+    page: int
+    limit: int
+    pages: int
+
+
+class PaginatedAgents(BaseModel):
+    items: list[AgentResponse]
+    total: int
+    page: int
+    limit: int
+    pages: int
+
+
+class PaginatedRulesets(BaseModel):
+    items: list[RulesetResponse]
+    total: int
+    page: int
+    limit: int
+    pages: int
+
+
+class PaginatedProposals(BaseModel):
+    items: list[ProposalResponse]
+    total: int
+    page: int
+    limit: int
+    pages: int
+
+
+class PaginatedUsers(BaseModel):
+    items: list[UserResponse]
+    total: int
+    page: int
+    limit: int
+    pages: int

@@ -12,12 +12,14 @@ interface GuideDetail {
   title: string;
   desc: string | null;
   author: string;
-  author_name?: string;
+  author_name?: string | null;
   category: string | null;
   time: string | null;
   views: string;
   date: string | null;
   content: string | null;
+  status?: string;
+  created_at?: string;
 }
 
 export default function GuideDetailPage() {
@@ -44,6 +46,7 @@ export default function GuideDetailPage() {
         if (staticGuide) {
           setGuide({
             ...staticGuide,
+            author: staticGuide.author || staticGuide.author_name || "Unknown",
             content: guideContent[staticGuide.id] || null,
           });
         }
