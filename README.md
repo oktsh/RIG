@@ -1,6 +1,6 @@
 # RIG
 
-> [TODO: Add project tagline]
+> Rig your env
 
 ## Overview
 
