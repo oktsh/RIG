@@ -12,6 +12,9 @@ from app.routers import auth, users, prompts, guides, agents, rulesets, proposal
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: create tables and seed
+    # Note: Alembic is now configured for database migrations.
+    # For production, run: python -m alembic upgrade head
+    # The create_all below is kept as a fallback for development convenience.
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:

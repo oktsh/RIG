@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { submitProposal } from "@/lib/api";
 
 interface JoinModalProps {
   onClose: () => void;
@@ -25,8 +26,10 @@ export default function JoinModal({ onClose, onSuccess }: JoinModalProps) {
     email: "",
     tags: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedContentType) {
       alert("Пожалуйста, выберите тип контента");
       return;
@@ -48,13 +51,31 @@ export default function JoinModal({ onClose, onSuccess }: JoinModalProps) {
       return;
     }
 
-    console.log("Предложение отправлено:", {
-      type: selectedContentType,
-      ...formData,
-      timestamp: new Date().toISOString(),
-    });
+    setIsSubmitting(true);
+    setError(null);
 
-    onSuccess();
+    const tagsArray = formData.tags
+      ? formData.tags.split(",").map((t) => t.trim()).filter(Boolean)
+      : [];
+
+    try {
+      await submitProposal({
+        type: selectedContentType,
+        title: formData.title,
+        description: formData.description,
+        content: formData.content,
+        email: formData.email,
+        tags: tagsArray,
+      });
+
+      onSuccess();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Не удалось отправить предложение";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -198,21 +219,29 @@ export default function JoinModal({ onClose, onSuccess }: JoinModalProps) {
 
       <div className="p-6 border-t-2 border-black bg-white flex justify-between items-center">
         <div className="text-xs text-[#666] font-mono">
-          <span className="font-bold text-black">Примечание:</span> Все
-          предложения проходят модерацию
+          {error ? (
+            <span className="text-red-600 font-bold">{error}</span>
+          ) : (
+            <>
+              <span className="font-bold text-black">Примечание:</span> Все
+              предложения проходят модерацию
+            </>
+          )}
         </div>
         <div className="flex gap-3">
           <button
             onClick={onClose}
+            disabled={isSubmitting}
             className="btn-outline px-6 py-3 text-xs font-bold"
           >
             Отмена
           </button>
           <button
             onClick={handleSubmit}
-            className="btn-primary px-8 py-3 text-xs font-bold"
+            disabled={isSubmitting}
+            className="btn-primary px-8 py-3 text-xs font-bold disabled:opacity-50"
           >
-            Отправить Предложение
+            {isSubmitting ? "Отправка..." : "Отправить Предложение"}
           </button>
         </div>
       </div>
