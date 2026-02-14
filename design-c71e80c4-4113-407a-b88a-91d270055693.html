@@ -1,0 +1,299 @@
+<html vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">RIG — ПАНЕЛЬ АДМИНИСТРАТОРА</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17" vid="5"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet" vid="6">
+    
+    <style vid="7">
+        :root {
+            --bg-void: #E5E5E5;
+            --bg-panel: #000000;
+            --bg-card: #F0F0F0;
+            --bg-hover: #FFE600;
+            --text-primary: #000000;
+            --text-inverse: #FFFFFF;
+            --text-secondary: #404040;
+            --text-tertiary: #666666;
+            --accent-core: #FFE600;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --font-ui: 'Manrope', sans-serif;
+            --border-width: 1px;
+            --border-color: #000000;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 { font-family: var(--font-display); color: var(--text-primary); }
+        .font-display { font-family: var(--font-display); letter-spacing: -0.03em; font-weight: 500; }
+        .font-mono { font-family: var(--font-mono); letter-spacing: -0.02em; }
+        
+        .nav-item {
+            position: relative;
+            transition: all 0s;
+            color: #888;
+            border: 1px solid transparent;
+        }
+        .nav-item:hover { color: var(--text-inverse); border: 1px solid #333; }
+        .nav-item.active {
+            background: var(--accent-core);
+            color: var(--text-primary) !important;
+            border: 1px solid var(--accent-core);
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--text-inverse);
+            font-family: var(--font-display);
+            font-weight: 600;
+            text-transform: uppercase;
+            border: 1px solid var(--text-primary);
+            transition: all 0.1s ease;
+        }
+        .btn-primary:hover {
+            background: var(--accent-core);
+            color: var(--text-primary);
+            box-shadow: 4px 4px 0px var(--text-primary);
+            transform: translate(-2px, -2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--text-primary);
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            transition: all 0.1s ease;
+        }
+        .btn-outline:hover {
+            background: var(--text-primary);
+            color: var(--text-inverse);
+        }
+
+        .table-container {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+        }
+        .table-cell {
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+        }
+
+        @keyframes colorShift {
+            0%, 100% { color: #FFE600; text-shadow: 0 0 8px rgba(255, 230, 0, 0.4); }
+            50% { color: #00E0FF; text-shadow: 0 0 8px rgba(0, 224, 255, 0.4); }
+        }
+        .logo-animated { animation: colorShift 8s ease-in-out infinite; font-weight: 900; }
+
+        #modal-content {
+            background: #FFFFFF;
+            border: 2px solid #000;
+            box-shadow: 10px 10px 0px #000;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: var(--bg-void); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #000; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden" vid="8">
+
+    <aside class="w-[280px] flex-shrink-0 flex flex-col p-0 z-20 border-r border-[#333] bg-black" vid="9">
+        <div class="flex flex-col gap-1 p-6 pb-8 border-b border-[#333]" vid="10">
+            <div class="flex items-center gap-3 mb-2" vid="11">
+                <div class="w-6 h-6 bg-white flex items-center justify-center border border-black" vid="12">
+                    <div class="w-2 h-2 bg-black" vid="13"></div>
+                </div>
+                <div class="text-5xl font-display text-white tracking-tighter logo-animated" vid="14">RIG</div>
+            </div>
+            <div class="font-mono text-[9px] text-[#666] leading-tight uppercase tracking-widest mt-2" vid="15">
+                ADMINISTRATION MODULE<br vid="16">
+                CORE ACCESS LEVEL 0
+            </div>
+        </div>
+
+        <nav class="flex flex-col flex-1 overflow-y-auto py-6 px-4 gap-8" vid="17">
+            <div class="flex flex-col gap-1" vid="18">
+                <div class="text-[9px] uppercase tracking-widest text-[#444] px-3 mb-2 font-mono" vid="19">Управление</div>
+                <a href="#" onclick="router.navigate('admin')" id="nav-admin" class="nav-item active flex items-center gap-3 px-3 py-3 text-[14px] font-display" vid="20">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="21"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" vid="22"></path></svg>
+                    Пользователи
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-3 py-3 text-[14px] font-display opacity-50 cursor-not-allowed" vid="23">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" vid="25"></path></svg>
+                    Логи системы
+                </a>
+            </div>
+        </nav>
+
+        <div class="mt-auto p-6 border-t border-[#333]" vid="26">
+            <div class="px-3 py-2 border border-[#333] bg-black flex items-center gap-2" vid="27">
+                <div class="w-2 h-2 rounded-full bg-[#FFE600]" vid="28"></div>
+                <span class="font-mono text-[9px] text-[#666] uppercase tracking-wider" vid="29">ROOT AUTHENTICATED</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative overflow-hidden z-10 bg-[#E5E5E5]" vid="30">
+        <header class="h-20 bg-[#E5E5E5] flex items-center justify-between px-10 sticky top-0 z-30 border-b border-black" vid="31">
+            <div class="flex flex-col" vid="32">
+                <h1 class="font-display text-2xl font-bold text-black tracking-tight uppercase" vid="33">ПОЛЬЗОВАТЕЛИ</h1>
+                <p class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mt-1" vid="34">Управление доступом и ролями</p>
+            </div>
+            
+            <div class="flex items-center gap-4" vid="35">
+                <div class="relative w-64" vid="36">
+                    <input type="text" placeholder="ПОИСК ПО EMAIL..." class="w-full bg-transparent border border-black text-black text-xs px-4 py-3 font-mono focus:outline-none focus:bg-white transition-colors uppercase" vid="37">
+                </div>
+                <button onclick="openAddUserModal()" class="btn-primary px-6 py-3 text-xs font-bold border border-black" vid="38">
+                    + НОВЫЙ ПОЛЬЗОВАТЕЛЬ
+                </button>
+            </div>
+        </header>
+
+        <div id="app-content" class="flex-1 overflow-y-auto p-10 custom-scrollbar" vid="39">
+            <div class="table-container bg-white" vid="40">
+                <div class="grid grid-cols-[1fr_2fr_1.5fr_1fr_1.5fr] font-mono text-[10px] font-bold uppercase tracking-widest bg-[#F0F0F0]" vid="41">
+                    <div class="table-cell p-4" vid="42">ID</div>
+                    <div class="table-cell p-4" vid="43">ПОЛЬЗОВАТЕЛЬ</div>
+                    <div class="table-cell p-4" vid="44">РОЛЬ</div>
+                    <div class="table-cell p-4" vid="45">СТАТУС</div>
+                    <div class="table-cell p-4" vid="46">ДЕЙСТВИЯ</div>
+                </div>
+
+                <div id="user-table-body" vid="47">
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal-backdrop" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-grayscale" vid="48">
+        <div id="modal-content" class="w-full max-w-lg p-8 transform scale-100" vid="49">
+            <h2 id="modal-title" class="text-3xl font-bold mb-6 uppercase tracking-tight" vid="50">Добавить пользователя</h2>
+            <div class="space-y-4" vid="51">
+                <div vid="52">
+                    <label class="block text-[10px] font-mono font-bold uppercase mb-1" vid="53">Имя</label>
+                    <input type="text" id="user-name" class="w-full border-2 border-black p-3 text-sm font-medium focus:bg-[#FFE600]/10 outline-none" vid="54">
+                </div>
+                <div vid="55">
+                    <label class="block text-[10px] font-mono font-bold uppercase mb-1" vid="56">Email</label>
+                    <input type="email" id="user-email" class="w-full border-2 border-black p-3 text-sm font-medium focus:bg-[#FFE600]/10 outline-none" vid="57">
+                </div>
+                <div vid="58">
+                    <label class="block text-[10px] font-mono font-bold uppercase mb-1" vid="59">Роль</label>
+                    <select id="user-role" class="w-full border-2 border-black p-3 text-sm font-bold uppercase outline-none" vid="60">
+                        <option value="USER" vid="61">Пользователь</option>
+                        <option value="MODERATOR" vid="62">Модератор</option>
+                        <option value="ADMIN" vid="63">Администратор</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-8 flex gap-3" vid="64">
+                <button onclick="saveUser()" class="btn-primary flex-1 py-4 text-sm font-bold" vid="65">СОХРАНИТЬ</button>
+                <button onclick="closeModal()" class="btn-outline flex-1 py-4 text-sm font-bold" vid="66">ОТМЕНА</button>
+            </div>
+        </div>
+    </div>
+
+    <script vid="67">
+        let users = [
+            { id: 'RG-881', name: 'Алекс М.', email: 'alex.m@rig.ai', role: 'ADMIN', status: 'ACTIVE' },
+            { id: 'RG-742', name: 'Дмитрий С.', email: 'dim@rig.ai', role: 'MODERATOR', status: 'ACTIVE' },
+            { id: 'RG-109', name: 'Мария К.', email: 'k.maria@corp.io', role: 'USER', status: 'INACTIVE' },
+            { id: 'RG-003', name: 'Игорь В.', email: 'iv@rig.ai', role: 'USER', status: 'ACTIVE' }
+        ];
+
+        const router = {
+            navigate: (page) => {
+                console.log('Navigating to', page);
+            }
+        };
+
+        function renderTable() {
+            const body = document.getElementById('user-table-body');
+            body.innerHTML = users.map(user => `
+                <div class="grid grid-cols-[1fr_2fr_1.5fr_1fr_1.5fr] font-medium text-sm hover:bg-[#FAFAFA] transition-colors">
+                    <div class="table-cell p-4 font-mono text-[11px]">${user.id}</div>
+                    <div class="table-cell p-4">
+                        <div class="font-bold uppercase">${user.name}</div>
+                        <div class="text-[10px] text-gray-500 font-mono">${user.email}</div>
+                    </div>
+                    <div class="table-cell p-4">
+                        <span class="px-2 py-1 text-[10px] font-bold border border-black ${user.role === 'ADMIN' ? 'bg-[#FFE600]' : 'bg-white'}">
+                            ${user.role}
+                        </span>
+                    </div>
+                    <div class="table-cell p-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1.5 h-1.5 ${user.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'}"></div>
+                            <span class="text-[10px] font-mono font-bold">${user.status}</span>
+                        </div>
+                    </div>
+                    <div class="table-cell p-4 flex gap-2">
+                        <button onclick="changeRole('${user.id}')" class="text-[10px] font-bold underline hover:text-blue-600 uppercase">Роль</button>
+                        <button onclick="deleteUser('${user.id}')" class="text-[10px] font-bold underline hover:text-red-600 uppercase">Удалить</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddUserModal() {
+            document.getElementById('modal-title').innerText = "Добавить пользователя";
+            document.getElementById('modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-backdrop').classList.add('hidden');
+        }
+
+        function saveUser() {
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('user-email').value;
+            const role = document.getElementById('user-role').value;
+            
+            if(!name || !email) return;
+
+            users.push({
+                id: `RG-${Math.floor(Math.random() * 900) + 100}`,
+                name,
+                email,
+                role,
+                status: 'ACTIVE'
+            });
+
+            closeModal();
+            renderTable();
+            
+            
+            document.getElementById('user-name').value = '';
+            document.getElementById('user-email').value = '';
+        }
+
+        function deleteUser(id) {
+            if(confirm('УДАЛИТЬ ПОЛЬЗОВАТЕЛЯ ИЗ БАЗЫ?')) {
+                users = users.filter(u => u.id !== id);
+                renderTable();
+            }
+        }
+
+        function changeRole(id) {
+            const roles = ['USER', 'MODERATOR', 'ADMIN'];
+            const user = users.find(u => u.id === id);
+            const currentIndex = roles.indexOf(user.role);
+            user.role = roles[(currentIndex + 1) % roles.length];
+            renderTable();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderTable);
+    </script>
+
+
+</body></html>
