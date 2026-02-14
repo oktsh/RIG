@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useModal } from "@/components/modals/ModalProvider";
 
 interface HeaderConfig {
   title: string;
@@ -60,6 +61,7 @@ function getHeaderConfig(pathname: string): HeaderConfig {
 
 export default function Header() {
   const pathname = usePathname();
+  const { openJoinModal } = useModal();
   const config = getHeaderConfig(pathname);
 
   return (
@@ -86,7 +88,10 @@ export default function Header() {
         <button className="btn-outline px-6 py-3 text-xs font-bold">
           Войти
         </button>
-        <button className="btn-primary px-6 py-3 text-xs font-bold">
+        <button
+          onClick={openJoinModal}
+          className="btn-primary px-6 py-3 text-xs font-bold"
+        >
           JOIN RIG
         </button>
       </div>

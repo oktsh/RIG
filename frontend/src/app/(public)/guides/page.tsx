@@ -1,13 +1,17 @@
+import GuideListItem from "@/components/guides/GuideListItem";
+import { guides } from "@/data/guides";
+
 export default function GuidesPage() {
   return (
-    <div className="flex items-center justify-center h-full">
-      <div className="text-center">
-        <div className="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-4">
-          БИБЛИОТЕКА / ГАЙДЫ
-        </div>
-        <h2 className="font-display text-4xl font-bold uppercase tracking-tight">
-          Guides Page
-        </h2>
+    <div className="max-w-[1000px] mx-auto px-10 py-10">
+      <div className="fixed right-10 top-20 text-[200px] font-black text-[#F0F0F0] select-none pointer-events-none -z-10 leading-none font-display uppercase">
+        RIG
+      </div>
+
+      <div className="flex flex-col border-t-2 border-black">
+        {guides.map((guide, index) => (
+          <GuideListItem key={guide.id} guide={guide} index={index} />
+        ))}
       </div>
     </div>
   );
