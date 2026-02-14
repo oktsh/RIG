@@ -15,6 +15,9 @@ build/
 out/
 *.tsbuildinfo
 
+# Database
+*.db
+
 # Environment
 .env
 .env.local
