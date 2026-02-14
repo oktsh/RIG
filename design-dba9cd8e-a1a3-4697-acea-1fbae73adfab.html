@@ -1,0 +1,1255 @@
+<html vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">RIG — Оснастка для Вайб-Кодинга</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17" vid="5"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet" vid="6">
+    
+    <style vid="7">
+        :root {
+            --bg-void: #E5E5E5;
+            --bg-panel: #000000;
+            --bg-card: #F0F0F0;
+            --bg-hover: #FFE600;
+            
+            --text-primary: #000000;
+            --text-inverse: #FFFFFF;
+            --text-secondary: #404040;
+            --text-tertiary: #666666;
+            
+            --accent-core: #FFE600;
+            
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --font-ui: 'Manrope', sans-serif;
+            
+            --radius-sm: 0px;
+            --radius-md: 0px;
+            
+            --border-width: 1px;
+            --border-heavy: 2px;
+            --border-color: #000000;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); color: var(--text-primary); }
+        .font-display { font-family: var(--font-display); letter-spacing: -0.03em; font-weight: 500; }
+        .font-mono { font-family: var(--font-mono); letter-spacing: -0.02em; }
+        
+        
+        .text-dim { color: var(--text-tertiary); }
+        .text-label { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em; color: var(--text-secondary); }
+
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-void); border-left: 1px solid var(--border-color); }
+        ::-webkit-scrollbar-thumb { background: var(--text-primary); border-radius: 0; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        
+        .glass-panel {
+            background: var(--bg-void);
+            backdrop-filter: none;
+            border-bottom: var(--border-width) solid var(--border-color);
+        }
+
+        .nav-item {
+            position: relative;
+            transition: all 0s;
+            color: #888;
+            border: 1px solid transparent;
+        }
+        .nav-item:hover { 
+            color: var(--text-inverse); 
+            border: 1px solid #333;
+        }
+        .nav-item.active {
+            background: var(--accent-core);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-core);
+            font-weight: 600;
+        }
+        .nav-item.active::before { display: none; }
+        
+        
+        .nav-item svg { stroke-width: 1.5px; }
+        .nav-item.active svg { stroke-width: 2px; }
+
+        
+        .card-base {
+            background: var(--bg-card);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 0 !important;
+            transition: all 0.1s ease;
+            box-shadow: none;
+        }
+        .card-base:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px var(--text-primary);
+            border-color: var(--text-primary);
+        }
+
+        
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--text-inverse);
+            font-family: var(--font-display);
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 0;
+            border: 1px solid var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background: var(--accent-core);
+            color: var(--text-primary);
+            box-shadow: 6px 6px 0px var(--text-primary);
+            transform: translate(-2px, -2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--text-primary);
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            border-radius: 0;
+            transition: all 0.2s ease;
+        }
+        .btn-outline:hover {
+            background: var(--text-primary);
+            color: var(--text-inverse) !important;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
+            transform: translate(-1px, -1px);
+        }
+        .btn-outline:hover {
+            background: var(--text-primary);
+            color: var(--text-inverse);
+        }
+
+        
+        .glow-bg, .arch-window::after, .absolute.blur-\[100px\], .absolute.blur-\[60px\], .absolute.blur-\[50px\] {
+            display: none !important;
+        }
+
+        
+        .arch-window {
+            border-radius: 0 !important;
+            border: 1px solid var(--text-primary);
+            background: #FFF;
+        }
+        
+        
+        .tag-brutal {
+            border: 1px solid var(--text-primary);
+            background: #FFF;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            font-family: var(--font-mono);
+        }
+
+        
+        #modal-content {
+            background: #FFFFFF;
+            border: 2px solid #000;
+            border-radius: 0;
+            box-shadow: 10px 10px 0px #000;
+        }
+        #modal-backdrop {
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: grayscale(100%);
+        }
+
+        
+        input[type="text"] {
+            background: transparent !important;
+            border: 1px solid #000 !important;
+            border-radius: 0 !important;
+            color: #000 !important;
+        }
+        input::placeholder { color: #666; }
+
+        
+        .text-white { color: var(--text-primary) !important; }
+        .group-hover\:text-purple-400:hover { color: var(--text-secondary) !important; text-decoration: underline; }
+        .group-hover\:text-purple-300:hover { color: var(--text-primary) !important; }
+        .text-purple-400 { color: var(--text-primary) !important; background: var(--accent-core); padding: 0 4px; }
+        
+        
+        ::selection {
+            background: var(--text-primary);
+            color: var(--accent-core);
+        }
+
+        
+        @keyframes colorShift {
+            0%, 100% { 
+                color: #FFE600;
+                text-shadow: 0 0 8px rgba(255, 230, 0, 0.6), 0 0 16px rgba(255, 230, 0, 0.3);
+            }
+            20% { 
+                color: #B4FF00;
+                text-shadow: 0 0 8px rgba(180, 255, 0, 0.6), 0 0 16px rgba(180, 255, 0, 0.3);
+            }
+            40% { 
+                color: #00FFB4;
+                text-shadow: 0 0 8px rgba(0, 255, 180, 0.6), 0 0 16px rgba(0, 255, 180, 0.3);
+            }
+            60% { 
+                color: #00E0FF;
+                text-shadow: 0 0 8px rgba(0, 224, 255, 0.6), 0 0 16px rgba(0, 224, 255, 0.3);
+            }
+            80% { 
+                color: #B400FF;
+                text-shadow: 0 0 8px rgba(180, 0, 255, 0.6), 0 0 16px rgba(180, 0, 255, 0.3);
+            }
+        }
+
+        .logo-animated {
+            animation: colorShift 8s ease-in-out infinite;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+
+        .logo-square-animated {
+            animation: colorShift 8s ease-in-out infinite;
+        }
+
+        
+        aside {
+            background-color: var(--bg-panel) !important;
+            border-right: 1px solid var(--border-color);
+        }
+        aside .text-white { color: #FFFFFF !important; }
+        aside .text-secondary { color: #999999 !important; }
+        aside .text-tertiary { color: #666666 !important; }
+        aside .border-\[\#1A1A1A\] { border-color: #333 !important; }
+        aside .bg-\[\#0A0A0A\] { background-color: #111 !important; border-color: #333 !important; }
+        
+        
+        .rounded-full { border-radius: 50%; } 
+        .rounded-xl, .rounded-lg, .rounded-md, .rounded { border-radius: 0 !important; }
+        
+        
+        .nav-item { color: #888 !important; } 
+        .nav-item:hover { color: #FFF !important; }
+        .nav-item.active { color: #000 !important; }
+        .nav-item.active svg { color: #000 !important; opacity: 1 !important; }
+
+        
+        .prose-headings { color: #000 !important; }
+        .prose p { color: #333 !important; }
+        .prose blockquote { border-left-color: #000 !important; color: #000 !important; font-style: normal; font-weight: 500; background: #F0F0F0; padding: 1rem; }
+        .prose code { color: #000 !important; background: #E0E0E0 !important; border: 1px solid #CCC; }
+        .prose pre { background: #111 !important; color: #FFF !important; border: none !important; }
+        
+        
+        .decorative-line {
+            height: 1px;
+            background: repeating-linear-gradient(90deg, #000, #000 5px, transparent 5px, transparent 10px);
+        }
+
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden" vid="8">
+
+    <div class="glow-bg" vid="9"></div>
+
+    
+    <aside class="w-[280px] flex-shrink-0 flex flex-col p-0 z-20 border-r border-[#333] bg-black" vid="10">
+        
+        <div class="flex flex-col gap-1 p-6 pb-8 border-b border-[#333]" vid="11">
+            <div class="flex items-center gap-3 mb-2" vid="12">
+                <div class="w-6 h-6 bg-white flex items-center justify-center relative border border-black" vid="13">
+                    <div class="w-2 h-2 bg-black logo-square-animated" vid="14"></div>
+                </div>
+                <div class="text-5xl font-display text-white tracking-tighter logo-animated" vid="15">RIG</div>
+            </div>
+            <div class="font-mono text-[9px] text-[#666] leading-tight uppercase tracking-widest mt-2" vid="16">
+                Part Knowledge Base<br vid="17">
+                Part Magic Wand
+            </div>
+        </div>
+
+        
+        <nav class="flex flex-col flex-1 overflow-y-auto py-6 px-4 gap-8" vid="18">
+            
+            <div class="flex flex-col gap-1" vid="19">
+                <div class="text-[9px] uppercase tracking-widest text-[#444] px-3 mb-2 font-mono" vid="20">Платформа</div>
+                
+                <a href="#" onclick="router.navigate('home')" id="nav-home" class="nav-item flex items-center gap-3 px-3 py-3 text-[14px] font-display" vid="21">
+                    <svg class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="22"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" vid="23"></path></svg>
+                    01 // О Проекте
+                </a>
+                
+                <a href="#" onclick="router.navigate('dashboard')" id="nav-dashboard" class="nav-item flex items-center gap-3 px-3 py-3 text-[14px] font-display" vid="24">
+                    <svg class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="25"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" vid="26"></path></svg>
+                    02 // Панель
+                </a>
+            </div>
+
+            
+            <div class="flex flex-col gap-1" vid="27">
+                <div class="text-[9px] uppercase tracking-widest text-[#444] px-3 mb-2 font-mono" vid="28">Библиотека</div>
+                
+                <a href="#" onclick="router.navigate('prompts')" id="nav-prompts" class="nav-item flex items-center gap-3 px-3 py-3 text-[14px] font-display" vid="29">
+                    <svg class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="30"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" vid="31"></path></svg>
+                    Промпты
+                </a>
+                
+                <a href="#" onclick="router.navigate('guides')" id="nav-guides" class="nav-item flex items-center gap-3 px-3 py-3 text-[14px] font-display" vid="32">
+                    <svg class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="33"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" vid="34"></path></svg>
+                    Гайды
+                </a>
+
+                <a href="#" onclick="router.navigate('rules-agents')" id="nav-rules-agents" class="nav-item flex items-center gap-3 px-3 py-3 text-[14px] font-display" vid="35">
+                    <svg class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="36"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" vid="37"></path></svg>
+                    Правила и Агенты
+                </a>
+
+                <div class="nav-item flex items-center gap-3 px-3 py-3 text-[14px] font-display text-tertiary cursor-not-allowed opacity-50" vid="38">
+                    <svg class="w-4 h-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" vid="39"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" vid="40"></path></svg>
+                    Инструменты <span class="ml-auto text-[9px] border border-[#333] px-1" vid="41">ЗАКРЫТО</span>
+                </div>
+            </div>
+        </nav>
+
+        
+        <div class="mt-auto p-6 border-t border-[#333]" vid="42">
+            <div class="px-3 py-2 border border-[#333] bg-black flex items-center gap-2" vid="43">
+                <div class="w-2 h-2 rounded-full bg-[#FFE600]" vid="44"></div>
+                <span class="font-mono text-[9px] text-[#666] uppercase tracking-wider" vid="45">СИСТЕМА РАБОТАЕТ</span>
+            </div>
+        </div>
+    </aside>
+
+    
+    <main class="flex-1 flex flex-col relative overflow-hidden z-10 bg-[#E5E5E5]" vid="46">
+        
+        
+        <header id="main-header" class="h-20 bg-[#E5E5E5] flex items-center justify-between px-10 sticky top-0 z-30 border-b border-black" vid="47">
+            <div class="flex flex-col" vid="48">
+                <h1 id="header-title" class="font-display text-2xl font-bold text-black tracking-tight uppercase" vid="49">ЗАГРУЗКА...</h1>
+                <p id="header-subtitle" class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mt-1" vid="50">ИНИЦИАЛИЗАЦИЯ</p>
+            </div>
+            
+            <div class="flex items-center gap-6" vid="51">
+                
+                <div id="header-search" class="hidden relative w-64" vid="52">
+                    <input type="text" placeholder="ПОИСК В БАЗЕ..." class="w-full bg-transparent border border-black text-black text-xs px-4 py-3 font-mono focus:outline-none focus:bg-white transition-colors uppercase" vid="53">
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-black font-bold" vid="54">⌘K</span>
+                </div>
+
+                
+                <div class="flex items-center gap-3" vid="55">
+                    <button class="btn-outline px-5 py-2.5 text-xs font-bold" vid="56">Войти</button>
+                    <button onclick="openJoinModal()" class="btn-primary px-5 py-2.5 text-xs font-bold border border-black" vid="57">JOIN RIG</button>
+                </div>
+            </div>
+        </header>
+
+        
+        <div id="app-content" class="flex-1 overflow-y-auto relative custom-scrollbar" vid="58">
+            
+        </div>
+
+    </main>
+
+    
+    <div id="modal-backdrop" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 transition-all duration-300 opacity-0" vid="59">
+        <div id="modal-content" class="w-full max-w-3xl max-h-[85vh] flex flex-col relative transform transition-all duration-300 scale-95 shadow-[8px_8px_0px_#000]" vid="60">
+            
+        </div>
+    </div>
+
+    <script vid="61">
+        
+        const prompts = [
+            {
+                id: 1,
+                title: "Анализ Конкурентов",
+                desc: "Фреймворк глубокого анализа конкурентной среды с фокусом на ценностные предложения и рост.",
+                author: "Алекс М.",
+                copies: "1,837",
+                tags: ["ИССЛЕДОВАНИЕ", "СТРАТЕГИЯ"],
+                tech: "GPT-4 / CLAUDE",
+                content: "Проведите комплексный анализ конкурентов: изучите их ценностные предложения, стратегии роста, позиционирование на рынке и ключевые преимущества. Определите возможности для дифференциации."
+            },
+            {
+                id: 2,
+                title: "Агент Код-Ревью",
+                desc: "Автоматическое ревью с фокусом на безопасность, производительность и стандарты команды.",
+                author: "Дмитрий С.",
+                copies: "1,481",
+                tags: ["РАЗРАБОТКА", "КАЧЕСТВО"],
+                tech: "CURSOR / COPILOT",
+                content: "Проанализируйте код на предмет безопасности, производительности, соответствия стандартам команды и лучшим практикам. Предложите конкретные улучшения с примерами."
+            },
+            {
+                id: 3,
+                title: "Сегментация Пользователей",
+                desc: "Паттерны сегментации поведенческих данных для продуктового анализа.",
+                author: "Мария К.",
+                copies: "982",
+                tags: ["ПРОДУКТ", "АНАЛИТИКА"],
+                tech: "PYTHON / SQL",
+                content: "Разработайте модель сегментации пользователей на основе поведенческих данных. Определите ключевые сегменты, их характеристики и потребности для оптимизации продукта."
+            },
+            {
+                id: 4,
+                title: "Архитектура Микросервисов",
+                desc: "Архитектурные паттерны для масштабируемых распределённых систем.",
+                author: "Игорь В.",
+                copies: "456",
+                tags: ["СИСТЕМА", "АРХИТЕКТУРА"],
+                tech: "K8S / DOCKER",
+                content: "Спроектируйте архитектуру микросервисов с учетом масштабируемости, отказоустойчивости и независимого развертывания. Определите границы сервисов и коммуникационные паттерны."
+            }
+        ];
+
+        const guides = [
+            {
+                id: 1,
+                title: "Развертывание RIG с Нуля",
+                desc: "Полное руководство по настройке окружения для вайб-кодинга.",
+                author: "Алекс М.",
+                category: "CLAUDE CODE",
+                time: "15 МИН",
+                views: "3,245",
+                date: "10 ФЕВ"
+            },
+            {
+                id: 2,
+                title: "Конфигурация Репозитория",
+                desc: "Структура папок, конфигурация агентов и правила Cursor.",
+                author: "Дмитрий С.",
+                category: "CURSOR",
+                time: "10 МИН",
+                views: "2,156",
+                date: "12 ФЕВ"
+            },
+            {
+                id: 3,
+                title: "Единый Журнал Решений",
+                desc: "Контекстно-зависимые записи архитектурных решений.",
+                author: "Елена П.",
+                category: "ОСНОВЫ",
+                time: "8 МИН",
+                views: "1,834",
+                date: "14 ФЕВ"
+            },
+            {
+                id: 4,
+                title: "Продвинутые Агенты",
+                desc: "Кастомные агенты, MCP серверы, оркестрация рабочих процессов.",
+                author: "Игорь В.",
+                category: "АГЕНТЫ",
+                time: "20 МИН",
+                views: "1,245",
+                date: "15 ФЕВ"
+            }
+        ];
+
+        
+        const router = {
+            currentPage: null,
+            
+            navigate(page, params = null) {
+                this.currentPage = page;
+                this.updateSidebar();
+                this.updateHeader(page);
+                
+                const container = document.getElementById('app-content');
+                
+                
+                container.innerHTML = this.views[page](params);
+                
+                container.scrollTop = 0;
+            },
+
+            updateSidebar() {
+                document.querySelectorAll('.nav-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                const activeLink = document.getElementById(`nav-${this.currentPage === 'guide-detail' ? 'guides' : this.currentPage}`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            },
+
+            updateHeader(page) {
+                const titleEl = document.getElementById('header-title');
+                const subEl = document.getElementById('header-subtitle');
+                const searchEl = document.getElementById('header-search');
+
+                if (page === 'home') {
+                    titleEl.innerText = 'ПРОДУКТ';
+                    subEl.innerText = 'ГЛАВНАЯ';
+                    searchEl.classList.add('hidden');
+                } else if (page === 'dashboard') {
+                    titleEl.innerText = 'ПАНЕЛЬ';
+                    subEl.innerText = 'ОБЗОР';
+                    searchEl.classList.add('hidden');
+                } else if (page === 'prompts') {
+                    titleEl.innerText = 'ПРОМПТЫ';
+                    subEl.innerText = 'БИБЛИОТЕКА';
+                    searchEl.classList.remove('hidden');
+                } else if (page === 'guides' || page === 'guide-detail') {
+                    titleEl.innerText = 'ГАЙДЫ';
+                    subEl.innerText = 'БАЗА ЗНАНИЙ';
+                    searchEl.classList.remove('hidden');
+                } else if (page === 'rules-agents') {
+                    titleEl.innerText = 'ПРАВИЛА И АГЕНТЫ';
+                    subEl.innerText = 'КОНФИГУРАЦИЯ';
+                    searchEl.classList.remove('hidden');
+                }
+            },
+
+            views: {
+                home: () => `
+                    <div class="max-w-7xl mx-auto px-12 py-20">
+                        <div class="flex flex-col text-left mb-24 relative">
+                            
+                            <div class="flex items-center gap-4 mb-8">
+                                <span class="font-mono text-xs font-bold bg-black text-white px-2 py-1">2025 RELEASE</span>
+                                <div class="h-[2px] bg-black w-24"></div>
+                                <span class="font-mono text-xs font-bold uppercase tracking-widest text-black">RIG — TOOLS FOR THE VIBE ERA</span>
+                            </div>
+                            
+                            <h1 class="text-[80px] md:text-[100px] font-display font-bold leading-[0.85] text-black mb-10 tracking-tighter uppercase">
+                                Инструменты<br>
+                                для <span class="text-[#888]">Вайб</span>-Кодинга
+                            </h1>
+                            
+                            <div class="flex flex-col md:flex-row gap-10 items-start md:items-center border-t-2 border-black pt-10">
+                                <p class="text-xl text-black font-medium max-w-xl leading-tight font-display">
+                                    Единая оснастка для вайб-кодинга: промпты, гайды, шаблоны проектов и командные AI-инструменты.
+                                </p>
+                                <button onclick="router.navigate('dashboard')" class="btn-primary px-10 py-5 text-sm tracking-widest border border-black shadow-[6px_6px_0px_#000]">
+                                    Начать Работу ->
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- FEATURED: RIG Starter Kit -->
+                        <div class="mb-20">
+                            <div class="card-base bg-white border-2 border-black flex flex-col md:flex-row group">
+                                <!-- Content Side -->
+                                <div class="flex-1 p-10 flex flex-col justify-between border-b md:border-b-0 md:border-r-2 border-black">
+                                    <div>
+                                        <div class="flex items-center gap-3 mb-8">
+                                            <span class="bg-black text-white text-[10px] px-2 py-1 font-mono uppercase font-bold">STARTER KIT</span>
+                                            <span class="font-mono text-[10px] text-black border border-black px-2 py-1 uppercase font-bold">RECOMMENDED</span>
+                                        </div>
+                                        
+                                        <h2 class="text-5xl font-display font-bold text-black mb-6 tracking-tighter leading-none">
+                                            RIG Full-Stack<br>Стартер
+                                        </h2>
+                                        
+                                        <p class="text-lg text-[#444] leading-relaxed mb-8 font-medium">
+                                            Предконфигурированный boilerplate с AI context rules, Tailwind, shadcn/ui. Создан для скорости.
+                                        </p>
+
+                                        <div class="flex flex-wrap gap-2 mb-10">
+                                            <span class="font-mono text-[10px] bg-[#F0F0F0] border border-black px-3 py-1 text-black font-bold uppercase">NEXT.JS 14</span>
+                                            <span class="font-mono text-[10px] bg-[#F0F0F0] border border-black px-3 py-1 text-black font-bold uppercase">TYPESCRIPT</span>
+                                            <span class="font-mono text-[10px] bg-[#F0F0F0] border border-black px-3 py-1 text-black font-bold uppercase">TAILWIND</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <button class="btn-primary px-8 py-4 text-xs font-bold border border-black">
+                                            Развернуть
+                                        </button>
+                                        <button class="btn-outline px-8 py-4 text-xs font-bold border border-black">
+                                            GitHub
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Visual Side / Abstract -->
+                                <div class="w-full md:w-[40%] bg-[#F5F5F5] relative flex flex-col items-center justify-center p-12 overflow-hidden">
+                                    <div class="w-full h-full border border-black bg-white relative p-4 flex flex-col gap-4 shadow-[8px_8px_0px_rgba(0,0,0,0.1)]">
+                                        <div class="w-full h-8 border border-black bg-[#E5E5E5] flex items-center px-2 gap-2">
+                                            <div class="w-2 h-2 rounded-full border border-black bg-white"></div>
+                                            <div class="w-2 h-2 rounded-full border border-black bg-white"></div>
+                                        </div>
+                                        <div class="flex-1 border border-black bg-[#FAFAFA] flex items-center justify-center">
+                                             <span class="font-display text-6xl font-bold text-[#DDD]">RIG</span>
+                                        </div>
+                                        <div class="h-16 border border-black bg-[#FFE600] flex items-center justify-center">
+                                            <span class="font-mono text-xs font-bold uppercase">System Ready</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Access Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border-t-2 border-l-2 border-black bg-white">
+                            <div class="card-base p-8 border-r-2 border-b-2 border-black group cursor-pointer hover:bg-[#FFE600] transition-colors duration-0" onclick="router.navigate('prompts')">
+                                <div class="w-10 h-10 border border-black flex items-center justify-center mb-6 bg-white group-hover:bg-black group-hover:text-white transition-colors">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                                </div>
+                                <h3 class="font-display text-2xl font-bold mb-3 text-black">Промпты</h3>
+                                <p class="text-sm text-[#444] font-medium leading-relaxed group-hover:text-black">Готовые промпты для исследований, ревью и архитектуры.</p>
+                            </div>
+
+                            <div class="card-base p-8 border-r-2 border-b-2 border-black group cursor-pointer hover:bg-[#FFE600] transition-colors duration-0" onclick="router.navigate('guides')">
+                                <div class="w-10 h-10 border border-black flex items-center justify-center mb-6 bg-white group-hover:bg-black group-hover:text-white transition-colors">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                                </div>
+                                <h3 class="font-display text-2xl font-bold mb-3 text-black">Гайды</h3>
+                                <p class="text-sm text-[#444] font-medium leading-relaxed group-hover:text-black">Пошаговые инструкции от настройки до продвинутых агентов.</p>
+                            </div>
+
+                            <div class="card-base p-8 border-r-2 border-b-2 border-black group cursor-pointer hover:bg-[#FFE600] transition-colors duration-0" onclick="router.navigate('rules-agents')">
+                                <div class="w-10 h-10 border border-black flex items-center justify-center mb-6 bg-white group-hover:bg-black group-hover:text-white transition-colors">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
+                                </div>
+                                <h3 class="font-display text-2xl font-bold mb-3 text-black">Правила и Агенты</h3>
+                                <p class="text-sm text-[#444] font-medium leading-relaxed group-hover:text-black">Правила контекста и специализированные AI-агенты для разработки.</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+
+                dashboard: () => `
+                    <div class="max-w-[1200px] mx-auto px-10 py-12">
+                        <div class="flex items-end justify-between mb-10 pb-4 border-b-2 border-black">
+                            <div>
+                                <h2 class="text-4xl font-display font-bold text-black mb-2 uppercase tracking-tight">Initiate Task</h2>
+                                <p class="text-[#555] font-mono text-sm uppercase tracking-wide">Select a module to begin operation</p>
+                            </div>
+                            <div class="font-display text-6xl font-bold text-[#E0E0E0]">02</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-8 mb-12">
+                            <!-- Action Card 1 -->
+                            <div class="bg-white border-2 border-black p-0 group relative hover:-translate-y-1 transition-transform">
+                                <div class="p-8 h-full flex flex-col">
+                                    <div class="flex justify-between items-start mb-6">
+                                        <div class="w-12 h-12 border border-black bg-[#F5F5F5] flex items-center justify-center text-black">
+                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                        </div>
+                                        <span class="font-mono text-xs font-bold bg-[#FFE600] px-2 py-1 border border-black">НАСТРОЙКА</span>
+                                    </div>
+                                    
+                                    <h3 class="text-2xl font-bold text-black mb-2 uppercase">Настройка Окружения</h3>
+                                    <p class="text-sm text-[#444] mb-8 font-medium">Полное развертывание. Репозиторий, агенты, конфигурация CI/CD пайплайна.</p>
+                                    
+                                    <div class="mt-auto pt-6 border-t border-black flex gap-3">
+                                        <button class="btn-primary px-4 py-2 text-xs font-bold uppercase">Начать Гайд</button>
+                                        <button class="btn-outline px-4 py-2 text-xs font-bold uppercase">Доки</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Card 2 -->
+                            <div class="bg-white border-2 border-black p-0 group relative hover:-translate-y-1 transition-transform">
+                                <div class="p-8 h-full flex flex-col">
+                                    <div class="flex justify-between items-start mb-6">
+                                        <div class="w-12 h-12 border border-black bg-[#F5F5F5] flex items-center justify-center text-black">
+                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                                        </div>
+                                        <span class="font-mono text-xs font-bold bg-[#FFE600] px-2 py-1 border border-black">РАЗРАБОТКА</span>
+                                    </div>
+                                    
+                                    <h3 class="text-2xl font-bold text-black mb-2 uppercase">Вайб-Кодинг</h3>
+                                    <p class="text-sm text-[#444] mb-8 font-medium">AI-ассистированный процесс разработки. Рефакторинг, ревью, генерация.</p>
+                                    
+                                    <div class="mt-auto pt-6 border-t border-black flex gap-3">
+                                        <button onclick="router.navigate('prompts')" class="btn-primary px-4 py-2 text-xs font-bold uppercase">Смотреть Промпты</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Secondary Sections -->
+                        <div class="grid grid-cols-3 gap-8">
+                            <div class="col-span-2">
+                                <h3 class="font-display text-xl font-bold text-black mb-6 uppercase border-b-2 border-black inline-block pb-1">Командные Задачи</h3>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div class="bg-[#F0F0F0] border border-black p-5 min-h-[140px] flex flex-col hover:bg-white hover:shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-all cursor-pointer">
+                                        <span class="text-sm font-bold text-black uppercase">Анализ Процессов</span>
+                                        <p class="text-xs text-[#555] mt-2 font-medium">Структурирование и анализ рабочих процессов.</p>
+                                        <div class="mt-auto pt-2">
+                                            <span class="text-[10px] bg-black text-white px-2 py-1 font-mono font-bold">3 ИНСТРУМЕНТА</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-[#F0F0F0] border border-black p-5 min-h-[140px] flex flex-col hover:bg-white hover:shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-all cursor-pointer">
+                                        <span class="text-sm font-bold text-black uppercase">Сегментация</span>
+                                        <p class="text-xs text-[#555] mt-2 font-medium">Разбивка задач через AI.</p>
+                                        <div class="mt-auto pt-2">
+                                            <span class="text-[10px] bg-black text-white px-2 py-1 font-mono font-bold">НАБОР ПРОМПТОВ</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-[#F0F0F0] border border-black p-5 min-h-[140px] flex flex-col hover:bg-white hover:shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-all cursor-pointer">
+                                        <span class="text-sm font-bold text-black uppercase">Журнал Решений</span>
+                                        <p class="text-xs text-[#555] mt-2 font-medium">Отслеживание истории архитектуры.</p>
+                                        <div class="mt-auto pt-2">
+                                            <span class="text-[10px] bg-black text-white px-2 py-1 font-mono font-bold">ШАБЛОН</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="font-display text-xl font-bold text-black mb-6 uppercase border-b-2 border-black inline-block pb-1">События</h3>
+                                <div class="flex flex-col gap-3">
+                                    <div class="bg-white border border-black p-4 flex items-center gap-4 hover:shadow-[4px_4px_0px_#000] transition-shadow">
+                                        <div class="w-10 h-10 bg-black flex items-center justify-center">
+                                            <span class="font-mono text-xs text-[#FFE600] font-bold">10/02</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-black font-bold uppercase">День Код-Ревью</div>
+                                            <div class="text-[10px] text-[#666] font-mono">14:00 • ОНЛАЙН</div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white border border-black p-4 flex items-center gap-4 hover:shadow-[4px_4px_0px_#000] transition-shadow">
+                                        <div class="w-10 h-10 bg-black flex items-center justify-center">
+                                            <span class="font-mono text-xs text-[#FFE600] font-bold">12/02</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-black font-bold uppercase">Вайб-Сессия</div>
+                                            <div class="text-[10px] text-[#666] font-mono">11:00 • КОМНАТА 404</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+
+                prompts: () => `
+                    <div class="max-w-[1200px] mx-auto px-10 py-10">
+                        <!-- Filters -->
+                        <div class="flex gap-0 mb-8 border-b-2 border-black">
+                            <button class="px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-wide border-r border-white">Все</button>
+                            ${['Исследование', 'Код', 'Архитектура', 'Тестирование', 'Продукт'].map(cat => `
+                                <button class="px-6 py-3 bg-white border-r border-black text-[#444] hover:bg-[#FFE600] hover:text-black text-xs font-bold uppercase tracking-wide transition-colors">${cat}</button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-0 border-t-2 border-l-2 border-black bg-white">
+                            ${prompts.map(prompt => `
+                                <div class="p-8 border-r-2 border-b-2 border-black group flex flex-col relative hover:bg-[#FAFAFA] transition-colors">
+                                    <div class="flex justify-between items-start mb-6">
+                                        <div class="flex gap-2">
+                                            ${prompt.tags ? prompt.tags.map(t => `<span class="bg-[#F0F0F0] border border-black text-[10px] text-black px-2 py-1 font-mono font-bold uppercase">${t}</span>`).join('') : ''}
+                                        </div>
+                                        <div class="flex items-center gap-1 text-[10px] text-black font-mono font-bold border border-black px-2 py-1 bg-[#FFE600]">
+                                            ${prompt.copies} КОПИЙ
+                                        </div>
+                                    </div>
+
+                                    <h3 class="text-2xl font-bold text-black mb-3 uppercase tracking-tight">${prompt.title}</h3>
+                                    <p class="text-sm text-[#444] mb-6 font-medium line-clamp-2">${prompt.desc}</p>
+                                    
+                                    <div class="text-[10px] font-mono text-[#666] font-bold mb-8 uppercase tracking-widest">${prompt.tech || ''}</div>
+
+                                    <div class="mt-auto flex items-center justify-between pt-6 border-t border-black">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 bg-black flex items-center justify-center text-[10px] font-bold text-white">
+                                                ${prompt.author.charAt(0)}
+                                            </div>
+                                            <span class="text-xs font-bold text-black uppercase">${prompt.author}</span>
+                                        </div>
+                                        
+                                        <div class="flex gap-2">
+                                            <button onclick="openPromptModal(${prompt.id})" class="btn-outline text-[10px] font-mono font-bold uppercase tracking-wider px-4 py-2">Открыть</button>
+                                            <button class="btn-primary text-[10px] font-mono font-bold uppercase tracking-wider px-4 py-2">Копировать</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `,
+
+                'rules-agents': () => `
+                    <div class="max-w-[1000px] mx-auto px-10 py-10">
+                        <div class="fixed right-10 top-20 text-[200px] font-black text-[#F0F0F0] select-none pointer-events-none -z-10 leading-none font-display uppercase">RIG</div>
+
+                        <div class="mb-12 border-b-2 border-black pb-6">
+                            <h2 class="text-4xl font-bold text-black mb-2 uppercase">Правила Cursor</h2>
+                            <p class="text-[#555] font-medium">Контекстные правила для AI-ассистентов разработки.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+                            <div class="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all cursor-pointer">
+                                <div class="flex items-start justify-between mb-6">
+                                    <span class="bg-black text-white text-[10px] font-bold px-2 py-1 font-mono uppercase">RULESET</span>
+                                    <span class="text-[10px] font-mono font-bold text-black border border-black px-2 py-1">TYPESCRIPT</span>
+                                </div>
+                                <h3 class="text-2xl font-bold text-black mb-2 uppercase">React + TypeScript</h3>
+                                <p class="text-sm text-[#444] mb-6 font-medium">Стандартные правила для функциональных компонентов и хуков.</p>
+                                <button class="w-full text-[11px] font-bold uppercase tracking-wider bg-[#F5F5F5] border border-black text-black px-4 py-3 hover:bg-[#FFE600] transition-colors">Посмотреть Правила</button>
+                            </div>
+
+                            <div class="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all cursor-pointer">
+                                <div class="flex items-start justify-between mb-6">
+                                    <span class="bg-black text-white text-[10px] font-bold px-2 py-1 font-mono uppercase">RULESET</span>
+                                    <span class="text-[10px] font-mono font-bold text-black border border-black px-2 py-1">PYTHON</span>
+                                </div>
+                                <h3 class="text-2xl font-bold text-black mb-2 uppercase">Стандарты FastAPI</h3>
+                                <p class="text-sm text-[#444] mb-6 font-medium">Pydantic v2, асинхронные паттерны и обработка ошибок.</p>
+                                <button class="w-full text-[11px] font-bold uppercase tracking-wider bg-[#F5F5F5] border border-black text-black px-4 py-3 hover:bg-[#FFE600] transition-colors">Посмотреть Правила</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-12 border-b-2 border-black pb-6">
+                            <h2 class="text-4xl font-bold text-black mb-2 uppercase">Начать Задачу</h2>
+                            <p class="text-[#555] font-mono text-sm uppercase tracking-wide">Выберите модуль для начала работы</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-white border-2 border-black p-6 flex items-center justify-between group hover:bg-[#FAFAFA]">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-14 h-14 bg-black text-white flex items-center justify-center font-mono text-xl font-bold">01</div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-black mb-1 uppercase">Агент Код-Ревью</h3>
+                                        <p class="text-sm text-[#555] font-medium">Автоматическое ревью с фокусом на безопасность и производительность.</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-mono font-bold text-black border border-black px-2 py-1 bg-[#FFE600] uppercase">АКТИВЕН</span>
+                            </div>
+
+                            <div class="bg-white border-2 border-black p-6 flex items-center justify-between group hover:bg-[#FAFAFA]">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-14 h-14 bg-white border border-black text-black flex items-center justify-center font-mono text-xl font-bold">02</div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-black mb-1 uppercase">Агент Документации</h3>
+                                        <p class="text-sm text-[#555] font-medium">Генерация и поддержка документации.</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-mono font-bold text-black border border-black px-2 py-1 bg-[#FFE600] uppercase">АКТИВЕН</span>
+                            </div>
+
+                            <div class="bg-white border-2 border-black p-6 flex items-center justify-between group hover:bg-[#FAFAFA]">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-14 h-14 bg-white border border-black text-black flex items-center justify-center font-mono text-xl font-bold">03</div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-black mb-1 uppercase">Генератор Тестов</h3>
+                                        <p class="text-sm text-[#555] font-medium">Создание юнит- и интеграционных тестов.</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-mono font-bold text-[#666] border border-[#CCC] px-2 py-1 uppercase">БЕТА</span>
+                            </div>
+                        </div>
+                    </div>
+                `,
+
+                guides: () => `
+                    <div class="max-w-[1000px] mx-auto px-10 py-10">
+                         <!-- BIG Watermark -->
+                        <div class="fixed right-10 top-20 text-[200px] font-black text-[#F0F0F0] select-none pointer-events-none -z-10 leading-none font-display uppercase">RIG</div>
+
+                        <div class="flex flex-col border-t-2 border-black">
+                            ${guides.map((guide, index) => `
+                                <div onclick="router.navigate('guide-detail', ${guide.id})" class="group py-8 border-b border-black cursor-pointer relative hover:bg-white transition-all duration-300 pl-4 pr-4 -mx-4">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div class="flex items-baseline gap-4">
+                                            <span class="font-mono text-xs font-bold text-[#888]">0${index + 1}</span>
+                                            <h3 class="text-3xl font-bold text-black uppercase group-hover:underline decoration-2 underline-offset-4">${guide.title}</h3>
+                                        </div>
+                                        <span class="font-mono text-[10px] font-bold text-black border border-black px-2 py-1 uppercase bg-[#FFE600]">${guide.category}</span>
+                                    </div>
+                                    <p class="text-base text-[#444] mb-6 max-w-2xl font-medium pl-8">${guide.desc}</p>
+                                    
+                                    <div class="flex items-center gap-8 text-[11px] font-mono font-bold text-[#666] pl-8 uppercase">
+                                        <span class="flex items-center gap-2"><svg class="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> ${guide.time} ЧТЕНИЯ</span>
+                                        <span class="flex items-center gap-2"><svg class="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> ${guide.views} ПРОСМОТРОВ</span>
+                                        <span class="text-black">— ${guide.author}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `,
+
+                'guide-detail': (id) => {
+                    const guide = guides.find(g => g.id === id);
+                    if (!guide) return `<div class="p-10 text-black font-bold text-xl uppercase">Guide not found</div>`;
+
+                    return `
+                        <div class="max-w-[800px] mx-auto px-10 py-12 pb-32">
+                            <button onclick="router.navigate('guides')" class="flex items-center gap-2 text-[10px] font-mono font-bold text-black mb-12 hover:underline uppercase tracking-wider">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                                Назад к Индексу
+                            </button>
+
+                            <div class="mb-12 border-b-2 border-black pb-8">
+                                <h1 class="text-5xl font-display font-bold text-black mb-8 leading-tight tracking-tight uppercase">${guide.title}</h1>
+                                
+                                <div class="flex items-center gap-6">
+                                    <div class="w-10 h-10 bg-black flex items-center justify-center text-[12px] font-bold text-white">
+                                        ${guide.author.charAt(0)}
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs font-bold text-black uppercase">${guide.author}</span>
+                                        <span class="text-[10px] text-[#666] font-mono uppercase font-bold">АВТОР / СОЗДАТЕЛЬ</span>
+                                    </div>
+                                    <div class="ml-auto flex gap-6 text-[10px] font-mono font-bold text-[#666] uppercase">
+                                        <span class="border border-black px-2 py-1 text-black">${guide.date}</span>
+                                        <span class="border border-black px-2 py-1 bg-[#FFE600] text-black">${guide.time} READ</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="prose prose-lg max-w-none">
+                                <p class="lead text-xl text-black font-medium mb-8">Правильная настройка окружения — это 80% успеха при работе с LLM. Этот гайд покрывает подготовку IDE, линтеры и интеграцию AI-ассистентов.</p>
+                                
+                                <h2 class="text-3xl mt-12 mb-6 text-black font-bold uppercase">1. Установка и Конфигурация</h2>
+                                <p class="mb-4">Сначала установите <code class="text-sm font-bold">Cursor</code> или плагин VS Code. Рекомендуем выделенный форк для лучшей интеграции.</p>
+                                
+                                <div class="bg-[#F0F0F0] border border-black p-6 my-8 font-mono text-sm relative">
+                                    <div class="absolute top-0 right-0 bg-black text-white text-[9px] px-2 py-1 font-bold uppercase">ТЕРМИНАЛ</div>
+                                    <div class="text-[#666] mb-2 font-bold"># Установка через brew</div>
+                                    <div class="text-black font-bold mb-4">> brew install --cask cursor</div>
+                                    
+                                    <div class="text-[#666] mb-2 font-bold"># Клонирование стартер-кита</div>
+                                    <div class="text-black font-bold">> git clone https://github.com/rig/starter-kit.git</div>
+                                </div>
+
+                                <h2 class="text-3xl mt-12 mb-6 text-black font-bold uppercase">2. Контекстные Правила (.cursorrules)</h2>
+                                <p class="mb-6">Файл <code class="text-sm font-bold">.cursorrules</code> определяет поведение AI. Критично для консистентности кода команды.</p>
+                                
+                                <blockquote class="border-l-4 border-[#FFE600] pl-6 my-8 text-xl font-display font-bold text-black not-italic bg-white p-4 shadow-[4px_4px_0px_#000] border border-black">
+                                    "Хороший промпт в .cursorrules экономит часы PR-ревью."
+                                </blockquote>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        };
+
+        
+        function openPromptModal(id) {
+            const prompt = prompts.find(p => p.id === id);
+            if (!prompt) return;
+
+            const modalContent = document.getElementById('modal-content');
+            const backdrop = document.getElementById('modal-backdrop');
+
+            modalContent.innerHTML = `
+                <!-- Header -->
+                <div class="flex items-start justify-between p-8 border-b-2 border-black bg-white">
+                    <div>
+                        <div class="flex gap-2 mb-4">
+                             ${prompt.tags ? prompt.tags.map(t => `<span class="bg-black text-white text-[10px] font-bold px-2 py-1 font-mono uppercase">${t}</span>`).join('') : ''}
+                        </div>
+                        <h2 class="text-3xl font-bold text-black uppercase tracking-tight">${prompt.title}</h2>
+                    </div>
+                    <button onclick="closeModal()" class="text-black hover:bg-[#F0F0F0] p-2 border border-transparent hover:border-black transition-all">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                
+                <!-- Body -->
+                <div class="p-8 overflow-y-auto max-h-[60vh] bg-[#FAFAFA]">
+                    <p class="text-base text-black font-medium mb-8 pb-8 border-b border-black border-dashed">${prompt.desc}</p>
+                    
+                    <div class="bg-white border border-black p-0 relative group shadow-sm">
+                        <div class="flex justify-between items-center bg-[#F0F0F0] border-b border-black px-4 py-2">
+                            <span class="text-[10px] font-mono font-bold uppercase">PROMPT_CONTENT.MD</span>
+                            <button class="text-[10px] font-mono font-bold text-black border border-black bg-white px-2 py-1 hover:bg-[#FFE600]">КОПИРОВАТЬ</button>
+                        </div>
+                        <pre class="font-mono text-[13px] leading-relaxed text-black whitespace-pre-wrap p-6 bg-white">${prompt.content}</pre>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="p-6 border-t-2 border-black bg-white flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                         <div class="w-8 h-8 bg-black flex items-center justify-center text-[10px] font-bold text-white">
+                            ${prompt.author.charAt(0)}
+                        </div>
+                        <span class="text-xs text-[#555] font-mono font-bold uppercase">ДОБАВЛЕНО ${prompt.author}</span>
+                    </div>
+                    <button class="btn-primary px-8 py-3 text-xs">ИСПОЛЬЗОВАТЬ ПРОМПТ</button>
+                </div>
+            `;
+
+            backdrop.classList.remove('hidden');
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modalContent = document.getElementById('modal-content');
+            const backdrop = document.getElementById('modal-backdrop');
+
+            backdrop.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+            }, 300);
+        }
+
+        function openJoinModal() {
+            // Store current page before opening modal
+            lastPage = router.currentPage || 'home';
+            
+            const modalContent = document.getElementById('modal-content');
+            const backdrop = document.getElementById('modal-backdrop');
+
+            modalContent.innerHTML = `
+                <!-- Header -->
+                <div class="flex items-start justify-between p-8 border-b-2 border-black bg-white">
+                    <div>
+                        <div class="flex gap-2 mb-4">
+                            <span class="bg-black text-white text-[10px] font-bold px-2 py-1 font-mono uppercase">ВКЛАД</span>
+                            <span class="bg-[#FFE600] text-black text-[10px] font-bold px-2 py-1 font-mono uppercase border border-black">СООБЩЕСТВО</span>
+                        </div>
+                        <h2 class="text-3xl font-bold text-black uppercase tracking-tight">Предложить Контент</h2>
+                        <p class="text-sm text-[#555] mt-2 font-medium">Поделитесь своим промптом, агентом, скиллом или гайдом с сообществом</p>
+                    </div>
+                    <button onclick="closeModal()" class="text-black hover:bg-[#F0F0F0] p-2 border border-transparent hover:border-black transition-all">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                
+                <!-- Body -->
+                <div class="p-8 overflow-y-auto max-h-[65vh] bg-[#FAFAFA] space-y-6">
+                    <!-- Тип контента -->
+                    <div>
+                        <label class="block text-xs font-mono font-bold uppercase tracking-wider text-black mb-3">Тип Контента</label>
+                        <div class="grid grid-cols-4 gap-3">
+                            <button onclick="selectContentType('prompt')" class="content-type-btn border-2 border-black bg-white px-4 py-3 text-xs font-bold uppercase hover:bg-[#FFE600] transition-colors" data-type="prompt">
+                                <div class="text-xl mb-1">💬</div>
+                                Промпт
+                            </button>
+                            <button onclick="selectContentType('agent')" class="content-type-btn border-2 border-black bg-white px-4 py-3 text-xs font-bold uppercase hover:bg-[#FFE600] transition-colors" data-type="agent">
+                                <div class="text-xl mb-1">🤖</div>
+                                Агент
+                            </button>
+                            <button onclick="selectContentType('skill')" class="content-type-btn border-2 border-black bg-white px-4 py-3 text-xs font-bold uppercase hover:bg-[#FFE600] transition-colors" data-type="skill">
+                                <div class="text-xl mb-1">⚡</div>
+                                Скилл
+                            </button>
+                            <button onclick="selectContentType('guide')" class="content-type-btn border-2 border-black bg-white px-4 py-3 text-xs font-bold uppercase hover:bg-[#FFE600] transition-colors" data-type="guide">
+                                <div class="text-xl mb-1">📖</div>
+                                Гайд
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Название -->
+                    <div>
+                        <label class="block text-xs font-mono font-bold uppercase tracking-wider text-black mb-2">Название</label>
+                        <input type="text" id="join-title" placeholder="Введите название..." class="w-full bg-white border-2 border-black text-black text-sm px-4 py-3 font-medium focus:outline-none focus:border-black focus:ring-2 focus:ring-[#FFE600]">
+                    </div>
+
+                    <!-- Описание -->
+                    <div>
+                        <label class="block text-xs font-mono font-bold uppercase tracking-wider text-black mb-2">Описание</label>
+                        <textarea id="join-description" rows="3" placeholder="Краткое описание вашего предложения..." class="w-full bg-white border-2 border-black text-black text-sm px-4 py-3 font-medium focus:outline-none focus:border-black focus:ring-2 focus:ring-[#FFE600] resize-none"></textarea>
+                    </div>
+
+                    <!-- Контент -->
+                    <div>
+                        <label class="block text-xs font-mono font-bold uppercase tracking-wider text-black mb-2">Контент / Код</label>
+                        <div class="bg-white border-2 border-black">
+                            <div class="bg-[#F0F0F0] border-b border-black px-4 py-2 flex justify-between items-center">
+                                <span class="text-[10px] font-mono font-bold uppercase">CONTENT.MD</span>
+                                <span class="text-[9px] font-mono text-[#666]">MARKDOWN / CODE</span>
+                            </div>
+                            <textarea id="join-content" rows="8" placeholder="Вставьте ваш промпт, код агента, или содержимое гайда..." class="w-full bg-white text-black text-sm px-4 py-3 font-mono focus:outline-none resize-none border-0"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-xs font-mono font-bold uppercase tracking-wider text-black mb-2">Email</label>
+                        <input type="email" id="join-email" placeholder="your@email.com" class="w-full bg-white border-2 border-black text-black text-sm px-4 py-3 font-medium focus:outline-none focus:border-black focus:ring-2 focus:ring-[#FFE600]">
+                    </div>
+
+                    <!-- Теги (опционально) -->
+                    <div>
+                        <label class="block text-xs font-mono font-bold uppercase tracking-wider text-black mb-2">Теги <span class="text-[#999] font-normal">(опционально)</span></label>
+                        <input type="text" id="join-tags" placeholder="разработка, python, архитектура..." class="w-full bg-white border-2 border-black text-black text-sm px-4 py-3 font-medium focus:outline-none focus:border-black focus:ring-2 focus:ring-[#FFE600]">
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="p-6 border-t-2 border-black bg-white flex justify-between items-center">
+                    <div class="text-xs text-[#666] font-mono">
+                        <span class="font-bold text-black">Примечание:</span> Все предложения проходят модерацию
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="closeModal()" class="btn-outline px-6 py-3 text-xs font-bold">Отмена</button>
+                        <button onclick="submitJoinProposal()" class="btn-primary px-8 py-3 text-xs font-bold">Отправить Предложение</button>
+                    </div>
+                </div>
+            `;
+
+            backdrop.classList.remove('hidden');
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        let selectedContentType = null;
+
+        function selectContentType(type) {
+            selectedContentType = type;
+            document.querySelectorAll('.content-type-btn').forEach(btn => {
+                btn.classList.remove('bg-[#FFE600]', 'border-4');
+                btn.classList.add('bg-white', 'border-2');
+            });
+            const selectedBtn = document.querySelector(`[data-type="${type}"]`);
+            selectedBtn.classList.add('bg-[#FFE600]', 'border-4');
+            selectedBtn.classList.remove('border-2');
+        }
+
+        let lastPage = 'home';
+
+        function submitJoinProposal() {
+            const title = document.getElementById('join-title').value;
+            const description = document.getElementById('join-description').value;
+            const content = document.getElementById('join-content').value;
+            const email = document.getElementById('join-email').value;
+            const tags = document.getElementById('join-tags').value;
+
+            if (!selectedContentType) {
+                showErrorMessage('Пожалуйста, выберите тип контента');
+                return;
+            }
+
+            if (!title || !description || !content || !email) {
+                showErrorMessage('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+
+            // Simple email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showErrorMessage('Пожалуйста, введите корректный email');
+                return;
+            }
+
+            const proposal = {
+                type: selectedContentType,
+                title,
+                description,
+                content,
+                email,
+                tags: tags.split(',').map(t => t.trim()).filter(t => t),
+                timestamp: new Date().toISOString()
+            };
+
+            console.log('Предложение отправлено:', proposal);
+
+            // Success message with consistent design
+            showSuccessMessage();
+        }
+
+        function showErrorMessage(message) {
+            const modalContent = document.getElementById('modal-content');
+            const errorBox = document.createElement('div');
+            errorBox.className = 'fixed top-8 left-1/2 -translate-x-1/2 bg-white border-2 border-black px-6 py-3 shadow-[4px_4px_0px_#000] z-[60] flex items-center gap-3';
+            errorBox.innerHTML = `
+                <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-mono text-xs font-bold text-black uppercase">${message}</span>
+            `;
+            document.body.appendChild(errorBox);
+            setTimeout(() => errorBox.remove(), 3000);
+        }
+
+        function showSuccessMessage() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <!-- Header -->
+                <div class="flex items-start justify-between p-8 border-b-2 border-black bg-white">
+                    <div>
+                        <div class="flex gap-2 mb-4">
+                            <span class="bg-[#FFE600] text-black text-[10px] font-bold px-2 py-1 font-mono uppercase border border-black">УСПЕХ</span>
+                        </div>
+                        <h2 class="text-3xl font-bold text-black uppercase tracking-tight">Предложение Отправлено!</h2>
+                    </div>
+                    <button onclick="closeModalAndReturn()" class="text-black hover:bg-[#F0F0F0] p-2 border border-transparent hover:border-black transition-all">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                
+                <!-- Body -->
+                <div class="p-16 bg-[#FAFAFA] text-center flex flex-col items-center">
+                    <div class="w-24 h-24 bg-[#FFE600] border-2 border-black mx-auto mb-8 flex items-center justify-center shadow-[6px_6px_0px_#000]">
+                        <svg class="w-12 h-12 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-black mb-4 uppercase tracking-tight">Отлично!</h3>
+                    <p class="text-base text-[#555] mb-8 font-medium max-w-md leading-relaxed">
+                        Спасибо за ваш вклад в сообщество RIG. Мы рассмотрим ваше предложение и свяжемся с вами по указанному email.
+                    </p>
+
+                    <div class="bg-white border-2 border-black p-6 mb-8 w-full max-w-md">
+                        <div class="text-xs font-mono font-bold text-black uppercase tracking-wider mb-2">Что дальше?</div>
+                        <ul class="text-sm text-[#444] font-medium space-y-2 text-left">
+                            <li class="flex items-start gap-2">
+                                <span class="text-[#FFE600] font-bold">→</span>
+                                <span>Модерация в течение 24-48 часов</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-[#FFE600] font-bold">→</span>
+                                <span>Уведомление на email о статусе</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-[#FFE600] font-bold">→</span>
+                                <span>Публикация в библиотеке RIG</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="p-6 border-t-2 border-black bg-white flex justify-center">
+                    <button onclick="closeModalAndReturn()" class="btn-primary px-10 py-3 text-xs font-bold">
+                        Вернуться к Платформе
+                    </button>
+                </div>
+            `;
+        }
+
+        function closeModalAndReturn() {
+            closeModal();
+            // Return to the page that was active before opening the modal
+            if (router.currentPage) {
+                router.navigate(router.currentPage);
+            }
+        }
+
+        document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-backdrop') closeModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            router.navigate('home');
+        });
+
+    </script>
+
+
+</body></html>
