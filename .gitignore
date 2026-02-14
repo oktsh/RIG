@@ -4,6 +4,8 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+.pnp.*
+.yarn/
 
 # Build outputs
 dist/
@@ -11,6 +13,7 @@ build/
 *.egg-info/
 .next/
 out/
+*.tsbuildinfo
 
 # Environment
 .env
@@ -19,6 +22,7 @@ out/
 *.pem
 *.key
 *.crt
+.envrc
 
 # IDE
 .vscode/
@@ -26,22 +30,46 @@ out/
 *.swp
 *.swo
 *~
+.cursor/
+
+# Claude Code
+.claude/
+!.claude/agents/
+.claude/plans/
+.claude/context/
+.claude/projects/
 
 # OS
 .DS_Store
 Thumbs.db
+*.DS_Store
+desktop.ini
 
 # Logs
 *.log
 logs/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Testing
 coverage/
 .nyc_output/
 .pytest_cache/
+*.cover
+.hypothesis/
+htmlcov/
 
 # Temporary
 tmp/
 temp/
 *.tmp
+*.bak
+*.swp
+*~.nib
+
+# Package manager lock files (optional - uncomment if needed)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
