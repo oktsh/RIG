@@ -1,9 +1,16 @@
+"use client";
+
 import RulesetCard from "@/components/rules-agents/RulesetCard";
 import AgentListItem from "@/components/rules-agents/AgentListItem";
-import { rulesets } from "@/data/rulesets";
-import { agents } from "@/data/agents";
+import { rulesets as staticRulesets } from "@/data/rulesets";
+import { agents as staticAgents } from "@/data/agents";
+import { useApi } from "@/lib/useApi";
+import type { Ruleset, Agent } from "@/types";
 
 export default function RulesAgentsPage() {
+  const { data: rulesets } = useApi<Ruleset[]>("/api/rulesets", staticRulesets);
+  const { data: agents } = useApi<Agent[]>("/api/agents", staticAgents);
+
   return (
     <div className="max-w-[1000px] mx-auto px-10 py-10">
       <div className="fixed right-10 top-20 text-[200px] font-black text-[#F0F0F0] select-none pointer-events-none -z-10 leading-none font-display uppercase">

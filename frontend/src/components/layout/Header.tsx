@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useModal } from "@/components/modals/ModalProvider";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 interface HeaderConfig {
   title: string;
@@ -62,6 +64,7 @@ function getHeaderConfig(pathname: string): HeaderConfig {
 export default function Header() {
   const pathname = usePathname();
   const { openJoinModal } = useModal();
+  const { user, isAuthenticated, logout, hasRole } = useAuth();
   const config = getHeaderConfig(pathname);
 
   return (
@@ -85,15 +88,49 @@ export default function Header() {
             />
           </div>
         )}
-        <button className="btn-outline px-6 py-3 text-xs font-bold">
-          Войти
-        </button>
-        <button
-          onClick={openJoinModal}
-          className="btn-primary px-6 py-3 text-xs font-bold"
-        >
-          JOIN RIG
-        </button>
+
+        {isAuthenticated ? (
+          <>
+            {hasRole("ADMIN") && (
+              <Link
+                href="/admin/users"
+                className="btn-outline px-4 py-3 text-xs font-bold"
+              >
+                Админ
+              </Link>
+            )}
+            <div className="flex items-center gap-3 border border-black px-4 py-2 bg-white">
+              <div className="w-2 h-2 bg-[#B4FF00] border border-black" />
+              <span className="font-mono text-[11px] font-bold uppercase">
+                {user?.name}
+              </span>
+              <span className="font-mono text-[9px] text-[#666] uppercase border-l border-gray-300 pl-3">
+                {user?.role}
+              </span>
+            </div>
+            <button
+              onClick={logout}
+              className="btn-outline px-4 py-3 text-xs font-bold"
+            >
+              Выйти
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/login"
+              className="btn-outline px-6 py-3 text-xs font-bold"
+            >
+              Войти
+            </Link>
+            <button
+              onClick={openJoinModal}
+              className="btn-primary px-6 py-3 text-xs font-bold"
+            >
+              JOIN RIG
+            </button>
+          </>
+        )}
       </div>
     </header>
   );

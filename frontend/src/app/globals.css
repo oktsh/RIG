@@ -206,7 +206,9 @@ h1, h2, h3, h4, h5, h6 {
 /* ===========================
    Input overrides
    =========================== */
-input[type="text"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   background: transparent !important;
   border: 1px solid #000 !important;
   border-radius: 0 !important;

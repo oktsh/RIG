@@ -1,62 +1,160 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import UserTable from "@/components/admin/UserTable";
-import { users as initialUsers } from "@/data/users";
+import { users as staticUsers } from "@/data/users";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { User, UserRole } from "@/types";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const { token } = useAuth();
+  const [users, setUsers] = useState<User[]>(staticUsers);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    password: "",
     role: "USER" as UserRole,
   });
   const [searchTerm, setSearchTerm] = useState("");
 
+  const fetchUsers = useCallback(() => {
+    if (!token) return;
+    fetch(`${API_BASE}/api/users`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed");
+        return res.json();
+      })
+      .then((data) => {
+        setUsers(
+          data.map((u: { id: number; name: string; email: string; role: string; is_active: boolean }) => ({
+            id: String(u.id),
+            name: u.name,
+            email: u.email,
+            role: u.role as UserRole,
+            status: u.is_active ? "ACTIVE" : "INACTIVE",
+          })),
+        );
+      })
+      .catch(() => {
+        // Keep static fallback
+      });
+  }, [token]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
   const openAddUserModal = () => {
-    setFormData({ name: "", email: "", role: "USER" });
+    setFormData({ name: "", email: "", password: "", role: "USER" });
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ name: "", email: "", role: "USER" });
+    setFormData({ name: "", email: "", password: "", role: "USER" });
   };
 
   const saveUser = () => {
     if (!formData.name || !formData.email) return;
 
-    const newUser: User = {
-      id: `RG-${Math.floor(Math.random() * 900) + 100}`,
-      name: formData.name,
-      email: formData.email,
-      role: formData.role,
-      status: "ACTIVE",
-    };
-
-    setUsers([...users, newUser]);
-    closeModal();
+    if (token) {
+      fetch(`${API_BASE}/api/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password || "changeme123",
+          role: formData.role,
+        }),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed");
+          return res.json();
+        })
+        .then(() => {
+          fetchUsers();
+          closeModal();
+        })
+        .catch(() => {
+          const newUser: User = {
+            id: `RG-${Math.floor(Math.random() * 900) + 100}`,
+            name: formData.name,
+            email: formData.email,
+            role: formData.role,
+            status: "ACTIVE",
+          };
+          setUsers([...users, newUser]);
+          closeModal();
+        });
+    } else {
+      const newUser: User = {
+        id: `RG-${Math.floor(Math.random() * 900) + 100}`,
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        status: "ACTIVE",
+      };
+      setUsers([...users, newUser]);
+      closeModal();
+    }
   };
 
   const deleteUser = (id: string) => {
     if (window.confirm("УДАЛИТЬ ПОЛЬЗОВАТЕЛЯ ИЗ БАЗЫ?")) {
-      setUsers(users.filter((u) => u.id !== id));
+      if (token) {
+        fetch(`${API_BASE}/api/users/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then(() => fetchUsers())
+          .catch(() => {
+            setUsers(users.filter((u) => u.id !== id));
+          });
+      } else {
+        setUsers(users.filter((u) => u.id !== id));
+      }
     }
   };
 
   const changeRole = (id: string) => {
     const roles: UserRole[] = ["USER", "MODERATOR", "ADMIN"];
-    setUsers(
-      users.map((user) => {
-        if (user.id === id) {
-          const currentIndex = roles.indexOf(user.role);
-          return { ...user, role: roles[(currentIndex + 1) % roles.length] };
-        }
-        return user;
-      }),
-    );
+    const user = users.find((u) => u.id === id);
+    if (!user) return;
+    const nextRole = roles[(roles.indexOf(user.role) + 1) % roles.length];
+
+    if (token) {
+      fetch(`${API_BASE}/api/users/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role: nextRole }),
+      })
+        .then(() => fetchUsers())
+        .catch(() => {
+          setUsers(
+            users.map((u) =>
+              u.id === id ? { ...u, role: nextRole } : u,
+            ),
+          );
+        });
+    } else {
+      setUsers(
+        users.map((u) =>
+          u.id === id ? { ...u, role: nextRole } : u,
+        ),
+      );
+    }
   };
 
   const filteredUsers = users.filter(
@@ -139,6 +237,20 @@ export default function AdminUsersPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
+                  className="w-full border-2 border-black p-3 text-sm font-medium focus:bg-[#FFE600]/10 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold uppercase mb-1 font-mono">
+                  Пароль
+                </label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  placeholder="changeme123"
                   className="w-full border-2 border-black p-3 text-sm font-medium focus:bg-[#FFE600]/10 outline-none"
                 />
               </div>

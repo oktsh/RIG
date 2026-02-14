@@ -1,8 +1,14 @@
+"use client";
+
 import CategoryFilter from "@/components/prompts/CategoryFilter";
 import PromptCard from "@/components/prompts/PromptCard";
-import { prompts } from "@/data/prompts";
+import { prompts as staticPrompts } from "@/data/prompts";
+import { useApi } from "@/lib/useApi";
+import type { Prompt } from "@/types";
 
 export default function PromptsPage() {
+  const { data: prompts } = useApi<Prompt[]>("/api/prompts", staticPrompts);
+
   return (
     <div className="max-w-[1200px] mx-auto px-10 py-10">
       <CategoryFilter />
