@@ -1,32 +1,37 @@
-# RIG - Personal Project
+# RIG - Corporate Knowledge Base for AI-Assisted Development
 
-> Project-specific configuration for AI dev assistants.
-> Inherits from `/Users/oktsh/Documents/ai-dev/CLAUDE.md`
+> Internal platform for vibe-coding teams: prompts, guides, rules, agents.
 
 ---
 
 ## Project Info
 
 **Name:** RIG
-**Type:** Personal Product
-**Status:** New / In Planning
+**Type:** Internal Corporate Platform
+**Status:** MVP Implementation
 
 **Description:**
-[TODO: Add project description]
+RIG is a corporate knowledge base for AI-assisted development teams. It contains curated prompts, guides, context rules for AI assistants, and community contribution features. Neo-brutalist design system with 0 border-radius, offset box-shadows, and heavy black borders.
 
 ---
 
 ## Stack
 
 ### Technologies
-- **Framework:** [TODO: e.g., Next.js, FastAPI, React Native]
-- **Language:** [TODO: e.g., TypeScript, Python, Rust]
-- **Database:** [TODO: e.g., PostgreSQL, MongoDB, SQLite]
-- **Infrastructure:** [TODO: e.g., Docker, Vercel, AWS]
+- **Frontend:** Next.js 15 (App Router), React 19, TypeScript 5
+- **Backend:** FastAPI (Python), SQLAlchemy 2.0
+- **Database:** SQLite (via SQLAlchemy, migration-ready for PostgreSQL)
+- **Styling:** Tailwind CSS v3, custom neo-brutalist design system
+- **Auth:** HMAC-SHA256 JWT, PBKDF2 password hashing
+- **Fonts:** Space Grotesk (display), Manrope (body), IBM Plex Mono (code)
 
 ### Key Packages
 ```
-[TODO: List main dependencies]
+# Frontend
+next@15, react@19, tailwindcss@3, clsx, tailwind-merge, gray-matter
+
+# Backend
+fastapi, uvicorn, sqlalchemy, alembic, python-dotenv
 ```
 
 ---
@@ -34,17 +39,18 @@
 ## Commands
 
 ```bash
-# Development
-npm run dev          # Start dev server
+# Frontend (from /frontend)
+cd frontend
+npm run dev          # Start dev server on :3000
 npm run build        # Production build
-npm run test         # Run tests
-npm run lint         # Run linter
-npm run typecheck    # TypeScript validation
+npm run lint         # ESLint
 
-# Database (if applicable)
-npm run db:migrate   # Run migrations
-npm run db:seed      # Seed database
-npm run db:reset     # Reset database
+# Backend (from /backend)
+cd backend
+pip install -r requirements.txt   # Install deps
+uvicorn app.main:app --reload     # Start API on :8000
+
+# First run seeds admin user (admin@rig.ai / admin123) + all content
 ```
 
 ---
@@ -53,82 +59,97 @@ npm run db:reset     # Reset database
 
 ```
 RIG/
-├── CLAUDE.md              # This file
-├── specs/                 # Feature specs, plans, tasks
-├── src/                   # Source code
-├── tests/                 # Test files
-├── docs/                  # Documentation
-└── [TODO: Add structure]
+├── CLAUDE.md
+├── frontend/                    # Next.js 15 application
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── (public)/       # Public pages (sidebar + header shell)
+│   │   │   │   ├── page.tsx              # Home
+│   │   │   │   ├── dashboard/page.tsx
+│   │   │   │   ├── content/page.tsx      # Publications management
+│   │   │   │   ├── prompts/page.tsx
+│   │   │   │   ├── guides/page.tsx
+│   │   │   │   ├── guides/[id]/page.tsx
+│   │   │   │   └── rules-agents/page.tsx
+│   │   │   ├── admin/          # Admin panel (separate sidebar)
+│   │   │   │   ├── layout.tsx
+│   │   │   │   └── users/page.tsx
+│   │   │   └── api/proposals/route.ts
+│   │   ├── components/
+│   │   │   ├── layout/         # AppShell, Sidebar, Header, AdminSidebar
+│   │   │   ├── ui/             # Button, Card, Tag, Modal, CopyButton, StatusBadge
+│   │   │   ├── modals/         # ModalProvider, PromptModal, JoinModal, SuccessModal
+│   │   │   ├── home/           # HeroSection, StarterKitCard, QuickAccessGrid
+│   │   │   ├── dashboard/      # ActionCard, TeamTaskCard, EventCard
+│   │   │   ├── prompts/        # PromptCard, CategoryFilter
+│   │   │   ├── guides/         # GuideListItem
+│   │   │   ├── rules-agents/   # RulesetCard, AgentListItem
+│   │   │   ├── content/        # StatsBar, ContentCard, ContentFilter, CreateContentModal
+│   │   │   └── admin/          # UserTable
+│   │   ├── data/               # Static TypeScript data (prompts, guides, etc.)
+│   │   ├── types/index.ts      # All TypeScript types
+│   │   └── lib/                # utils.ts (cn), api.ts (fetch wrapper)
+│   └── tailwind.config.ts
+│
+├── backend/                     # FastAPI application
+│   ├── app/
+│   │   ├── main.py             # App entry, CORS, router registration, startup seed
+│   │   ├── config.py           # Settings from env vars
+│   │   ├── database.py         # SQLAlchemy engine + session (SQLite)
+│   │   ├── models/
+│   │   │   ├── db.py           # ORM models (User, Prompt, Guide, Agent, Ruleset, Proposal)
+│   │   │   └── schemas.py      # Pydantic request/response schemas
+│   │   ├── routers/            # auth, users, prompts, guides, agents, rulesets, proposals
+│   │   ├── services/           # auth (JWT, password), seed (initial data)
+│   │   └── middleware/auth.py  # JWT verification, role-based access
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── react-app-4.js              # Prototype reference (public pages)
+├── react-app-5.js              # Prototype reference (publications)
+└── react-app-6.js              # Prototype reference (admin panel)
 ```
 
 ---
 
-## Patterns
+## Roles
 
-### Code Organization
-- [TODO: Define module/component conventions]
-- [TODO: Define naming conventions]
-
-### State Management
-- [TODO: Define state management approach]
-
-### API / Data Layer
-- [TODO: Define API conventions]
-
-### Testing
-- [TODO: Define testing patterns]
+- **USER**: View public content, create/edit own content (requires approval by default)
+- **MODERATOR**: Review and approve/reject pending content
+- **ADMIN**: Full control, user management, direct publish
 
 ---
 
-## Rules
+## Design System
 
-### Do's ✅
-- [TODO: Project-specific best practices]
-- Follow workspace-level CLAUDE.md rules
-- Use spec-driven development for major features
-- Keep commits atomic and well-described
-
-### Don'ts ❌
-- [TODO: Project-specific anti-patterns]
-- Don't commit secrets or credentials
-- Don't skip tests for critical paths
-- Don't mix concerns in single module
+- Neo-brutalist: `border-radius: 0`, `box-shadow: Npx Npx 0px #000`
+- Colors: `#E5E5E5` (bg), `#000` (panels), `#F0F0F0` (cards), `#FFE600` (accent)
+- Status badges: `#B4FF00` (published), `#DDD` (draft), `#FFE600` (pending)
+- All text uppercase where design calls for it
+- Logo animation: `colorShift` keyframes (yellow -> lime -> cyan -> blue -> purple)
 
 ---
 
-## Development Workflow
+## API Endpoints
 
-### Feature Development
-1. **Spec** - Use `spec-writer` agent → `specs/N-name/spec.md`
-2. **Plan** - Use `spec-planner` agent → `specs/N-name/plan.md`
-3. **Tasks** - Use `task-breakdown` agent → `specs/N-name/tasks.md`
-4. **Implement** - Use domain agents (TDD)
-5. **Review** - Use `code-reviewer` agent
-6. **Validate** - Use `tech-lead` agent
-7. **Ship** - Commit + push
+```
+POST   /api/auth/login          # Login, returns JWT
+GET    /api/auth/me             # Current user info
 
-### Quick Changes
-For low-risk changes (typos, small fixes):
-- Just do it → verify → commit
+GET    /api/prompts             # Public, published only
+POST   /api/prompts             # Auth required
+GET    /api/guides              # Public, published only
+POST   /api/guides              # Auth required
+GET    /api/agents              # Public
+GET    /api/rulesets             # Public
 
----
+POST   /api/proposals           # Public (community submissions)
+GET    /api/proposals           # Admin/Moderator only
 
-## Notes
+GET    /api/users               # Admin only
+POST   /api/users               # Admin only
+PATCH  /api/users/:id           # Admin only
+DELETE /api/users/:id           # Admin only
 
-- **Initialized:** [Current Date]
-- **Last Updated:** [Current Date]
-- **Primary Developer:** [Your Name]
-
----
-
-## Next Steps
-
-1. [ ] Define stack (framework, language, database)
-2. [ ] Set up initial project structure
-3. [ ] Configure development environment
-4. [ ] Create first feature spec
-5. [ ] Implement MVP
-
----
-
-_This CLAUDE.md follows the workspace template from `/Users/oktsh/Documents/ai-dev/_hub/templates/`_
+GET    /api/health              # Health check
+```
