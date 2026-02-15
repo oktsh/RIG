@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.db import Agent
 from app.models.schemas import AgentCreate, AgentResponse, PaginatedAgents
 from app.middleware.auth import get_current_user
+from app.services.agent_service import agent_service
 from app.utils.pagination import paginate
 
 router = APIRouter(prefix="/api/agents", tags=["agents"])
@@ -17,16 +17,13 @@ def list_agents(
     limit: int = 20,
     db: Session = Depends(get_db),
 ):
-    query = db.query(Agent)
-    if search:
-        term = f"%{search}%"
-        query = query.filter(Agent.title.ilike(term) | Agent.desc.ilike(term))
+    query = agent_service.search(db, search)
     return paginate(query, page, limit)
 
 
 @router.get("/{agent_id}", response_model=AgentResponse)
 def get_agent(agent_id: int, db: Session = Depends(get_db)):
-    agent = db.query(Agent).filter(Agent.id == agent_id).first()
+    agent = agent_service.get(db, agent_id)
     if not agent:
         raise HTTPException(status_code=404, detail="Agent not found")
     return agent
@@ -38,14 +35,4 @@ def create_agent(
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    agent = Agent(
-        title=data.title,
-        desc=data.desc,
-        number=data.number,
-        status=data.status,
-        author_id=user.id,
-    )
-    db.add(agent)
-    db.commit()
-    db.refresh(agent)
-    return agent
+    return agent_service.create_agent(db, data.model_dump(), user)

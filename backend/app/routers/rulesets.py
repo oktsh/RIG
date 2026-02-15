@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.db import Ruleset
 from app.models.schemas import RulesetCreate, RulesetResponse, PaginatedRulesets
 from app.middleware.auth import get_current_user
+from app.services.ruleset_service import ruleset_service
 from app.utils.pagination import paginate
 
 router = APIRouter(prefix="/api/rulesets", tags=["rulesets"])
@@ -17,16 +17,13 @@ def list_rulesets(
     limit: int = 20,
     db: Session = Depends(get_db),
 ):
-    query = db.query(Ruleset)
-    if search:
-        term = f"%{search}%"
-        query = query.filter(Ruleset.title.ilike(term) | Ruleset.desc.ilike(term))
+    query = ruleset_service.search(db, search)
     return paginate(query, page, limit)
 
 
 @router.get("/{ruleset_id}", response_model=RulesetResponse)
 def get_ruleset(ruleset_id: int, db: Session = Depends(get_db)):
-    ruleset = db.query(Ruleset).filter(Ruleset.id == ruleset_id).first()
+    ruleset = ruleset_service.get(db, ruleset_id)
     if not ruleset:
         raise HTTPException(status_code=404, detail="Ruleset not found")
     return ruleset
@@ -38,14 +35,4 @@ def create_ruleset(
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    ruleset = Ruleset(
-        title=data.title,
-        desc=data.desc,
-        language=data.language,
-        content=data.content,
-        author_id=user.id,
-    )
-    db.add(ruleset)
-    db.commit()
-    db.refresh(ruleset)
-    return ruleset
+    return ruleset_service.create_ruleset(db, data.model_dump(), user)

@@ -4,18 +4,23 @@ import json
 import base64
 from datetime import datetime, timedelta, timezone
 
+from passlib.context import CryptContext
+
 from app.config import settings
 
 
+# Password hashing context using bcrypt with automatic salt generation
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
 def hash_password(password: str) -> str:
-    salt = hashlib.sha256(settings.JWT_SECRET.encode()).hexdigest()[:16]
-    return hashlib.pbkdf2_hmac(
-        "sha256", password.encode(), salt.encode(), 100000
-    ).hex()
+    """Hash a password using bcrypt with a unique random salt."""
+    return pwd_context.hash(password)
 
 
 def verify_password(password: str, hashed: str) -> bool:
-    return hash_password(password) == hashed
+    """Verify a password against a bcrypt hash."""
+    return pwd_context.verify(password, hashed)
 
 
 def _b64encode(data: bytes) -> str:

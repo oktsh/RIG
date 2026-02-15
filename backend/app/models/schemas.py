@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 # Auth
@@ -15,10 +15,19 @@ class TokenResponse(BaseModel):
 
 # User
 class UserCreate(BaseModel):
-    name: str
-    email: str
-    password: str
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=100)
     role: str = "USER"
+
+    @field_validator('name', 'email', mode='before')
+    @classmethod
+    def strip_whitespace(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not v.strip():
+            raise ValueError('Cannot be empty or whitespace')
+        return v.strip()
 
 
 class UserUpdate(BaseModel):
@@ -41,11 +50,32 @@ class UserResponse(BaseModel):
 
 # Prompt
 class PromptCreate(BaseModel):
-    title: str
-    desc: str | None = None
-    tags: list[str] = []
+    title: str = Field(..., min_length=3, max_length=200)
+    desc: str | None = Field(default=None, max_length=500)
+    tags: list[str] = Field(default=[], max_items=10)
     tech: str | None = None
     content: str | None = None
+
+    @field_validator('title', mode='before')
+    @classmethod
+    def strip_title(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not v.strip():
+            raise ValueError('Title cannot be empty or whitespace')
+        return v.strip()
+
+    @field_validator('content', mode='before')
+    @classmethod
+    def validate_content(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        stripped = v.strip()
+        if len(stripped) < 10:
+            raise ValueError('Content must be at least 10 characters')
+        if len(stripped) > 50000:
+            raise ValueError('Content must be at most 50000 characters')
+        return stripped
 
 
 class PromptUpdate(BaseModel):
@@ -74,11 +104,32 @@ class PromptResponse(BaseModel):
 
 # Guide
 class GuideCreate(BaseModel):
-    title: str
-    desc: str | None = None
-    category: str | None = None
-    time: str | None = None
+    title: str = Field(..., min_length=3, max_length=200)
+    desc: str | None = Field(default=None, max_length=500)
+    category: str | None = Field(default=None, max_length=50)
+    time: str | None = Field(default=None, max_length=20)
     content: str | None = None
+
+    @field_validator('title', mode='before')
+    @classmethod
+    def strip_title(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not v.strip():
+            raise ValueError('Title cannot be empty or whitespace')
+        return v.strip()
+
+    @field_validator('content', mode='before')
+    @classmethod
+    def validate_content(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        stripped = v.strip()
+        if len(stripped) < 10:
+            raise ValueError('Content must be at least 10 characters')
+        if len(stripped) > 100000:
+            raise ValueError('Content must be at most 100000 characters')
+        return stripped
 
 
 class GuideUpdate(BaseModel):
@@ -108,10 +159,19 @@ class GuideResponse(BaseModel):
 
 # Agent
 class AgentCreate(BaseModel):
-    title: str
-    desc: str | None = None
-    number: str | None = None
+    title: str = Field(..., min_length=3, max_length=200)
+    desc: str | None = Field(default=None, max_length=500)
+    number: str | None = Field(default=None, max_length=10)
     status: str = "active"
+
+    @field_validator('title', mode='before')
+    @classmethod
+    def strip_title(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not v.strip():
+            raise ValueError('Title cannot be empty or whitespace')
+        return v.strip()
 
 
 class AgentResponse(BaseModel):
@@ -127,10 +187,31 @@ class AgentResponse(BaseModel):
 
 # Ruleset
 class RulesetCreate(BaseModel):
-    title: str
-    desc: str | None = None
-    language: str | None = None
+    title: str = Field(..., min_length=3, max_length=200)
+    desc: str | None = Field(default=None, max_length=500)
+    language: str | None = Field(default=None, max_length=50)
     content: str | None = None
+
+    @field_validator('title', mode='before')
+    @classmethod
+    def strip_title(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not v.strip():
+            raise ValueError('Title cannot be empty or whitespace')
+        return v.strip()
+
+    @field_validator('content', mode='before')
+    @classmethod
+    def validate_content(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        stripped = v.strip()
+        if len(stripped) < 10:
+            raise ValueError('Content must be at least 10 characters')
+        if len(stripped) > 100000:
+            raise ValueError('Content must be at most 100000 characters')
+        return stripped
 
 
 class RulesetResponse(BaseModel):
@@ -146,12 +227,21 @@ class RulesetResponse(BaseModel):
 
 # Proposal
 class ProposalCreate(BaseModel):
-    type: str
-    title: str
-    description: str
-    content: str
-    email: str
-    tags: list[str] = []
+    type: str = Field(..., min_length=1, max_length=50)
+    title: str = Field(..., min_length=3, max_length=200)
+    description: str = Field(..., min_length=10, max_length=1000)
+    content: str = Field(..., min_length=10, max_length=50000)
+    email: EmailStr
+    tags: list[str] = Field(default=[], max_items=10)
+
+    @field_validator('title', mode='before')
+    @classmethod
+    def strip_title(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not v.strip():
+            raise ValueError('Title cannot be empty or whitespace')
+        return v.strip()
 
 
 class ProposalResponse(BaseModel):

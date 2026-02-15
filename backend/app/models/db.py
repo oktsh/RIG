@@ -9,10 +9,12 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     JSON,
+    Enum as SQLEnum,
 )
 from sqlalchemy.orm import relationship
 
 from app.database import Base
+from app.models.enums import UserRole, ContentStatus, AgentStatus, ProposalStatus
 
 
 class User(Base):
@@ -22,7 +24,7 @@ class User(Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     name = Column(String(255), nullable=False)
-    role = Column(String(20), nullable=False, default="USER")  # ADMIN, MODERATOR, USER
+    role = Column(SQLEnum(UserRole), nullable=False, default=UserRole.USER)
     requires_approval = Column(Boolean, default=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -45,7 +47,7 @@ class Prompt(Base):
     tags = Column(JSON, default=list)
     tech = Column(String(255))
     content = Column(Text)
-    status = Column(String(20), default="draft")  # draft, pending, published, rejected
+    status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -65,7 +67,7 @@ class Guide(Base):
     views = Column(String(20), default="0")
     date = Column(String(50))
     content = Column(Text)
-    status = Column(String(20), default="draft")
+    status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -80,8 +82,8 @@ class Agent(Base):
     title = Column(String(255), nullable=False)
     desc = Column(Text)
     author_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    status = Column(String(20), default="active")  # active, beta, inactive
-    content_status = Column(String(20), default="draft")
+    status = Column(SQLEnum(AgentStatus), default=AgentStatus.ACTIVE)
+    content_status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -97,7 +99,7 @@ class Ruleset(Base):
     language = Column(String(100))
     author_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     content = Column(Text)
-    content_status = Column(String(20), default="draft")
+    content_status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -114,6 +116,6 @@ class Proposal(Base):
     content = Column(Text)
     email = Column(String(255), nullable=False)
     tags = Column(JSON, default=list)
-    status = Column(String(20), default="pending")  # pending, approved, rejected
+    status = Column(SQLEnum(ProposalStatus), default=ProposalStatus.PENDING)
     reviewer_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)

@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.db import Prompt, User
+from app.models.enums import ContentStatus, UserRole
 from app.models.schemas import PromptCreate, PromptUpdate, PromptResponse, PaginatedPrompts
 from app.middleware.auth import get_current_user, require_role
+from app.services.prompt_service import prompt_service
 from app.utils.pagination import paginate
 
 router = APIRouter(prefix="/api/prompts", tags=["prompts"])
@@ -17,10 +19,7 @@ def list_prompts(
     limit: int = 20,
     db: Session = Depends(get_db),
 ):
-    query = db.query(Prompt).filter(Prompt.status == "published")
-    if search:
-        term = f"%{search}%"
-        query = query.filter(Prompt.title.ilike(term) | Prompt.desc.ilike(term))
+    query = prompt_service.search(db, search, status=ContentStatus.PUBLISHED)
     query = query.order_by(Prompt.created_at.desc())
     return paginate(query, page, limit)
 
@@ -34,19 +33,14 @@ def list_moderation_prompts(
     db: Session = Depends(get_db),
     _: User = Depends(require_role("ADMIN", "MODERATOR")),
 ):
-    query = db.query(Prompt)
-    if status != "all":
-        query = query.filter(Prompt.status == status)
-    if search:
-        term = f"%{search}%"
-        query = query.filter(Prompt.title.ilike(term) | Prompt.desc.ilike(term))
+    query = prompt_service.search(db, search, status=status if status != "all" else None)
     query = query.order_by(Prompt.created_at.desc())
     return paginate(query, page, limit)
 
 
 @router.get("/{prompt_id}", response_model=PromptResponse)
 def get_prompt(prompt_id: int, db: Session = Depends(get_db)):
-    prompt = db.query(Prompt).filter(Prompt.id == prompt_id).first()
+    prompt = prompt_service.get(db, prompt_id)
     if not prompt:
         raise HTTPException(status_code=404, detail="Prompt not found")
     return prompt
@@ -58,20 +52,7 @@ def create_prompt(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    prompt = Prompt(
-        title=data.title,
-        desc=data.desc,
-        tags=data.tags,
-        tech=data.tech,
-        content=data.content,
-        author_id=user.id,
-        author_name=user.name,
-        status="pending" if user.requires_approval else "published",
-    )
-    db.add(prompt)
-    db.commit()
-    db.refresh(prompt)
-    return prompt
+    return prompt_service.create_prompt(db, data.model_dump(), user)
 
 
 @router.put("/{prompt_id}", response_model=PromptResponse)
@@ -81,19 +62,9 @@ def update_prompt(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    prompt = db.query(Prompt).filter(Prompt.id == prompt_id).first()
+    prompt = prompt_service.update_prompt(db, prompt_id, data.model_dump(exclude_unset=True), user)
     if not prompt:
-        raise HTTPException(status_code=404, detail="Prompt not found")
-    if prompt.author_id != user.id and user.role != "ADMIN":
-        raise HTTPException(status_code=403, detail="Not authorized")
-
-    for field, value in data.model_dump(exclude_unset=True).items():
-        if field == "status" and user.role != "ADMIN":
-            continue
-        setattr(prompt, field, value)
-
-    db.commit()
-    db.refresh(prompt)
+        raise HTTPException(status_code=404, detail="Prompt not found or not authorized")
     return prompt
 
 
@@ -104,10 +75,7 @@ def update_prompt_status(
     db: Session = Depends(get_db),
     _: User = Depends(require_role("ADMIN", "MODERATOR")),
 ):
-    prompt = db.query(Prompt).filter(Prompt.id == prompt_id).first()
+    prompt = prompt_service.update_status(db, prompt_id, status)
     if not prompt:
         raise HTTPException(status_code=404, detail="Prompt not found")
-    prompt.status = status
-    db.commit()
-    db.refresh(prompt)
     return prompt

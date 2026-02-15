@@ -6,3 +6,6 @@ alembic>=1.14.0
 python-dotenv>=1.0.0
 pytest>=8.0
 httpx>=0.27.0
+passlib[bcrypt]>=1.7.4
+bcrypt<5  # Pin to <5 for passlib compatibility
+email-validator>=2.0  # For EmailStr validation in Pydantic

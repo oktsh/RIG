@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.db import User, Prompt, Guide, Agent, Ruleset
+from app.models.enums import UserRole, ContentStatus, AgentStatus
 from app.services.auth import hash_password
 from app.config import settings
 
@@ -15,7 +16,7 @@ def seed_database(db: Session):
             name=settings.ADMIN_NAME,
             email=settings.ADMIN_EMAIL,
             password_hash=hash_password(settings.ADMIN_PASSWORD),
-            role="ADMIN",
+            role=UserRole.ADMIN,
             requires_approval=False,
             is_active=True,
         )
@@ -35,7 +36,7 @@ def seed_database(db: Session):
                 tags=["ИССЛЕДОВАНИЕ", "СТРАТЕГИЯ"],
                 tech="GPT-4 / CLAUDE",
                 content="Проведите комплексный анализ конкурентов: изучите их ценностные предложения, стратегии роста, позиционирование на рынке и ключевые преимущества. Определите возможности для дифференциации.",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
             Prompt(
                 title="Агент Код-Ревью",
@@ -45,7 +46,7 @@ def seed_database(db: Session):
                 tags=["РАЗРАБОТКА", "КАЧЕСТВО"],
                 tech="CURSOR / COPILOT",
                 content="Проанализируйте код на предмет безопасности, производительности, соответствия стандартам команды и лучшим практикам. Предложите конкретные улучшения с примерами.",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
             Prompt(
                 title="Сегментация Пользователей",
@@ -55,7 +56,7 @@ def seed_database(db: Session):
                 tags=["ПРОДУКТ", "АНАЛИТИКА"],
                 tech="PYTHON / SQL",
                 content="Разработайте модель сегментации пользователей на основе поведенческих данных. Определите ключевые сегменты, их характеристики и потребности для оптимизации продукта.",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
             Prompt(
                 title="Архитектура Микросервисов",
@@ -65,7 +66,7 @@ def seed_database(db: Session):
                 tags=["СИСТЕМА", "АРХИТЕКТУРА"],
                 tech="K8S / DOCKER",
                 content="Спроектируйте архитектуру микросервисов с учетом масштабируемости, отказоустойчивости и независимого развертывания. Определите границы сервисов и коммуникационные паттерны.",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
         ]
         db.add_all(prompts)
@@ -83,7 +84,7 @@ def seed_database(db: Session):
                 time="15 МИН",
                 views="3,245",
                 date="10 ФЕВ",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
             Guide(
                 title="Конфигурация Репозитория",
@@ -93,7 +94,7 @@ def seed_database(db: Session):
                 time="10 МИН",
                 views="2,156",
                 date="12 ФЕВ",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
             Guide(
                 title="Единый Журнал Решений",
@@ -103,7 +104,7 @@ def seed_database(db: Session):
                 time="8 МИН",
                 views="1,834",
                 date="14 ФЕВ",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
             Guide(
                 title="Продвинутые Агенты",
@@ -113,7 +114,7 @@ def seed_database(db: Session):
                 time="20 МИН",
                 views="1,245",
                 date="15 ФЕВ",
-                status="published",
+                status=ContentStatus.PUBLISHED,
             ),
         ]
         db.add_all(guides)
@@ -123,9 +124,9 @@ def seed_database(db: Session):
     # Seed agents
     if db.query(Agent).count() == 0:
         agents_data = [
-            Agent(number="01", title="Агент Код-Ревью", desc="Автоматическое ревью с фокусом на безопасность и производительность.", status="active", content_status="published"),
-            Agent(number="02", title="Агент Документации", desc="Генерация и поддержка документации.", status="active", content_status="published"),
-            Agent(number="03", title="Генератор Тестов", desc="Создание юнит- и интеграционных тестов.", status="beta", content_status="published"),
+            Agent(number="01", title="Агент Код-Ревью", desc="Автоматическое ревью с фокусом на безопасность и производительность.", status=AgentStatus.ACTIVE, content_status=ContentStatus.PUBLISHED),
+            Agent(number="02", title="Агент Документации", desc="Генерация и поддержка документации.", status=AgentStatus.ACTIVE, content_status=ContentStatus.PUBLISHED),
+            Agent(number="03", title="Генератор Тестов", desc="Создание юнит- и интеграционных тестов.", status=AgentStatus.BETA, content_status=ContentStatus.PUBLISHED),
         ]
         db.add_all(agents_data)
         db.commit()
@@ -134,8 +135,8 @@ def seed_database(db: Session):
     # Seed rulesets
     if db.query(Ruleset).count() == 0:
         rulesets = [
-            Ruleset(title="React + TypeScript", desc="Стандартные правила для функциональных компонентов и хуков.", language="TYPESCRIPT", content_status="published"),
-            Ruleset(title="Стандарты FastAPI", desc="Pydantic v2, асинхронные паттерны и обработка ошибок.", language="PYTHON", content_status="published"),
+            Ruleset(title="React + TypeScript", desc="Стандартные правила для функциональных компонентов и хуков.", language="TYPESCRIPT", content_status=ContentStatus.PUBLISHED),
+            Ruleset(title="Стандарты FastAPI", desc="Pydantic v2, асинхронные паттерны и обработка ошибок.", language="PYTHON", content_status=ContentStatus.PUBLISHED),
         ]
         db.add_all(rulesets)
         db.commit()

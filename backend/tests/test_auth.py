@@ -5,6 +5,47 @@ Tests for /api/auth endpoints (login, /me).
 import pytest
 
 from tests.conftest import get_auth_header
+from app.services.auth import hash_password, verify_password
+
+
+# ---------------------------------------------------------------------------
+# Password Hashing Security Tests
+# ---------------------------------------------------------------------------
+
+class TestPasswordHashing:
+    """Tests for secure password hashing."""
+
+    def test_hash_password_uses_unique_salt(self):
+        """Each password hash should use a unique random salt."""
+        password = "test_password_123"
+        hash1 = hash_password(password)
+        hash2 = hash_password(password)
+
+        # Same password should produce different hashes (different salts)
+        assert hash1 != hash2, "Password hashes should have unique salts"
+
+    def test_hash_password_uses_bcrypt_format(self):
+        """Password hash should use bcrypt format ($2b$)."""
+        password = "test_password_123"
+        hashed = hash_password(password)
+
+        # bcrypt hashes start with $2b$ (or $2a$/$2y$)
+        assert hashed.startswith("$2b$") or hashed.startswith("$2a$") or hashed.startswith("$2y$"), \
+            f"Hash should use bcrypt format, got: {hashed[:10]}"
+
+    def test_verify_password_accepts_correct_password(self):
+        """verify_password should accept the correct password."""
+        password = "correct_password"
+        hashed = hash_password(password)
+
+        assert verify_password(password, hashed) is True
+
+    def test_verify_password_rejects_wrong_password(self):
+        """verify_password should reject an incorrect password."""
+        password = "correct_password"
+        hashed = hash_password(password)
+
+        assert verify_password("wrong_password", hashed) is False
 
 
 # ---------------------------------------------------------------------------
