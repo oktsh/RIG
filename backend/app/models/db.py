@@ -28,6 +28,7 @@ class User(Base):
     requires_approval = Column(Boolean, default=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
 
     prompts = relationship("Prompt", back_populates="author_rel")
     guides = relationship("Guide", back_populates="author_rel")
@@ -50,6 +51,7 @@ class Prompt(Base):
     status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
 
     author_rel = relationship("User", back_populates="prompts")
 
@@ -70,6 +72,7 @@ class Guide(Base):
     status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
 
     author_rel = relationship("User", back_populates="guides")
 
@@ -86,6 +89,7 @@ class Agent(Base):
     content_status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
 
     author_rel = relationship("User", back_populates="agents")
 
@@ -102,6 +106,7 @@ class Ruleset(Base):
     content_status = Column(SQLEnum(ContentStatus), default=ContentStatus.DRAFT)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
 
     author_rel = relationship("User", back_populates="rulesets")
 
@@ -119,3 +124,4 @@ class Proposal(Base):
     status = Column(SQLEnum(ProposalStatus), default=ProposalStatus.PENDING)
     reviewer_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)

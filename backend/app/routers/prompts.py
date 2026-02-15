@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.exceptions import NotFoundError, ForbiddenError
 from app.models.db import Prompt, User
 from app.models.enums import ContentStatus, UserRole
 from app.models.schemas import PromptCreate, PromptUpdate, PromptResponse, PaginatedPrompts
@@ -42,7 +43,7 @@ def list_moderation_prompts(
 def get_prompt(prompt_id: int, db: Session = Depends(get_db)):
     prompt = prompt_service.get(db, prompt_id)
     if not prompt:
-        raise HTTPException(status_code=404, detail="Prompt not found")
+        raise NotFoundError("Prompt")
     return prompt
 
 
@@ -64,7 +65,7 @@ def update_prompt(
 ):
     prompt = prompt_service.update_prompt(db, prompt_id, data.model_dump(exclude_unset=True), user)
     if not prompt:
-        raise HTTPException(status_code=404, detail="Prompt not found or not authorized")
+        raise ForbiddenError("Prompt not found or not authorized")
     return prompt
 
 
@@ -77,5 +78,5 @@ def update_prompt_status(
 ):
     prompt = prompt_service.update_status(db, prompt_id, status)
     if not prompt:
-        raise HTTPException(status_code=404, detail="Prompt not found")
+        raise NotFoundError("Prompt")
     return prompt

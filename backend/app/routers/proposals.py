@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.exceptions import NotFoundError
 from app.models.db import User
 from app.models.schemas import ProposalCreate, ProposalResponse, PaginatedProposals
 from app.middleware.auth import require_role
@@ -39,5 +40,5 @@ def update_proposal_status(
 ):
     proposal = proposal_service.update_status(db, proposal_id, new_status, user.id)
     if not proposal:
-        raise HTTPException(status_code=404, detail="Proposal not found")
+        raise NotFoundError("Proposal")
     return {"success": True}

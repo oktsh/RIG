@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.exceptions import NotFoundError, ConflictError
 from app.models.db import User
 from app.models.schemas import UserCreate, UserUpdate, UserResponse, PaginatedUsers
 from app.middleware.auth import require_role
@@ -32,7 +33,7 @@ def create_user(
 ):
     existing = user_service.get_by_email(db, data.email)
     if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise ConflictError("Email already registered")
 
     return user_service.create_user(db, data.model_dump())
 
@@ -46,7 +47,7 @@ def update_user(
 ):
     user = user_service.update_user(db, user_id, data.model_dump())
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise NotFoundError("User")
     return user
 
 
@@ -58,4 +59,4 @@ def delete_user(
 ):
     user = user_service.delete(db, user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise NotFoundError("User")

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.exceptions import NotFoundError
 from app.models.schemas import AgentCreate, AgentResponse, PaginatedAgents
 from app.middleware.auth import get_current_user
 from app.services.agent_service import agent_service
@@ -25,7 +26,7 @@ def list_agents(
 def get_agent(agent_id: int, db: Session = Depends(get_db)):
     agent = agent_service.get(db, agent_id)
     if not agent:
-        raise HTTPException(status_code=404, detail="Agent not found")
+        raise NotFoundError("Agent")
     return agent
 
 

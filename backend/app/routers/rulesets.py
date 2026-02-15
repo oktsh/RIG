@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.exceptions import NotFoundError
 from app.models.schemas import RulesetCreate, RulesetResponse, PaginatedRulesets
 from app.middleware.auth import get_current_user
 from app.services.ruleset_service import ruleset_service
@@ -25,7 +26,7 @@ def list_rulesets(
 def get_ruleset(ruleset_id: int, db: Session = Depends(get_db)):
     ruleset = ruleset_service.get(db, ruleset_id)
     if not ruleset:
-        raise HTTPException(status_code=404, detail="Ruleset not found")
+        raise NotFoundError("Ruleset")
     return ruleset
 
 

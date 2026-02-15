@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.config import settings
+from app.exceptions import AppException
 from app.database import Base, engine, SessionLocal
 from app.services.seed import seed_database
 from app.routers import auth, users, prompts, guides, agents, rulesets, proposals
@@ -34,11 +36,25 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Exception handlers
+@app.exception_handler(AppException)
+async def app_exception_handler(request: Request, exc: AppException):
+    """Handle custom application exceptions with standardized JSON response."""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "detail": exc.message,
+            "type": exc.__class__.__name__,
+        },
+    )
+
 
 app.include_router(auth.router)
 app.include_router(users.router)

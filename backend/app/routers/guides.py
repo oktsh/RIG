@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.exceptions import NotFoundError, ForbiddenError
 from app.models.db import Guide, User
 from app.models.enums import ContentStatus
 from app.models.schemas import GuideCreate, GuideUpdate, GuideResponse, PaginatedGuides
@@ -42,7 +43,7 @@ def list_moderation_guides(
 def get_guide(guide_id: int, db: Session = Depends(get_db)):
     guide = guide_service.get(db, guide_id)
     if not guide:
-        raise HTTPException(status_code=404, detail="Guide not found")
+        raise NotFoundError("Guide")
     return guide
 
 
@@ -64,7 +65,7 @@ def update_guide(
 ):
     guide = guide_service.update_guide(db, guide_id, data.model_dump(exclude_unset=True), user)
     if not guide:
-        raise HTTPException(status_code=404, detail="Guide not found or not authorized")
+        raise ForbiddenError("Guide not found or not authorized")
     return guide
 
 
@@ -77,5 +78,5 @@ def update_guide_status(
 ):
     guide = guide_service.update_status(db, guide_id, status)
     if not guide:
-        raise HTTPException(status_code=404, detail="Guide not found")
+        raise NotFoundError("Guide")
     return guide
