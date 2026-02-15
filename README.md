@@ -7,8 +7,10 @@
 ╚═╝  ╚═╝  ╚═╝  ╚═════╝
 ```
 
-**`// PART KNOWLEDGE BASE / PART MAGIC WAND`**
+---
+
 `// RIG YOUR ENV`
+
 ---
 
 ## 📦 PROJECT STRUCTURE
@@ -48,9 +50,4 @@ RIG/
 
 Detailed docs coming soon.
 
----
-
-`// RIG YOUR ENV`
-
----
 </div>
