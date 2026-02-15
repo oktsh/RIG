@@ -1,0 +1,28 @@
+import type { Metadata } from "next";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "RIG — Оснастка для Вайб-Кодинга",
+  description: "Корпоративная база знаний для AI-команд разработки",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ru">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="antialiased">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
+  );
+}

@@ -15,6 +15,9 @@ build/
 out/
 *.tsbuildinfo
 
+# Database
+*.db
+
 # Environment
 .env
 .env.local
@@ -38,6 +41,7 @@ out/
 .claude/plans/
 .claude/context/
 .claude/projects/
+CLAUDE.md
 
 # OS
 .DS_Store
@@ -73,3 +77,6 @@ temp/
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# Prototypes & Reference
+ref/
