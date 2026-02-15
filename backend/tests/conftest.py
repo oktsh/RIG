@@ -174,3 +174,132 @@ def moderator_headers(moderator_user) -> dict[str, str]:
 def user_headers(regular_user) -> dict[str, str]:
     """Authorization headers for the regular user."""
     return get_auth_header(regular_user)
+
+
+# ---------------------------------------------------------------------------
+# Content model fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture()
+def sample_prompt(db_session, admin_user):
+    """Create a published prompt for testing."""
+    from app.models.db import Prompt
+    from app.models.enums import ContentStatus
+
+    prompt = Prompt(
+        title="Test Prompt",
+        desc="A test prompt description",
+        content="Test prompt content for testing purposes",
+        tags=["test", "sample"],
+        tech="Python",
+        status=ContentStatus.PUBLISHED,
+        author_id=admin_user.id,
+        author_name=admin_user.name,
+    )
+    db_session.add(prompt)
+    db_session.commit()
+    db_session.refresh(prompt)
+    return prompt
+
+
+@pytest.fixture()
+def draft_prompt(db_session, regular_user):
+    """Create a draft prompt for testing."""
+    from app.models.db import Prompt
+    from app.models.enums import ContentStatus
+
+    prompt = Prompt(
+        title="Draft Prompt",
+        desc="A draft prompt",
+        content="Draft content",
+        status=ContentStatus.DRAFT,
+        author_id=regular_user.id,
+        author_name=regular_user.name,
+    )
+    db_session.add(prompt)
+    db_session.commit()
+    db_session.refresh(prompt)
+    return prompt
+
+
+@pytest.fixture()
+def sample_guide(db_session, admin_user):
+    """Create a published guide for testing."""
+    from app.models.db import Guide
+    from app.models.enums import ContentStatus
+
+    guide = Guide(
+        title="Test Guide",
+        desc="A test guide description",
+        content="Test guide content for testing purposes",
+        category="Tutorial",
+        time="10 min",
+        status=ContentStatus.PUBLISHED,
+        author_id=admin_user.id,
+        author_name=admin_user.name,
+    )
+    db_session.add(guide)
+    db_session.commit()
+    db_session.refresh(guide)
+    return guide
+
+
+@pytest.fixture()
+def sample_agent(db_session, admin_user):
+    """Create an active agent for testing."""
+    from app.models.db import Agent
+    from app.models.enums import AgentStatus, ContentStatus
+
+    agent = Agent(
+        title="Test Agent",
+        desc="A test agent description",
+        number="001",
+        status=AgentStatus.ACTIVE,
+        content_status=ContentStatus.PUBLISHED,
+        author_id=admin_user.id,
+    )
+    db_session.add(agent)
+    db_session.commit()
+    db_session.refresh(agent)
+    return agent
+
+
+@pytest.fixture()
+def sample_ruleset(db_session, admin_user):
+    """Create a published ruleset for testing."""
+    from app.models.db import Ruleset
+    from app.models.enums import ContentStatus
+
+    ruleset = Ruleset(
+        title="Test Ruleset",
+        desc="A test ruleset description",
+        language="Python",
+        content="Test ruleset content",
+        content_status=ContentStatus.PUBLISHED,
+        author_id=admin_user.id,
+    )
+    db_session.add(ruleset)
+    db_session.commit()
+    db_session.refresh(ruleset)
+    return ruleset
+
+
+@pytest.fixture()
+def sample_proposal(db_session):
+    """Create a pending proposal for testing."""
+    from app.models.db import Proposal
+    from app.models.enums import ProposalStatus
+
+    proposal = Proposal(
+        type="prompt",
+        title="Test Proposal",
+        description="A test proposal description",
+        content="Test proposal content",
+        email="proposer@test.com",
+        tags=["test"],
+        status=ProposalStatus.PENDING,
+    )
+    db_session.add(proposal)
+    db_session.commit()
+    db_session.refresh(proposal)
+    return proposal
