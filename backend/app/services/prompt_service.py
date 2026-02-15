@@ -29,7 +29,7 @@ class PromptService(CRUDBase[Prompt]):
         status: ContentStatus | str | None = None,
     ) -> Query:
         """Get query for prompts with optional search and status filter."""
-        query = db.query(Prompt)
+        query = db.query(Prompt).filter(Prompt.deleted_at == None)
 
         if status:
             query = query.filter(Prompt.status == status)

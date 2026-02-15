@@ -29,7 +29,7 @@ class GuideService(CRUDBase[Guide]):
         status: ContentStatus | str | None = None,
     ) -> Query:
         """Get query for guides with optional search and status filter."""
-        query = db.query(Guide)
+        query = db.query(Guide).filter(Guide.deleted_at == None)
 
         if status:
             query = query.filter(Guide.status == status)
