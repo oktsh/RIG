@@ -41,6 +41,7 @@ out/
 .claude/plans/
 .claude/context/
 .claude/projects/
+CLAUDE.md
 
 # OS
 .DS_Store
