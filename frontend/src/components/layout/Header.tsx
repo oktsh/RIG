@@ -91,14 +91,15 @@ export default function Header() {
 
         {isAuthenticated ? (
           <>
-            {hasRole("ADMIN") && (
+            {/* Admin link commented out for ghosttly-ux experiment */}
+            {/* {hasRole("ADMIN") && (
               <Link
                 href="/admin/users"
                 className="btn-outline px-4 py-3 text-xs font-bold"
               >
                 Админ
               </Link>
-            )}
+            )} */}
             <div className="flex items-center gap-3 border border-black px-4 py-2 bg-white">
               <div className="w-2 h-2 bg-[#B4FF00] border border-black" />
               <span className="font-mono text-[11px] font-bold uppercase">
@@ -117,12 +118,13 @@ export default function Header() {
           </>
         ) : (
           <>
-            <Link
+            {/* Login link commented out for ghosttly-ux experiment */}
+            {/* <Link
               href="/login"
               className="btn-outline px-6 py-3 text-xs font-bold"
             >
               Войти
-            </Link>
+            </Link> */}
             <button
               onClick={openJoinModal}
               className="btn-primary px-6 py-3 text-xs font-bold"

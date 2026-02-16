@@ -1,3 +1,6 @@
+/* ARCHIVED v1-neo-brutalist - commented out for ghosttly-ux experiment */
+
+/*
 "use client";
 
 import { useState } from "react";
@@ -31,7 +34,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#E5E5E5] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-10">
           <Link href="/" className="inline-block">
             <div className="text-7xl font-display font-black tracking-tighter logo-animated">
@@ -43,7 +45,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Login Form */}
         <div className="bg-white border-2 border-black shadow-[8px_8px_0px_#000] p-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-3 h-3 bg-[#FFE600] border border-black" />
@@ -104,7 +105,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Back */}
         <div className="text-center mt-6">
           <Link
             href="/"
@@ -116,4 +116,9 @@ export default function LoginPage() {
       </div>
     </div>
   );
+}
+*/
+
+export default function LoginPage() {
+  return null;
 }

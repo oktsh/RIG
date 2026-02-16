@@ -9,32 +9,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        void: "#E5E5E5",
-        panel: "#000000",
-        card: "#F0F0F0",
-        hover: "#FFE600",
-        accent: "#FFE600",
-        "text-primary": "#000000",
-        "text-secondary": "#404040",
-        "text-tertiary": "#666666",
-        "text-inverse": "#FFFFFF",
-        "status-published": "#B4FF00",
-        "status-draft": "#DDD",
-        "status-pending": "#FFE600",
+        // Neural theme colors
+        'neural-bg': '#050505',
+        'neural-surface': '#0a0a0a',
+        'text-primary': '#EAEAEA',
+        'text-secondary': '#666666',
+        'border-subtle': '#1a1a1a',
+        'border-medium': '#333333',
+        'accent': '#FFFFFF',
       },
       fontFamily: {
-        display: ["var(--font-display)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
-        ui: ["var(--font-ui)", "sans-serif"],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-space-mono)', 'Courier New', 'monospace'],
       },
-      boxShadow: {
-        "brutal-sm": "4px 4px 0px #000",
-        "brutal-md": "6px 6px 0px #000",
-        "brutal-lg": "8px 8px 0px #000",
-        "brutal-xl": "10px 10px 0px #000",
+      cursor: {
+        default: 'crosshair',
       },
-      borderRadius: {
-        none: "0",
+      animation: {
+        'bracket-expand': 'bracket-expand 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
       },
     },
   },

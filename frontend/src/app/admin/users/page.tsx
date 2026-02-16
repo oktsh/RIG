@@ -1,3 +1,6 @@
+/* ARCHIVED v1-neo-brutalist - commented out for ghosttly-ux experiment */
+
+/*
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -280,4 +283,9 @@ export default function AdminUsersPage() {
       )}
     </>
   );
+}
+*/
+
+export default function AdminUsersPage() {
+  return null;
 }

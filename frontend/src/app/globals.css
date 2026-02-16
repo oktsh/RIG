@@ -3,282 +3,241 @@
 @tailwind utilities;
 
 /* ===========================
-   RIG Design Tokens
-   Source: design-dba9cd8e-*.html :root
+   Neural/Tech Dark Design Tokens
    =========================== */
 :root {
-  --bg-void: #E5E5E5;
-  --bg-panel: #000000;
-  --bg-card: #F0F0F0;
-  --bg-hover: #FFE600;
-
-  --text-primary: #000000;
-  --text-inverse: #FFFFFF;
-  --text-secondary: #404040;
-  --text-tertiary: #666666;
-
-  --accent-core: #FFE600;
-
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
-  --font-ui: 'Manrope', sans-serif;
-
-  --radius-sm: 0px;
-  --radius-md: 0px;
-
-  --border-width: 1px;
-  --border-heavy: 2px;
-  --border-color: #000000;
+  --bg: #050505;
+  --fg: #EAEAEA;
+  --border: #1a1a1a;
 }
 
 body {
-  background-color: var(--bg-void);
-  color: var(--text-primary);
-  font-family: var(--font-ui);
+  background-color: var(--bg);
+  color: var(--fg);
+  cursor: crosshair;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ===========================
-   Typography helpers
+   Bracket corner animations (BracketCard component)
    =========================== */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  color: var(--text-primary);
+.bracket-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: white;
+  border-style: solid;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.5;
 }
 
-.font-display {
-  font-family: var(--font-display);
-  letter-spacing: -0.03em;
-  font-weight: 500;
+.bl-tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
+.bl-tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
+.bl-br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+.bl-bl { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
+
+.active-card .bracket-corner {
+  opacity: 1;
+  width: 24px;
+  height: 24px;
 }
 
-.font-mono {
-  font-family: var(--font-mono);
-  letter-spacing: -0.02em;
-}
-
-.text-dim { color: var(--text-tertiary); }
-
-.text-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
+.bracket-hover:hover .bracket-corner {
+  width: 20px;
+  height: 20px;
+  opacity: 1;
 }
 
 /* ===========================
-   Scrollbar (neo-brutalist)
+   Grid background pattern
    =========================== */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-void); border-left: 1px solid var(--border-color); }
-::-webkit-scrollbar-thumb { background: var(--text-primary); border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
 
-.custom-scrollbar::-webkit-scrollbar { width: 6px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: #E5E5E5; border-left: 1px solid #000; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #000; }
+/* ===========================
+   Gradient text effect
+   =========================== */
+.gradient-text {
+  background: linear-gradient(180deg, #FFFFFF 0%, #666666 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 /* ===========================
    Selection
    =========================== */
 ::selection {
-  background: var(--text-primary);
-  color: var(--accent-core);
+  background: #EAEAEA;
+  color: #050505;
 }
 
 /* ===========================
-   Nav items
-   =========================== */
-.nav-item {
-  position: relative;
-  transition: all 0s;
-  color: #888;
-  border: 1px solid transparent;
-}
-.nav-item:hover {
-  color: var(--text-inverse);
-  border: 1px solid #333;
-}
-.nav-item.active {
-  background: var(--accent-core);
-  color: var(--text-primary);
-  border: 1px solid var(--accent-core);
-  font-weight: 600;
-}
-.nav-item.active::before { display: none; }
-.nav-item svg { stroke-width: 1.5px; }
-.nav-item.active svg { stroke-width: 2px; color: #000 !important; opacity: 1 !important; }
-
-/* ===========================
-   Card base
-   =========================== */
-.card-base {
-  background: var(--bg-card);
-  border: var(--border-width) solid var(--border-color);
-  border-radius: 0 !important;
-  transition: all 0.1s ease;
-  box-shadow: none;
-}
-.card-base:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0px var(--text-primary);
-  border-color: var(--text-primary);
-}
-
-/* ===========================
-   Buttons
+   Button styling
    =========================== */
 .btn-primary {
-  background: var(--text-primary);
-  color: var(--text-inverse);
-  font-family: var(--font-display);
-  font-weight: 600;
-  text-transform: uppercase;
-  border-radius: 0;
-  border: 1px solid var(--text-primary);
-  transition: all 0.2s ease;
-}
-.btn-primary:hover {
-  background: var(--accent-core);
-  color: var(--text-primary);
-  box-shadow: 6px 6px 0px var(--text-primary);
-  transform: translate(-2px, -2px);
-}
-
-.btn-outline {
   background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--text-primary);
-  font-family: var(--font-display);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 12px 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-radius: 0;
-  transition: all 0.2s ease;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
-.btn-outline:hover {
-  background: var(--text-primary);
-  color: var(--text-inverse);
+
+.btn-primary:hover {
+  background: white;
+  color: black;
+  border-color: white;
 }
 
 /* ===========================
-   Tags
+   Section dimming effect
    =========================== */
-.tag-brutal {
-  border: 1px solid var(--text-primary);
-  background: #FFF;
-  color: var(--text-primary);
-  text-transform: uppercase;
-  font-size: 0.65rem;
-  padding: 2px 6px;
-  font-family: var(--font-mono);
+.section-container {
+  transition: opacity 0.5s ease;
+}
+.section-container:hover {
+  opacity: 1;
+}
+.dimmed {
+  opacity: 0.3;
 }
 
 /* ===========================
-   Status badges
-   Source: design-dc1019b9-*.html:92-95
+   Mono font helper
    =========================== */
-.tag-status {
-  font-size: 9px;
-  padding: 2px 6px;
-  border: 1px solid #000;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.status-published { background: #B4FF00; }
-.status-draft { background: #DDD; }
-.status-pending { background: #FFE600; }
-
-/* ===========================
-   Modal
-   =========================== */
-#modal-content {
-  background: #FFFFFF;
-  border: 2px solid #000;
-  border-radius: 0;
-  box-shadow: 10px 10px 0px #000;
-}
-#modal-backdrop {
-  background-color: rgba(0,0,0,0.5);
-  backdrop-filter: grayscale(100%);
+.mono {
+  font-family: var(--font-space-mono), 'Space Mono', monospace;
 }
 
 /* ===========================
-   Input overrides
+   Fade in animation
    =========================== */
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  background: transparent !important;
-  border: 1px solid #000 !important;
-  border-radius: 0 !important;
-  color: #000 !important;
+.fade-in-up {
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
 }
-input::placeholder { color: #666; }
 
-/* ===========================
-   Logo animations (5-color shift)
-   Source: design-dba9cd8e-*.html:194-215
-   =========================== */
-@keyframes colorShift {
-  0%, 100% {
-    color: #FFE600;
-    text-shadow: 0 0 8px rgba(255, 230, 0, 0.6), 0 0 16px rgba(255, 230, 0, 0.3);
-  }
-  20% {
-    color: #B4FF00;
-    text-shadow: 0 0 8px rgba(180, 255, 0, 0.6), 0 0 16px rgba(180, 255, 0, 0.3);
-  }
-  40% {
-    color: #00FFB4;
-    text-shadow: 0 0 8px rgba(0, 255, 180, 0.6), 0 0 16px rgba(0, 255, 180, 0.3);
-  }
-  60% {
-    color: #00E0FF;
-    text-shadow: 0 0 8px rgba(0, 224, 255, 0.6), 0 0 16px rgba(0, 224, 255, 0.3);
-  }
-  80% {
-    color: #B400FF;
-    text-shadow: 0 0 8px rgba(180, 0, 255, 0.6), 0 0 16px rgba(180, 0, 255, 0.3);
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.logo-animated {
-  animation: colorShift 8s ease-in-out infinite;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-}
-
-.logo-square-animated {
-  animation: colorShift 8s ease-in-out infinite;
-}
-
 /* ===========================
-   Border-radius kill (neo-brutalist)
+   Hero title
    =========================== */
-.rounded-full { border-radius: 50%; }
-.rounded-xl, .rounded-lg, .rounded-md, .rounded { border-radius: 0 !important; }
-
-/* ===========================
-   Prose (guide detail)
-   =========================== */
-.prose-headings { color: #000 !important; }
-.prose p { color: #333 !important; }
-.prose blockquote {
-  border-left-color: #000 !important;
-  color: #000 !important;
-  font-style: normal;
+.hero-title {
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
   font-weight: 500;
-  background: #F0F0F0;
-  padding: 1rem;
 }
-.prose code { color: #000 !important; background: #E0E0E0 !important; border: 1px solid #CCC; }
-.prose pre { background: #111 !important; color: #FFF !important; border: none !important; }
 
 /* ===========================
-   Decorative
+   Markdown/Code Syntax Highlighting
    =========================== */
-.decorative-line {
-  height: 1px;
-  background: repeating-linear-gradient(90deg, #000, #000 5px, transparent 5px, transparent 10px);
+.prose {
+  color: #EAEAEA;
+  max-width: none;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.prose code {
+  font-family: var(--font-space-mono), monospace;
+  background: #0a0a0a;
+  padding: 0.2em 0.4em;
+  border-radius: 0;
+  border: 1px solid #1a1a1a;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 0;
+}
+
+.prose pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.prose a {
+  color: #EAEAEA;
+  text-decoration: underline;
+  text-decoration-color: #666666;
+}
+
+.prose a:hover {
+  color: #FFFFFF;
+  text-decoration-color: #FFFFFF;
+}
+
+.prose strong {
+  color: #FFFFFF;
+}
+
+.prose blockquote {
+  border-left: 2px solid #1a1a1a;
+  padding-left: 1rem;
+  color: #666666;
+}
+
+/* Basic syntax highlighting (simplified) */
+.hljs {
+  color: #EAEAEA;
+  background: #0a0a0a;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #666666;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #FFFFFF;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-section,
+.hljs-type,
+.hljs-attribute {
+  color: #EAEAEA;
+}
+
+.hljs-number,
+.hljs-selector-id {
+  color: #FFFFFF;
+}
+
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-link {
+  color: #EAEAEA;
 }

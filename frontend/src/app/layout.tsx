@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
+import { Inter, Space_Mono } from 'next/font/google'
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const spaceMono = Space_Mono({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-space-mono',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: "RIG — Оснастка для Вайб-Кодинга",
-  description: "Корпоративная база знаний для AI-команд разработки",
+  title: "RIG — Reactive Intelligence Gateway",
+  description: "Orchestrate Intelligence. Build, deploy, and orchestrate autonomous AI agents.",
 };
 
 export default function RootLayout({
@@ -13,14 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased">
+    <html lang="en" className={`${inter.variable} ${spaceMono.variable}`}>
+      <body className="font-sans bg-neural-bg text-text-primary antialiased">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

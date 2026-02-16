@@ -1,3 +1,6 @@
+/* ARCHIVED v1-neo-brutalist - commented out for ghosttly-ux experiment */
+
+/*
 "use client";
 
 import AdminSidebar from "@/components/layout/AdminSidebar";
@@ -18,4 +21,9 @@ export default function AdminLayout({
       </div>
     </ProtectedRoute>
   );
+}
+*/
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return null;
 }
