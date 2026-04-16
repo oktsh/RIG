@@ -1,0 +1,20 @@
+## [RIG-MANAGED] Shared State
+
+Agents maintain shared files that survive context compaction:
+
+| File | Purpose |
+|------|---------|
+| `PROGRESS.md` | Task status, checkpoints, blockers |
+| `DECISIONS.md` | Architectural decisions with rationale |
+
+### PROGRESS.md Protocol
+
+Before starting a task: move from Pending → In Progress.
+After completing: move to Completed with evidence (tests passed, lint clean).
+If blocked after 3 attempts: move to Blocked, report to tech-lead.
+
+### DECISIONS.md Protocol
+
+Format: `## D-NNN: [Title]` with Date, Context, Decision, Rationale, Alternatives rejected, Reversible.
+
+**Templates:** `_hub/templates/` contains `progress-template.md`, `decisions-template.md`, `spec-template.md`.

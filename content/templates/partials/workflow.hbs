@@ -1,0 +1,29 @@
+## [RIG-MANAGED] Workflow
+
+### Discovery Workflow
+
+1. **Problem** — What problem are we solving? For whom?
+2. **Stories** — User stories: As [role], I want [action], so that [value]
+3. **Criteria** — Acceptance criteria for each story
+4. **Plan** — Prototype plan (files, changes, approach)
+5. **Build** — Implement on a feature branch
+6. **Review** — Run reviewer before merge
+7. **Ship** — Merge after review passes
+
+### Development Workflow
+
+| Risk | Do |
+|------|----|
+| **Low** (typo, rename) | Do it → show result |
+| **Medium** (new feature, 1 module) | Plan 3-5 bullets → implement → verify |
+| **High** (cross-module, DB, API) | Spec pipeline: spec → plan → tasks → implement → review → ship |
+
+### Agent Pipeline
+
+```
+worker (implements) → fresh code-reviewer → SAME worker (fixes) → fresh code-reviewer → ... (max 3) → tech-lead
+```
+
+- ONE agent writes code at a time
+- code-reviewer is always a FRESH session (never the implementer)
+- If blocked after 3 attempts → escalate to tech-lead

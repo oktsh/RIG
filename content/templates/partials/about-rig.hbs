@@ -1,0 +1,28 @@
+## [RIG-MANAGED] About RIG
+
+> This project uses RIG (Managed AI Dev Practice). If the user asks what RIG is,
+> how it works, or needs help getting started, use this section to explain.
+
+**What is RIG:** An opinionated AI dev setup — agents, rules, hooks, workflows —
+installed via `npx create-rig` and kept current via `rig update`.
+
+**This project's setup:**
+- **Preset:** {{presetMeta.displayName}} — {{presetMeta.description}}
+- **Stack:** {{project.stack}}
+- **Agents:** {{presetMeta.agentCount}} available ({{#each agents}}{{name}}{{#unless @last}}, {{/unless}}{{/each}})
+- **Quality gates:** Pre-commit hooks ({{#each hooks}}{{id}}{{#unless @last}}, {{/unless}}{{/each}})
+
+{{#is presetMeta.id "pm"}}
+**Getting started:** Tell me what you want to build. I'll guide you through the discovery workflow: problem → stories → criteria → plan → build → review → ship.
+{{/is}}
+{{#is presetMeta.id "small-team"}}
+**Getting started:** Shared state files (PROGRESS.md, DECISIONS.md) coordinate your team. Use agents by name: "use code-reviewer", "use spec-writer".
+{{/is}}
+{{#is presetMeta.id "solo-dev"}}
+**Getting started:** Just code. Agents and hooks are active. Quality gates run on commit. Use "run verification" to check code quality.
+{{/is}}
+
+**Useful commands:**
+- `rig update` — Get latest agent definitions and rules
+- `rig doctor` — Check setup health
+- `rig generate` — Regenerate files from rig.toml
