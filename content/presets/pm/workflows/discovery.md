@@ -1,62 +1,82 @@
 # Discovery Workflow
 
-When starting a new feature, follow these steps in order.
+How to go from "I have an idea" to "it's shipped." Works for PMs building with AI, solo devs, or anyone starting a feature.
 
-## 1. Problem
+## Phase 1: Explore (Read-Only)
 
-What problem are we solving? For whom?
+Before writing anything, understand the landscape. No edits in this phase.
 
-Write a clear problem statement: who has the pain, what the pain is, and why current solutions don't work. If you can't explain the problem in 2 sentences, it's not clear enough yet.
+**Ask before you build:**
+- What problem are we solving? For whom? Why now?
+- What already exists in the codebase that relates to this?
+- What are the constraints (time, tech, team)?
 
-## 2. Stories
+If the requirement is ambiguous, **interview first**: ask 3-5 clarifying questions before proceeding. AI agents produce dramatically better output when they start from clear requirements.
 
-Write user stories for each thing the user needs to do:
+**Output:** A crisp problem statement (2 sentences max) + understanding of existing code.
 
+## Phase 2: Plan (Spec Before Code)
+
+Write a lightweight spec before any implementation. Even 15 minutes of spec prevents hours of rework.
+
+### User Stories
 > As [role], I want [action], so that [value].
 
-Keep stories small. Each one should be buildable independently. If a story takes more than a day to build, break it down further.
+Keep stories small — each buildable independently. If it takes more than a day, break it down.
 
-## 3. Criteria
-
-Define acceptance criteria for each story. These are the specific conditions that must be true for the story to be "done":
-
+### Acceptance Criteria
 - Start with "A user can..." not "The system should..."
-- Include the happy path AND at least one edge case
-- Make them testable -- you should be able to verify each one
+- Include happy path AND at least one edge case
+- Make them testable — you should be able to verify each one
+- Give each criterion a unique ID (AC-001, AC-002...)
 
-## 4. Plan
-
-Create a prototype plan:
-- Which existing files need to change?
+### Build Order
+- Which existing files change?
 - What new files are needed?
-- What order should things be built in?
-- Are there any dependencies or blockers?
+- What order minimizes risk? (Foundation first, UI last)
+- Dependencies or blockers?
 
-Save the plan to `specs/[feature-name]/spec.md`.
+Save to `specs/[feature-name]/spec.md`.
 
-## 5. Build
+## Phase 3: Build (One Task at a Time)
 
-Implement on a feature branch:
 ```
 git checkout -b feature/[feature-name]
 ```
 
-Build incrementally. Get the smallest version working first, then add features one at a time.
+Build incrementally:
+1. Get the smallest version working first
+2. Verify it works (run tests, check manually)
+3. Commit with a clear message: `feat: add user profile endpoint`
+4. Add the next piece
+5. Repeat
 
-## 6. Review
+**Commit after every task** — this is your save game. If something goes wrong, you can always roll back to the last working state.
 
-Before merging, run the reviewer:
+**One task per conversation** when using AI agents. Fresh context = better output. Don't let a conversation drag past the point of diminishing returns.
+
+## Phase 4: Review
+
+Before merging, run the code reviewer:
 ```
-Use reviewer agent to check my changes
+Use code-reviewer agent to check my changes
 ```
 
-Fix any issues the reviewer finds. Re-run until approved.
+The reviewer uses three hostile personas (Saboteur, New Hire, Security Auditor) — each must find at least one issue. Fix any CRITICAL or WARN findings. Re-run until approved.
 
-## 7. Ship
+## Phase 5: Ship
 
-Merge to main after review passes:
+After review passes:
 ```
 git checkout main
 git merge feature/[feature-name]
 git branch -d feature/[feature-name]
 ```
+
+## The Mental Model
+
+```
+Explore (read-only) → Plan (spec) → Build (incremental) → Review (adversarial) → Ship (merge)
+```
+
+Each phase has a clear output. Don't skip phases — the cost of going back is always higher than the cost of doing it right.

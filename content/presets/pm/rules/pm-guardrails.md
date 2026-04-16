@@ -1,44 +1,63 @@
 # Safety Guardrails
 
-These rules keep your project safe while building with AI.
+Rules that keep your project safe while building with AI agents.
+
+## The Key Insight
+
+**Hooks = deterministic (always enforced). Rules = advisory (followed ~80% of the time).**
+
+Anything that MUST happen → goes in a hook (pre-commit, pre-push).
+Guidance and preferences → goes in CLAUDE.md or rules files.
+
+Your pre-commit hook already runs lint + typecheck before every commit. You don't need to remember to do it — it's automatic.
 
 ## Always Branch First
 
-Before making any code changes, create a new branch:
+Before making any code changes:
 ```
 git checkout -b feature/your-feature-name
 ```
-This keeps your main branch clean. If something breaks, you can always go back.
+
+This is your safety net. If something breaks, you can always go back to main.
 
 ## Never Push to Main Directly
 
-All changes go through a branch first. When your feature is ready:
-1. Run the reviewer to check your code
-2. Merge the branch into main
-3. Delete the feature branch
+All changes go through a branch first:
+1. Build on a feature branch
+2. Run the reviewer to check your code
+3. Merge the branch into main
+4. Delete the feature branch
 
-If you accidentally commit to main: don't panic. Create a branch from your current state, then reset main to the remote version.
+If you accidentally commit to main: create a branch from your current state, then reset main to the remote version.
 
 ## Always Review Before Merge
 
-Before merging any branch, run the reviewer agent:
+Before merging any branch:
 ```
-Use reviewer agent to check my changes
+Use code-reviewer agent to check my changes
 ```
-The reviewer will flag any problems. Fix them before merging.
 
-## Never Delete Files Without Confirmation
+The reviewer flags problems using three hostile personas. Fix CRITICAL and WARN findings before merging.
 
-If you're told a file should be deleted, verify first:
+## Commit Often (Save Game)
+
+Commit after every completed task — not at end of day. Each commit is a save point you can roll back to.
+
+- One logical change per commit
+- If your commit message needs "and," split it into two commits
+- Use conventional format: `feat:`, `fix:`, `refactor:`, `chore:`
+
+## Never Delete Without Checking
+
+Before deleting a file:
 - Is it imported anywhere? Check with grep.
-- Is it referenced in configuration? Check package.json, tsconfig, etc.
-- When in doubt, rename it with a `.bak` extension instead of deleting.
+- Is it referenced in config? Check package.json, tsconfig, etc.
+- When in doubt, rename with `.bak` instead of deleting.
 
-## Keep It Simple
+## The Whole Workflow
 
-- **Plan** what you want to build
-- **Build** it on a feature branch
-- **Review** it with the reviewer agent
-- **Ship** it by merging to main
+```
+Plan → Branch → Build → Review → Merge → Done
+```
 
-That's the whole workflow. No complicated setups needed.
+That's it. No complicated setups needed.
