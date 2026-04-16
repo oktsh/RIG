@@ -35,13 +35,14 @@ out/
 *~
 .cursor/
 
-# Claude Code
-.claude/
-!.claude/agents/
+# Claude Code (ephemeral/personal)
 .claude/plans/
 .claude/context/
 .claude/projects/
-CLAUDE.md
+
+# Stale root-level docs (real ones in specs/)
+/DECISIONS.md
+/PROGRESS.md
 
 # OS
 .DS_Store
@@ -80,3 +81,13 @@ temp/
 
 # Prototypes & Reference
 ref/
+research/
+
+# Old platform (pre-CLI)
+backend/
+frontend/
+
+# RIG CLI build artifacts
+packages/*/dist/
+.rig/
+*.tgz

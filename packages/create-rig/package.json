@@ -1,0 +1,32 @@
+{
+  "name": "create-rig",
+  "version": "0.1.0",
+  "description": "Create a managed AI dev practice setup",
+  "type": "module",
+  "bin": {
+    "create-rig": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "ai",
+    "agents",
+    "claude",
+    "cursor",
+    "dev-tools",
+    "cli"
+  ],
+  "dependencies": {
+    "@inquirer/prompts": "^8.4.1",
+    "@rig/core": "workspace:^",
+    "commander": "^14.0.3"
+  }
+}
