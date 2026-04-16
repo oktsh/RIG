@@ -83,6 +83,10 @@ temp/
 ref/
 research/
 
+# Old platform (pre-CLI)
+backend/
+frontend/
+
 # RIG CLI build artifacts
 packages/*/dist/
 .rig/
