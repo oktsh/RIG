@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIG — Your AI agents need a harness</title>
+    <meta name="description" content="Managed rules, hooks, and workflows for AI-assisted development. Install once, update continuously.">
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+
+        /* ── Tokens ── */
+        :root {
+            --radius-pill: 999px;
+            --radius-card: 48px;
+            --radius-sm: 12px;
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 48px;
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-theme: background-color 0.6s var(--ease-out-expo), color 0.6s var(--ease-out-expo);
+            --transition-element: background-color 0.3s ease, transform 0.2s ease, opacity 0.3s ease;
+        }
+
+        /* ── Dark theme ── */
+        [data-theme="dark"] {
+            --bg-base: #030407;
+            --bg-surface-1: rgba(255, 255, 255, 0.02);
+            --bg-surface-2: rgba(255, 255, 255, 0.05);
+            --bg-surface-3: rgba(255, 255, 255, 0.1);
+            --bg-accent: #FFFFFF;
+            --bg-accent-hover: #D0D8FF;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.5);
+            --text-accent: #030407;
+            --text-tech: rgba(255, 255, 255, 0.3);
+            --glow-color: 0, 0, 197;
+            --shader-core: #FFFFFF;
+            --shader-fringe: #0000C5;
+            --section-bg: #060810;
+        }
+
+        /* ── Light theme ── */
+        [data-theme="light"] {
+            --bg-base: #F5F7FA;
+            --bg-surface-1: rgba(0, 0, 0, 0.03);
+            --bg-surface-2: rgba(0, 0, 0, 0.06);
+            --bg-surface-3: rgba(0, 0, 0, 0.12);
+            --bg-accent: #050608;
+            --bg-accent-hover: #1A1E26;
+            --text-primary: #050608;
+            --text-secondary: rgba(0, 0, 0, 0.5);
+            --text-accent: #FFFFFF;
+            --text-tech: rgba(0, 0, 0, 0.3);
+            --glow-color: 0, 0, 120;
+            --shader-core: #050608;
+            --shader-fringe: #6670AA;
+            --section-bg: #EBEEF3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            transition: var(--transition-theme);
+            overflow-x: hidden;
+        }
+
+        ::selection { background: #0000C5; color: #fff; }
+
+        /* ── WebGL background ── */
+        #webgl-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── Tech labels (ambient decoration) ── */
+        .tech-label {
+            position: fixed;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--text-tech);
+            text-transform: uppercase;
+            transition: var(--transition-theme);
+            z-index: 5;
+        }
+        .label-top-left { top: 48px; left: 48px; }
+        .label-bottom-left { bottom: 48px; left: 48px; }
+        .label-vertical-right {
+            top: 50%; right: 48px;
+            transform: translateY(-50%) rotate(90deg);
+            transform-origin: center right;
+            display: flex; gap: 24px; align-items: center;
+        }
+        .label-vertical-right::before { content: '['; opacity: 0.5; }
+        .label-vertical-right::after { content: ']'; opacity: 0.5; }
+
+        /* ── Top bar ── */
+        .top-bar {
+            position: fixed;
+            top: 48px; right: 48px;
+            z-index: 20;
+            display: flex; gap: 12px;
+        }
+
+        .top-bar-btn {
+            height: 40px; padding: 0 16px;
+            background-color: var(--bg-surface-1);
+            color: var(--text-primary);
+            border: none; outline: none;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px; font-weight: 400;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: var(--transition-element);
+        }
+        .top-bar-btn:hover { background-color: var(--bg-surface-2); }
+        .top-bar-btn i { font-size: 16px; }
+
+        .version-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex; align-items: center;
+        }
+
+        /* ── Hero section ── */
+        .hero {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-layout {
+            width: 100%;
+            max-width: 1440px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: var(--space-xl);
+            min-height: 100vh;
+            align-items: center;
+        }
+
+        /* ── Glass panel ── */
+        .panel-wrapper {
+            grid-column: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 10%;
+        }
+
+        .glass-panel {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--bg-surface-1);
+            border-radius: var(--radius-card);
+            padding: var(--space-xl);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: var(--transition-theme);
+        }
+
+        .header-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .system-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-primary);
+            background: var(--bg-surface-2);
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            align-self: flex-start;
+            margin-bottom: var(--space-sm);
+            letter-spacing: 0.1em;
+        }
+
+        h1 {
+            font-size: 30px;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            color: var(--text-tech);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1; height: 2px;
+            background-color: var(--bg-surface-2);
+            border-radius: var(--radius-pill);
+        }
+
+        /* ── Terminal block (inside panel) ── */
+        .cmd-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bg-surface-2);
+            border-radius: var(--radius-pill);
+            padding: 0 8px 0 24px;
+            height: 56px;
+            cursor: pointer;
+            transition: var(--transition-element);
+        }
+        .cmd-block:hover { background-color: var(--bg-surface-3); }
+        .cmd-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+        .cmd-copy {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--bg-surface-3);
+            border: none; outline: none;
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition-element);
+        }
+        .cmd-copy:hover {
+            background: var(--bg-accent);
+            color: var(--text-accent);
+        }
+        .cmd-feedback {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tech);
+            text-align: center;
+            height: 16px;
+            margin-top: 4px;
+        }
+
+        /* ── Pillars row ── */
+        .pillars-row {
+            display: flex;
+            gap: var(--space-md);
+        }
+        .pillar-chip {
+            flex: 1;
+            display: flex; align-items: center; justify-content: center;
+            gap: 6px;
+            background-color: var(--bg-surface-2);
+            border-radius: var(--radius-pill);
+            padding: 12px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: var(--transition-element);
+        }
+        .pillar-chip i { font-size: 16px; color: var(--text-primary); }
+        .pillar-chip:hover {
+            background-color: var(--bg-surface-3);
+            color: var(--text-primary);
+        }
+
+        /* ── Primary CTA button ── */
+        .btn-primary {
+            height: 64px;
+            background-color: var(--bg-accent);
+            color: var(--text-accent);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px; font-weight: 600;
+            letter-spacing: 0.02em;
+            border: none; outline: none;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: var(--transition-element);
+            box-shadow: 0 0 40px rgba(var(--glow-color), 0.25);
+            text-decoration: none;
+        }
+        .btn-primary:hover {
+            background-color: var(--bg-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 0 60px rgba(var(--glow-color), 0.35);
+        }
+        .btn-primary i { font-size: 20px; }
+
+        /* ── Scroll indicator ── */
+        .scroll-hint {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: var(--text-tech);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            animation: scrollBounce 2s ease-in-out infinite;
+        }
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(6px); }
+        }
+
+        /* ── Below-fold section ── */
+        .details {
+            position: relative;
+            z-index: 10;
+            background-color: var(--section-bg);
+            border-top: 1px solid var(--bg-surface-3);
+            transition: var(--transition-theme);
+        }
+
+        .details-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 100px var(--space-xl);
+        }
+
+        .details-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        .details-header h2 {
+            font-size: 28px;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+        .details-header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+        .detail-card {
+            padding: 28px 24px;
+            background: var(--bg-surface-1);
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: var(--transition-theme);
+        }
+        .detail-card-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: var(--bg-surface-2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        .detail-card h3 {
+            font-size: 17px; font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+        .detail-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ── Harness quote ── */
+        .quote-block {
+            text-align: center;
+            padding: 60px 0;
+            border-top: 1px solid var(--bg-surface-2);
+        }
+        .quote-block blockquote {
+            font-size: 22px;
+            font-weight: 400;
+            line-height: 1.5;
+            max-width: 560px;
+            margin: 0 auto 16px;
+            color: var(--text-primary);
+        }
+        .quote-block blockquote em {
+            font-style: normal;
+            color: #4D4DFF;
+        }
+        [data-theme="light"] .quote-block blockquote em {
+            color: #0000C5;
+        }
+        .quote-attr {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tech);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ── Research citations ── */
+        .citations {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 40px 0 0;
+            border-top: 1px solid var(--bg-surface-2);
+            flex-wrap: wrap;
+        }
+        .citation {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-tech);
+            letter-spacing: 0.05em;
+            text-align: center;
+            max-width: 200px;
+            line-height: 1.5;
+        }
+        .citation strong {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        /* ── Footer ── */
+        .site-footer {
+            position: relative;
+            z-index: 10;
+            background-color: var(--section-bg);
+            border-top: 1px solid var(--bg-surface-2);
+            padding: 24px var(--space-xl);
+            transition: var(--transition-theme);
+        }
+        .footer-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tech);
+        }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+            .hero-layout {
+                grid-template-columns: 1fr;
+                padding: var(--space-lg);
+            }
+            .panel-wrapper {
+                grid-column: 1;
+                padding-left: 0;
+                justify-content: center;
+            }
+            .glass-panel { max-width: 100%; }
+            .label-vertical-right { display: none; }
+            .tech-label { display: none; }
+            .top-bar { top: 16px; right: 16px; }
+            .details-grid { grid-template-columns: 1fr; }
+            .citations { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- WebGL shader background -->
+    <div id="webgl-container"></div>
+
+    <!-- Ambient tech labels -->
+    <div class="tech-label label-top-left">RIG.CLI // ACTIVE</div>
+    <div class="tech-label label-bottom-left">PRACTICE_LAYER_</div>
+    <div class="tech-label label-vertical-right">
+        <span>RULES</span>
+        <span>+</span>
+        <span>HOOKS</span>
+        <span>+</span>
+        <span>WORKFLOWS</span>
+    </div>
+
+    <!-- Top bar: theme + language toggles -->
+    <div class="top-bar">
+        <div class="version-tag">V1.0</div>
+        <button class="top-bar-btn" id="langToggle">
+            <i class="ph ph-translate"></i>
+            <span id="langText">RU</span>
+        </button>
+        <button class="top-bar-btn" id="themeToggle">
+            <i class="ph ph-moon" id="themeIcon"></i>
+            <span id="themeText">DARK</span>
+        </button>
+    </div>
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+        <div class="hero-layout">
+            <div class="panel-wrapper">
+                <div class="glass-panel">
+
+                    <div class="header-group">
+                        <div class="system-badge">OPEN SOURCE</div>
+                        <h1 data-en="Your AI agents need a harness." data-ru="Вашим AI-агентам нужен каркас.">Your AI agents need a harness.</h1>
+                        <p class="subtitle" data-en="Managed rules, hooks, and workflows for AI-assisted development. Works with your agents, your plugins, your tools." data-ru="Управляемые правила, хуки и процессы для AI-разработки. Работает с вашими агентами, плагинами, инструментами.">Managed rules, hooks, and workflows for AI-assisted development. Works with your agents, your plugins, your tools.</p>
+                    </div>
+
+                    <!-- Three pillars as chips -->
+                    <div class="pillars-row">
+                        <div class="pillar-chip">
+                            <i class="ph ph-file-text"></i>
+                            <span data-en="Rules" data-ru="Правила">Rules</span>
+                        </div>
+                        <div class="pillar-chip">
+                            <i class="ph ph-git-commit"></i>
+                            <span data-en="Hooks" data-ru="Хуки">Hooks</span>
+                        </div>
+                        <div class="pillar-chip">
+                            <i class="ph ph-flow-arrow"></i>
+                            <span data-en="Workflows" data-ru="Процессы">Workflows</span>
+                        </div>
+                    </div>
+
+                    <div class="divider" data-en="Install in terminal" data-ru="Установка в терминале">Install in terminal</div>
+
+                    <!-- Command block -->
+                    <div>
+                        <div class="cmd-block" id="cmdBlock">
+                            <span class="cmd-text">npx create-rig@latest</span>
+                            <button class="cmd-copy" id="copyBtn" title="Copy">
+                                <i class="ph ph-copy"></i>
+                            </button>
+                        </div>
+                        <div class="cmd-feedback" id="cmdFeedback"></div>
+                    </div>
+
+                    <!-- CTA -->
+                    <a href="https://github.com/oktsh/RIG" target="_blank" class="btn-primary">
+                        <span data-en="VIEW ON GITHUB" data-ru="ОТКРЫТЬ НА GITHUB">VIEW ON GITHUB</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-hint" data-en="Scroll" data-ru="Вниз">
+            Scroll
+            <i class="ph ph-caret-down"></i>
+        </div>
+    </section>
+
+    <!-- ── DETAILS (below fold) ── -->
+    <section class="details">
+        <div class="details-inner">
+
+            <div class="details-header">
+                <h2 data-en="Your agents. Our structure." data-ru="Ваши агенты. Наша структура.">Your agents. Our structure.</h2>
+                <p data-en="RIG doesn't replace your AI tools. It wraps them in a proven practice — so the code they write actually works in production." data-ru="RIG не заменяет ваши AI-инструменты. Он оборачивает их в проверенную практику — чтобы код, который они пишут, реально работал в production.">RIG doesn't replace your AI tools. It wraps them in a proven practice — so the code they write actually works in production.</p>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-card">
+                    <div class="detail-card-icon"><i class="ph ph-shield-check"></i></div>
+                    <h3 data-en="Deterministic enforcement" data-ru="Жёсткий контроль">Deterministic enforcement</h3>
+                    <p data-en="Pre-commit hooks catch what prompts miss. Lint, typecheck, and security gates run before every commit — no exceptions. Hooks are 100% reliable. Prompts are ~80%." data-ru="Pre-commit хуки ловят то, что промпты пропускают. Линт, типы и безопасность — перед каждым коммитом без исключений. Хуки срабатывают в 100% случаев. Промпты — в ~80%.">Pre-commit hooks catch what prompts miss. Lint, typecheck, and security gates run before every commit — no exceptions. Hooks are 100% reliable. Prompts are ~80%.</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-icon"><i class="ph ph-stack"></i></div>
+                    <h3 data-en="Opinionated defaults" data-ru="Готовые настройки">Opinionated defaults</h3>
+                    <p data-en="Code review protocols, security rules, workflow patterns, agent orchestration — all pre-configured based on real research. Not opinions. Not vibes." data-ru="Протоколы ревью кода, правила безопасности, паттерны процессов, оркестрация агентов — всё преднастроено на основе реальных исследований. Не мнения. Не вайбы.">Code review protocols, security rules, workflow patterns, agent orchestration — all pre-configured based on real research. Not opinions. Not vibes.</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-icon"><i class="ph ph-arrows-clockwise"></i></div>
+                    <h3 data-en="Living updates" data-ru="Живые обновления">Living updates</h3>
+                    <p data-en="New research, better prompts, improved workflows. Run rig update to pull the latest — your customizations stay untouched. Managed files are marked, your files are yours." data-ru="Новые исследования, лучшие промпты, улучшенные процессы. rig update подтягивает свежее — ваши кастомизации не затрагиваются. Управляемые файлы отмечены, ваши файлы — ваши.">New research, better prompts, improved workflows. Run <code style="font-family:'JetBrains Mono',monospace;font-size:12px;">rig update</code> to pull the latest — your customizations stay untouched. Managed files are marked, your files are yours.</p>
+                </div>
+            </div>
+
+            <!-- Harness quote -->
+            <div class="quote-block">
+                <blockquote data-en="&ldquo;The more autonomy you give AI agents, the more <em>structure</em> they need. RIG is that structure.&rdquo;" data-ru="&laquo;Чем больше автономии вы даёте AI-агентам, тем больше <em>структуры</em> им нужно. RIG — эта структура.&raquo;">&ldquo;The more autonomy you give AI agents, the more <em>structure</em> they need. RIG is that structure.&rdquo;</blockquote>
+                <div class="quote-attr" data-en="The Dark Factory Principle" data-ru="Принцип Тёмной Фабрики">The Dark Factory Principle</div>
+            </div>
+
+            <!-- Research citations -->
+            <div class="citations">
+                <div class="citation">
+                    <strong>1.7x more bugs</strong>
+                    AI-generated code vs human-written. CodeRabbit Report, 2025
+                </div>
+                <div class="citation">
+                    <strong>~80% compliance</strong>
+                    CLAUDE.md rules are advisory. Only hooks give 100%. Empirical testing
+                </div>
+                <div class="citation">
+                    <strong>32K token drop</strong>
+                    Model accuracy degrades past ~32K context. Stanford &amp; UC Berkeley
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>&copy; 2026 RIG &middot; MIT License</span>
+            <div class="footer-links">
+                <a href="https://github.com/oktsh/RIG" target="_blank">GitHub</a>
+                <a href="https://www.npmjs.com/package/create-rig" target="_blank">npm</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* ── Theme toggle ── */
+        const html = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+
+        function getComputedColors() {
+            const s = getComputedStyle(html);
+            return {
+                core: new THREE.Color(s.getPropertyValue('--shader-core').trim()),
+                fringe: new THREE.Color(s.getPropertyValue('--shader-fringe').trim())
+            };
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeIcon.className = next === 'dark' ? 'ph ph-moon' : 'ph ph-sun';
+            themeText.textContent = next === 'dark' ? 'DARK' : 'LIGHT';
+            setTimeout(() => {
+                const c = getComputedColors();
+                if (material) {
+                    material.uniforms.u_colorCore.value = c.core;
+                    material.uniforms.u_colorFringe.value = c.fringe;
+                    material.uniforms.u_isLightMode.value = next === 'light' ? 1.0 : 0.0;
+                }
+            }, 50);
+        });
+
+        /* ── Language toggle ── */
+        const langToggle = document.getElementById('langToggle');
+        const langText = document.getElementById('langText');
+        let currentLang = 'en';
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ru' : 'en';
+            html.setAttribute('lang', currentLang);
+            langText.textContent = currentLang === 'en' ? 'RU' : 'EN';
+
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = el.getAttribute('data-' + currentLang);
+                if (text) el.innerHTML = text;
+            });
+        });
+
+        /* ── Copy command ── */
+        const cmdBlock = document.getElementById('cmdBlock');
+        const copyBtn = document.getElementById('copyBtn');
+        const cmdFeedback = document.getElementById('cmdFeedback');
+
+        function doCopy() {
+            navigator.clipboard.writeText('npx create-rig@latest').then(() => {
+                cmdFeedback.textContent = currentLang === 'ru' ? 'Скопировано!' : 'Copied!';
+                setTimeout(() => { cmdFeedback.textContent = ''; }, 2000);
+            });
+        }
+        cmdBlock.addEventListener('click', doCopy);
+        copyBtn.addEventListener('click', (e) => { e.stopPropagation(); doCopy(); });
+
+        /* ── WebGL Shader (from AURA, adapted) ── */
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+        camera.position.z = 1;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const geometry = new THREE.PlaneGeometry(2, 2);
+
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = vec4(position, 1.0);
+            }
+        `;
+
+        const fragmentShader = `
+            uniform float u_time;
+            uniform vec2 u_resolution;
+            uniform vec2 u_mouse;
+            uniform vec3 u_colorCore;
+            uniform vec3 u_colorFringe;
+            uniform float u_isLightMode;
+            varying vec2 vUv;
+
+            vec2 hash(vec2 p) {
+                p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+                return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+            }
+
+            float noise(in vec2 p) {
+                const float K1 = 0.366025404;
+                const float K2 = 0.211324865;
+                vec2 i = floor(p + (p.x + p.y) * K1);
+                vec2 a = p - i + (i.x + i.y) * K2;
+                vec2 o = (a.x > a.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                vec2 b = a - o + K2;
+                vec2 c = a - 1.0 + 2.0 * K2;
+                vec3 h = max(0.5 - vec3(dot(a, a), dot(b, b), dot(c, c)), 0.0);
+                vec3 n = h * h * h * h * vec3(dot(a, hash(i + 0.0)), dot(b, hash(i + o)), dot(c, hash(i + 1.0)));
+                return dot(n, vec3(70.0));
+            }
+
+            float sdArc(vec2 p, vec2 center, float radius, float width, float warp) {
+                p.y += sin(p.x * 3.0 + u_time * 0.5) * warp;
+                p.x += noise(p * 2.0 + u_time * 0.2) * (warp * 0.5);
+                float d = length(p - center) - radius;
+                return abs(d) - width;
+            }
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                vec2 st = uv;
+                st.x *= u_resolution.x / u_resolution.y;
+
+                vec2 mouseOffset = (u_mouse - 0.5) * 0.1;
+                st += mouseOffset;
+
+                vec2 center = vec2(0.2, 0.5);
+
+                float d1 = sdArc(st, center, 0.8, 0.01, 0.1);
+                float d2 = sdArc(st, center, 0.82, 0.04, 0.15);
+
+                float coreGlow = exp(-d1 * 40.0);
+                float fringeGlow = exp(-d2 * 15.0);
+                float wash = smoothstep(1.0, -0.2, st.x) * 0.3;
+
+                vec3 finalColor = vec3(0.0);
+                finalColor += u_colorCore * coreGlow;
+                finalColor += u_colorFringe * fringeGlow;
+                finalColor += u_colorFringe * wash * (sin(u_time) * 0.1 + 0.9);
+
+                float alpha = clamp(coreGlow + fringeGlow + wash, 0.0, 1.0);
+                finalColor = vec3(1.0) - exp(-finalColor * 2.0);
+
+                if (u_isLightMode > 0.5) {
+                    alpha = clamp((coreGlow * 1.5 + fringeGlow + wash * 0.5), 0.0, 0.6);
+                }
+
+                gl_FragColor = vec4(finalColor, alpha);
+            }
+        `;
+
+        const initialColors = getComputedColors();
+
+        const material = new THREE.ShaderMaterial({
+            vertexShader,
+            fragmentShader,
+            uniforms: {
+                u_time: { value: 0.0 },
+                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+                u_colorCore: { value: initialColors.core },
+                u_colorFringe: { value: initialColors.fringe },
+                u_isLightMode: { value: 0.0 }
+            },
+            transparent: true,
+            blending: THREE.NormalBlending
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        let targetMouse = new THREE.Vector2(0.5, 0.5);
+        document.addEventListener('mousemove', (e) => {
+            targetMouse.x = e.clientX / window.innerWidth;
+            targetMouse.y = 1.0 - (e.clientY / window.innerHeight);
+        });
+
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            material.uniforms.u_time.value = clock.getElapsedTime();
+            material.uniforms.u_mouse.value.lerp(targetMouse, 0.05);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            material.uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+    </script>
+
+</body>
+</html>

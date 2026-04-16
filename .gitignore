@@ -35,14 +35,20 @@ out/
 *~
 .cursor/
 
-# Claude Code (ephemeral/personal)
-.claude/plans/
-.claude/context/
-.claude/projects/
+# Claude Code (all — personal dev tools, not product)
+.claude/
 
-# Stale root-level docs (real ones in specs/)
+# Internal development docs
+specs/
 /DECISIONS.md
 /PROGRESS.md
+/AGENTS.md
+
+# Old platform content (pre-pivot)
+content/guides/
+content/prompts/
+content/rulesets/
+content/landing/
 
 # OS
 .DS_Store
@@ -87,7 +93,8 @@ research/
 backend/
 frontend/
 
-# RIG CLI build artifacts
+# RIG CLI build artifacts & local config
 packages/*/dist/
 .rig/
 *.tgz
+rig.toml
