@@ -13,9 +13,9 @@ import type { RigConfig, Preset, Stack } from '@rig/core';
 import { collectOptions, confirmOverwrite } from './prompts.js';
 
 // Resolve content root relative to this file (bundled into dist/index.js)
-// dist/index.js -> packages/create-rig/dist/ -> packages/create-rig/ -> packages/ -> <repo-root>/content/
+// Content is shipped inside this package at <pkg>/content/
 const _thisDir = dirname(fileURLToPath(import.meta.url));
-const CONTENT_ROOT = join(_thisDir, '..', '..', '..', 'content');
+const CONTENT_ROOT = join(_thisDir, '..', 'content');
 
 function buildConfig(opts: {
   preset: Preset;

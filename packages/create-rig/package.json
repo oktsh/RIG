@@ -7,8 +7,9 @@
     "create-rig": "dist/index.js"
   },
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": ["dist", "content"],
   "scripts": {
+    "prebuild": "rm -rf content && cp -r ../../content content",
     "build": "tsup",
     "typecheck": "tsc --noEmit"
   },

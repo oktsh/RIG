@@ -11,7 +11,7 @@ import type { CheckResult, CheckStatus } from '@rig/core';
 function resolveContentRoot(): string {
   const coreEntry = import.meta.resolve('@rig/core');
   const coreDistDir = dirname(fileURLToPath(coreEntry));
-  return join(coreDistDir, '..', '..', '..', 'content');
+  return join(coreDistDir, '..', 'content');
 }
 
 function statusToExitCode(status: CheckStatus): number {

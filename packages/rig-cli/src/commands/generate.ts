@@ -17,15 +17,15 @@ import type { GeneratedFile } from '@rig/core';
 
 /**
  * Resolve the content root directory based on @rig/core's package location.
- * @rig/core entry is at <repo>/packages/core/dist/index.js
- * Content is at <repo>/content/
- * So: core dist dir -> core/ -> packages/ -> repo root -> content/
+ * Content is shipped inside @rig/core at <core>/content/
+ * @rig/core entry is at <core>/dist/index.js
+ * So: dist/ -> core/ -> content/
  */
 function resolveContentRoot(): string {
   const coreEntry = import.meta.resolve('@rig/core');
   const coreDistDir = dirname(fileURLToPath(coreEntry));
-  // dist/ -> core/ -> packages/ -> <repo root>
-  return join(coreDistDir, '..', '..', '..', 'content');
+  // dist/ -> core package root -> content/
+  return join(coreDistDir, '..', 'content');
 }
 
 const VALID_TARGETS = ['claude_md', 'agents_md', 'cursor_mdc'] as const;

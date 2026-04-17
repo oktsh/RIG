@@ -95,6 +95,7 @@ frontend/
 
 # RIG CLI build artifacts & local config
 packages/*/dist/
+packages/*/content/
 .rig/
 *.tgz
 rig.toml

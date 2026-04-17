@@ -10,14 +10,12 @@ import type { UpdatePlan, UpdateResult } from '@rig/core';
 
 /**
  * Resolve the content root directory based on @rig/core's package location.
- * @rig/core entry is at <repo>/packages/core/dist/index.js
- * Content is at <repo>/content/
+ * Content is shipped inside @rig/core at <core>/content/
  */
 function resolveContentRoot(): string {
   const coreEntry = import.meta.resolve('@rig/core');
   const coreDistDir = dirname(fileURLToPath(coreEntry));
-  // dist/ -> core/ -> packages/ -> <repo root>
-  return join(coreDistDir, '..', '..', '..', 'content');
+  return join(coreDistDir, '..', 'content');
 }
 
 /**

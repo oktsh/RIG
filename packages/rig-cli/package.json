@@ -44,5 +44,5 @@
     "@iarna/toml": "^2.2.5",
     "@rig/core": "workspace:^",
     "commander": "^14.0.3"
-  },
+  }
 }
