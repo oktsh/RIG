@@ -273,6 +273,33 @@
             background: var(--bg);
         }
 
+        /* ── Problem section ── */
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .problem-card {
+            padding: 1.5rem;
+            border-left: 2px solid #dc2626;
+            background: rgba(220, 38, 38, 0.04);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .problem-quote {
+            font-size: 0.95rem;
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+        }
+
+        .problem-detail {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
         .s-label {
             font-size: 0.65rem;
             text-transform: uppercase;
@@ -621,6 +648,7 @@
             #dither-canvas { opacity: 0.15; }
             .hero-right { width: 100%; }
             .terminal-body { font-size: 0.65rem; min-height: 200px; max-height: 260px; }
+            .problems-grid { grid-template-columns: 1fr; }
             .cards-3 { grid-template-columns: 1fr; }
             .how-steps { grid-template-columns: 1fr; gap: 2rem; }
             .stats-row { grid-template-columns: 1fr; }
@@ -668,6 +696,34 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- The Problem -->
+    <section class="section border-top">
+        <div class="container">
+            <div class="s-label" data-en="The problem" data-ru="Проблема">The problem</div>
+            <h2 class="s-title" data-en="AI agents are powerful. <span class='accent'>Without structure</span>, they're chaos." data-ru="AI-агенты мощные. <span class='accent'>Без структуры</span> — хаос.">AI agents are powerful. <span class="accent">Without structure</span>, they're chaos.</h2>
+            <div style="height:1.5rem"></div>
+
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-quote" data-en="&ldquo;3 hours configuring CLAUDE.md. The code still doesn't lint.&rdquo;" data-ru="&laquo;3 часа настраивал CLAUDE.md. Код всё ещё не линтится.&raquo;">&ldquo;3 hours configuring CLAUDE.md. The code still doesn't lint.&rdquo;</div>
+                    <div class="problem-detail" data-en="Prompts are advisory. Agents follow them ~80% of the time. Only hooks give 100%." data-ru="Промпты рекомендательные. Агенты следуют им ~80% времени. Только хуки дают 100%.">Prompts are advisory. Agents follow them ~80% of the time. Only hooks give 100%.</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-quote" data-en="&ldquo;My agent ignored half the rules. Again.&rdquo;" data-ru="&laquo;Агент проигнорировал половину правил. Опять.&raquo;">&ldquo;My agent ignored half the rules. Again.&rdquo;</div>
+                    <div class="problem-detail" data-en="Hand-written rules lack structure. Agents need tested, research-backed conventions — not vibes." data-ru="Написанные вручную правила бессистемны. Агентам нужны проверенные конвенции — не вайбы.">Hand-written rules lack structure. Agents need tested, research-backed conventions — not vibes.</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-quote" data-en="&ldquo;Set it up once. Now it's outdated and nobody updates it.&rdquo;" data-ru="&laquo;Настроил один раз. Теперь устарело, никто не обновляет.&raquo;">&ldquo;Set it up once. Now it's outdated and nobody updates it.&rdquo;</div>
+                    <div class="problem-detail" data-en="Claude ships updates weekly. Cursor evolves constantly. Your rules rot unless someone maintains them." data-ru="Claude обновляется еженедельно. Cursor постоянно эволюционирует. Правила устаревают, если никто не поддерживает.">Claude ships updates weekly. Cursor evolves constantly. Your rules rot unless someone maintains them.</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-quote" data-en="&ldquo;Each dev's agent does something different. Same repo.&rdquo;" data-ru="&laquo;У каждого дева агент делает своё. Один репозиторий.&raquo;">&ldquo;Each dev's agent does something different. Same repo.&rdquo;</div>
+                    <div class="problem-detail" data-en="Without shared conventions, every agent works differently. No consistency, no shared context, no team memory." data-ru="Без общих конвенций каждый агент работает по-своему. Нет консистентности, нет общего контекста, нет памяти команды.">Without shared conventions, every agent works differently. No consistency, no shared context, no team memory.</div>
+                </div>
             </div>
         </div>
     </section>
