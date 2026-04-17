@@ -6,533 +6,677 @@
     <title>RIG — Managed AI Dev Practice</title>
     <meta name="description" content="Managed rules, hooks, and workflows for AI-assisted development. Your agents. Our structure.">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #F5F0E8;
-            --bg-section: #EDE8DF;
-            --surface: #FFFCF7;
-            --text: #1C1C1C;
-            --text-mid: #4A4A4A;
-            --text-muted: #6B6B6B;
-            --text-dim: #999;
-            --text-tech: rgba(0,0,0,0.2);
-            --accent: #0000C5;
-            --accent-soft: #4D4DFF;
-            --accent-light: #EDEDFF;
-            --accent-hover: #0000A0;
-            --sage: #7A9B7F;
-            --sage-light: #E8EFE3;
-            --border: #E0DBD3;
-            --border-light: rgba(0,0,0,0.06);
-            --glow: 0, 0, 197;
-
-            --terminal-bg: rgba(255,255,255,0.35);
-            --terminal-text: #1C1C1C;
-            --terminal-muted: rgba(0,0,0,0.3);
-            --terminal-green: #15803D;
-            --terminal-blue: #0000C5;
-            --terminal-amber: #B45309;
-            --terminal-accent: #4D4DFF;
-
-            --font: 'Inter', system-ui, sans-serif;
-            --font-brand: 'Space Grotesk', sans-serif;
-            --mono: 'IBM Plex Mono', monospace;
-            --max-w: 1120px;
-            --radius: 20px;
-            --radius-sm: 12px;
-            --radius-pill: 999px;
-
-            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --bg: #111111;
+            --text: #ffffff;
+            --text-muted: #999999;
+            --text-dim: #555555;
+            --border: rgba(255, 255, 255, 0.12);
+            --accent: #4D4DFF;
+            --accent-hover: #6B6BFF;
+            --accent-soft: rgba(77, 77, 255, 0.15);
+            --green: #34D399;
+            --amber: #FBBF24;
+            --font: 'Inter', system-ui, -apple-system, sans-serif;
+            --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+            --max-w: 1100px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
 
         body {
-            font-family: var(--font);
             background: var(--bg);
             color: var(--text);
-            -webkit-font-smoothing: antialiased;
+            font-family: var(--font);
             overflow-x: hidden;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         ::selection { background: var(--accent); color: #fff; }
         .accent { color: var(--accent); }
 
-        /* ── WebGL ── */
-        #webgl-bg {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 0; pointer-events: none;
+        .container {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
         }
 
-        /* ── Tech labels ── */
-        .tech-label {
+        .border-top { border-top: 1px solid var(--border); }
+
+        /* ── Header ── */
+        header {
             position: fixed;
-            font-family: var(--mono); font-size: 10px;
-            letter-spacing: 0.2em; text-transform: uppercase;
-            color: var(--text-tech); z-index: 5;
+            top: 0; left: 0; width: 100%;
+            padding: 1.25rem 2rem;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mix-blend-mode: exclusion;
         }
-        .tl-top { top: 44px; left: 44px; }
-        .tl-bottom { bottom: 44px; left: 44px; }
-        .tl-right {
-            top: 50%; right: 44px;
-            transform: translateY(-50%) rotate(90deg);
-            transform-origin: center right;
-            display: flex; gap: 20px; align-items: center;
-        }
-        .tl-right::before { content: '['; opacity: 0.5; }
-        .tl-right::after { content: ']'; opacity: 0.5; }
 
-        /* ── Top bar ── */
-        .top-bar {
-            position: fixed; top: 24px; right: 32px;
-            z-index: 50;
-            display: flex; gap: 10px; align-items: center;
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
         }
-        .top-btn {
-            height: 36px; padding: 0 14px;
-            background: rgba(255,255,255,0.6);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-pill);
-            font-family: var(--mono); font-size: 11px; font-weight: 500;
-            color: var(--text-mid); cursor: pointer;
-            display: flex; align-items: center; gap: 6px;
-            transition: background 0.2s, border-color 0.2s;
+
+        .nav-group {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
         }
-        .top-btn:hover { background: rgba(255,255,255,0.85); border-color: var(--border); }
-        .top-cta {
-            height: 36px; padding: 0 16px;
-            background: var(--accent); color: #fff;
-            border: none; border-radius: var(--radius-pill);
-            font-family: var(--mono); font-size: 11px; font-weight: 500;
-            cursor: pointer; text-decoration: none;
-            display: flex; align-items: center; gap: 6px;
-            transition: background 0.2s;
+
+        .nav-btn {
+            height: 32px;
+            padding: 0 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--text);
+            font-size: 0.7rem;
+            font-family: var(--font);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
         }
-        .top-cta:hover { background: var(--accent-hover); text-decoration: none; }
+
+        .nav-btn:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .nav-btn--accent {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .nav-btn--accent:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: #fff;
+        }
 
         /* ── Hero ── */
         .hero {
-            position: relative; z-index: 10;
-            width: 100%; min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .hero-layout {
-            width: 100%; max-width: 1300px;
-            display: grid; grid-template-columns: 1fr 1fr;
-            padding: 48px;
+            position: relative;
             min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
             align-items: center;
-            gap: 32px;
+            overflow: hidden;
         }
 
-        /* Hero left — terminal */
-        .term-wrapper {
-            display: flex; align-items: center; justify-content: center;
+        #dither-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            opacity: 0.3;
         }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-left {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .hero-left::before {
+            content: '';
+            position: absolute;
+            top: -2rem; left: -3rem; right: -2rem; bottom: -2rem;
+            background: radial-gradient(ellipse at center, rgba(17,17,17,0.85) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .hero-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 400;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-sub {
+            font-size: 1.05rem;
+            max-width: 460px;
+            color: #bbb;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            height: 44px;
+            padding: 0 1.5rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--font);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .hero-cta:hover { background: var(--accent-hover); }
+
+        /* Hero right — terminal */
+        .hero-right {
+            width: 380px;
+            flex-shrink: 0;
+        }
+
         .terminal {
-            width: 100%; max-width: 500px;
-            border-radius: var(--radius); overflow: hidden;
-            background: rgba(255,255,255,0.35);
-            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow:
-                0 20px 80px rgba(0,0,0,0.08),
-                0 0 60px rgba(var(--glow), 0.06);
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
         }
+
         .terminal-bar {
-            height: 36px; background: rgba(255,255,255,0.3);
-            display: flex; align-items: center; padding: 0 14px; gap: 7px;
-            border-bottom: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            gap: 6px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
         }
+
         .td { width: 10px; height: 10px; border-radius: 50%; }
-        .td-r { background: #FF5F56; }
-        .td-y { background: #FFBD2E; }
-        .td-g { background: #27C93F; }
-        .terminal-bar-spacer { flex: 1; }
+        .td-r { background: #ff5f57; }
+        .td-y { background: #febc2e; }
+        .td-g { background: #28c840; }
+
         .terminal-body {
-            padding: 20px;
-            font-family: var(--mono); font-size: 12px;
-            line-height: 1.8; color: var(--terminal-text);
-            min-height: 280px; max-height: 360px;
+            padding: 14px;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            line-height: 1.7;
+            min-height: 240px;
+            max-height: 320px;
             overflow-y: auto;
         }
-        .t-prompt { color: var(--terminal-blue); }
-        .t-dollar { color: var(--terminal-muted); }
-        .t-cmd { color: var(--text); font-weight: 500; }
-        .t-muted { color: var(--terminal-muted); }
-        .t-green { color: var(--terminal-green); }
-        .t-amber { color: var(--terminal-amber); }
-        .t-accent { color: var(--terminal-accent); }
-        .t-line { opacity: 0; animation: fadeIn 0.15s forwards; }
-        .t-cursor {
-            display: inline-block; width: 7px; height: 13px;
-            background: var(--terminal-green); vertical-align: middle;
-            animation: blink 1s step-end infinite;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-        @keyframes fadeIn { to { opacity: 1; } }
+
+        .t-line { white-space: pre-wrap; }
+        .t-prompt { color: var(--accent); }
+        .t-dollar { color: var(--text-dim); }
+        .t-cmd { color: var(--text); }
+        .t-green { color: var(--green); }
+        .t-muted { color: var(--text-dim); }
+        .t-accent { color: var(--accent); }
+
         .t-box {
-            border: 1px solid rgba(21,128,61,0.25);
-            background: rgba(21,128,61,0.06);
-            padding: 10px 12px; border-radius: 8px; margin-top: 4px;
+            margin: 4px 0;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.03);
         }
+
         .t-box-label {
-            font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
-            text-transform: uppercase; color: var(--terminal-green); margin-bottom: 3px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--green);
+            margin-bottom: 6px;
         }
 
-        /* Hero right — glass panel */
-        .panel-wrapper {
-            display: flex; align-items: center;
-            justify-content: center; padding-left: 5%;
-        }
-        .glass-panel {
-            width: 100%; max-width: 520px;
-            background: none;
-            padding: 0;
-            display: flex; flex-direction: column; gap: 26px;
+        .t-cursor {
+            display: inline-block;
+            width: 7px;
+            height: 14px;
+            background: var(--text);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
         }
 
-        .sys-badge {
-            font-family: var(--mono); font-size: 10px; font-weight: 500;
-            letter-spacing: 0.12em; text-transform: uppercase;
-            color: var(--accent); background: var(--accent-light);
-            padding: 4px 12px; border-radius: var(--radius-pill);
-            align-self: flex-start;
-        }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        .pain-trigger {
-            font-family: var(--mono); font-size: 11px;
-            color: var(--text-muted); line-height: 1.5;
-            border-left: 2px solid var(--border);
-            padding-left: 10px;
-            font-style: italic;
-            min-height: 28px;
-            display: flex; align-items: center;
-        }
-
-        .glass-panel h1 {
-            font-family: var(--font-brand); font-size: clamp(32px, 3.5vw, 42px); font-weight: 600;
-            letter-spacing: -0.03em; line-height: 1.12;
-        }
-
-        .glass-panel .subtitle {
-            font-size: 15px; color: var(--text-mid);
-            line-height: 1.6; max-width: 420px;
-        }
-        .glass-panel .subtitle strong { color: var(--text); font-weight: 600; }
-
-        /* Pillar chips */
-        .pillars-row {
-            display: flex; gap: 10px;
-        }
-        .pillar-chip {
-            flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
-            background: rgba(0,0,0,0.04);
-            border-radius: var(--radius-pill);
-            padding: 10px 12px;
-            font-family: var(--mono); font-size: 10px; font-weight: 500;
-            color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
-            transition: background 0.2s, color 0.2s;
-        }
-        .pillar-chip:hover { background: rgba(0,0,0,0.08); color: var(--text); }
-        .pillar-chip span.chip-icon { font-size: 14px; }
-
-        /* Waitlist */
-        .waitlist-form {
-            display: flex; gap: 8px;
-        }
-        .wl-input {
-            flex: 1; height: 48px; padding: 0 16px;
-            font-family: var(--font); font-size: 13px;
-            border: 1px solid var(--border); border-radius: var(--radius-sm);
-            background: #fff; color: var(--text); outline: none;
-            transition: border-color 0.2s;
-        }
-        .wl-input:focus { border-color: var(--accent); }
-        .wl-input::placeholder { color: var(--text-dim); }
-        .wl-btn {
-            height: 48px; padding: 0 18px;
-            font-family: var(--font-brand); font-size: 13px; font-weight: 600;
-            background: var(--accent); color: #fff; border: none;
-            border-radius: var(--radius-sm); cursor: pointer;
-            transition: background 0.2s; white-space: nowrap;
-        }
-        .wl-btn:hover { background: var(--accent-hover); }
-        .wl-msg {
-            font-family: var(--mono); font-size: 11px; color: var(--sage);
-            height: 16px; margin-top: 4px;
-        }
-        .wl-fine {
-            font-size: 11px; color: var(--text-dim);
-        }
-
-        /* Scroll hint */
-        .scroll-hint {
-            position: absolute; bottom: 28px; left: 50%;
-            transform: translateX(-50%); z-index: 10;
-            color: var(--text-tech);
-            font-family: var(--mono); font-size: 10px;
-            letter-spacing: 0.15em; text-transform: uppercase;
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            animation: scrollBounce 2s ease-in-out infinite;
-        }
-        @keyframes scrollBounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(5px); }
-        }
-
-        /* ── Sections (below fold) ── */
-        .below-fold {
-            position: relative; z-index: 10;
+        /* ── What you get ── */
+        .section {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 5;
             background: var(--bg);
         }
-        section.s { padding: 72px 0; }
-        .s-border { border-top: 1px solid var(--border); }
-        .container { max-width: var(--max-w); margin: 0 auto; padding: 0 32px; }
 
         .s-label {
-            font-family: var(--mono); font-size: 10px; font-weight: 500;
-            text-transform: uppercase; letter-spacing: 0.12em;
-            color: var(--text-dim); margin-bottom: 8px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
         }
-        h2 {
-            font-family: var(--font-brand); font-size: clamp(22px, 2.8vw, 30px);
-            font-weight: 600; letter-spacing: -0.02em;
-            line-height: 1.2; margin-bottom: 8px;
+
+        .s-title {
+            font-size: 1.8rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
         }
+
         .s-sub {
-            font-size: 14px; color: var(--text-muted);
-            max-width: 460px; line-height: 1.55; margin-bottom: 32px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            line-height: 1.6;
         }
 
-        /* Cards grid */
         .cards-3 {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
         }
+
         .card {
-            background: none; border: none;
-            padding: 8px 0;
+            padding: 1.75rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: border-color 0.3s;
         }
+
+        .card:hover { border-color: rgba(255,255,255,0.3); }
+
         .card-icon {
-            width: 36px; height: 36px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; font-weight: 700; margin-bottom: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-bottom: 1rem;
         }
-        .card-icon.ci-blue { background: var(--accent-light); color: var(--accent); }
-        .card-icon.ci-sage { background: var(--sage-light); color: #4A6B4F; }
-        .card-icon.ci-amber { background: #FFF5E0; color: #B45309; }
-        .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 5px; letter-spacing: -0.01em; }
-        .card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
+
+        .ci-blue { background: var(--accent-soft); color: var(--accent); }
+        .ci-green { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+        .ci-amber { background: rgba(251, 191, 36, 0.15); color: var(--amber); }
+
+        .card h3 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
         .card code {
-            font-family: var(--mono); font-size: 11px;
-            background: rgba(0,0,197,0.07); padding: 1px 4px; border-radius: 3px;
-        }
-        .coming-badge {
-            display: inline-block;
-            font-family: var(--mono); font-size: 8px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.08em;
-            color: #B45309; background: #FFF5E0;
-            padding: 2px 6px; border-radius: 3px;
-            vertical-align: middle; margin-right: 3px;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            background: var(--accent-soft);
+            padding: 1px 5px;
+            border-radius: 3px;
         }
 
-        /* Quote */
+        /* ── Quote ── */
         .quote-block {
-            text-align: center; padding: 48px 0 0;
-            margin-top: 36px;
-            border-top: 1px solid var(--border);
-        }
-        .quote-block blockquote {
-            font-family: var(--font-brand);
-            font-size: 20px; font-weight: 400; line-height: 1.5;
-            max-width: 520px; margin: 0 auto 12px;
-        }
-        .quote-block blockquote em { font-style: normal; color: var(--accent); }
-        .quote-attr {
-            font-family: var(--mono); font-size: 10px;
-            color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase;
+            margin-top: 3rem;
+            padding: 2rem;
+            border-left: 2px solid var(--accent);
+            max-width: 600px;
         }
 
-        /* Stats strip */
+        .quote-block blockquote {
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.5;
+            font-style: italic;
+            color: #ccc;
+        }
+
+        .quote-block blockquote em { color: var(--accent); font-style: italic; }
+
+        /* ── Stats row ── */
         .stats-row {
-            display: flex; justify-content: center; gap: 32px;
-            padding: 32px 0 0; margin-top: 32px;
-            border-top: 1px solid var(--border); flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
         }
+
         .stat-item {
-            font-family: var(--mono); font-size: 10px; color: var(--text-dim);
-            letter-spacing: 0.05em; text-align: center;
-            max-width: 180px; line-height: 1.5;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
         }
+
         .stat-item strong {
-            display: block; color: var(--text-mid);
-            font-size: 11px; margin-bottom: 2px;
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Team features ── */
+        .coming-badge {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: var(--accent-soft);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 999px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        /* ── How it works ── */
+        .how-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .step-num {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-code {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--green);
+            background: rgba(255,255,255,0.05);
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .step-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ── Waitlist ── */
+        .waitlist-inner {
+            max-width: 480px;
+        }
+
+        .waitlist-title {
+            font-size: 1.8rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .waitlist-sub {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .wl-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .wl-input {
+            flex: 1;
+            height: 44px;
+            padding: 0 1rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .wl-input::placeholder { color: var(--text-dim); }
+        .wl-input:focus { border-color: var(--accent); }
+
+        .wl-btn {
+            height: 44px;
+            padding: 0 1.25rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .wl-btn:hover { background: var(--accent-hover); }
+        .wl-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .wl-msg {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            min-height: 1.3em;
+        }
+
+        .wl-fine {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-dim);
         }
 
         /* ── FAQ ── */
-        .faq-grid { max-width: 600px; }
-        .faq-item { border-bottom: 1px solid var(--border); padding: 16px 0; }
+        .faq-grid {
+            max-width: 700px;
+        }
+
+        .faq-item {
+            border-top: 1px solid var(--border);
+            padding: 1.25rem 0;
+        }
+
         .faq-q {
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center; gap: 16px;
-            letter-spacing: -0.01em;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
         }
+
         .faq-q::after {
-            content: '+'; font-size: 16px; font-weight: 400;
-            color: var(--text-dim); flex-shrink: 0;
+            content: '+';
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            transition: transform 0.3s;
+            flex-shrink: 0;
         }
-        .faq-item.open .faq-q::after { content: '\2212'; }
+
+        .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
         .faq-a {
-            font-size: 13px; color: var(--text-muted); line-height: 1.65;
-            max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
-            padding-right: 36px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, margin-top 0.3s;
         }
-        .faq-item.open .faq-a { max-height: 300px; padding-top: 8px; }
+
+        .faq-item.open .faq-a {
+            max-height: 400px;
+            margin-top: 0.75rem;
+        }
+
         .faq-a code {
-            font-family: var(--mono); font-size: 11px;
-            background: var(--accent-light); padding: 1px 4px; border-radius: 3px;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            background: var(--accent-soft);
+            padding: 1px 5px;
+            border-radius: 3px;
         }
 
         /* ── Footer ── */
         footer {
-            position: relative; z-index: 10;
+            padding: 3rem 0 1.5rem;
+            position: relative;
+            z-index: 5;
             background: var(--bg);
-            border-top: 1px solid var(--border);
-            padding: 28px 0;
-        }
-        .footer-inner {
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 12px;
-        }
-        .footer-brand {
-            font-size: 12px; color: var(--text-muted); max-width: 340px; line-height: 1.5;
-        }
-        .footer-brand strong { color: var(--text); }
-        .footer-links { display: flex; gap: 18px; }
-        .footer-links a {
-            font-size: 12px; color: var(--text-muted); text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer-links a:hover { color: var(--accent); }
-        .footer-copy {
-            font-family: var(--mono); font-size: 10px; color: var(--text-dim);
         }
 
-        /* ── Responsive ── */
-        @media (max-width: 1024px) {
-            .hero-layout {
-                grid-template-columns: 1fr;
-                padding: 24px;
-            }
-            .term-wrapper { order: 1; }
-            .panel-wrapper { order: 2; padding-left: 0; justify-content: center; }
-            .glass-panel { max-width: 100%; padding: 0 8px; }
-            .terminal { max-width: 100%; }
-            .tech-label { display: none; }
-            .top-bar { top: 12px; right: 16px; }
-            .hero { min-height: auto; }
-            .hero-layout { min-height: auto; padding-top: 80px; padding-bottom: 40px; }
-            .scroll-hint { display: none; }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+            flex-wrap: wrap;
         }
+
+        .footer-brand {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        .footer-brand strong { color: var(--text); }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--text); }
+
+        .footer-copy {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 900px) {
+            .hero-content { flex-direction: column; gap: 2.5rem; }
+            .hero-right { width: 100%; }
+            .hero { padding-top: 80px; }
+        }
+
         @media (max-width: 768px) {
+            header { padding: 1rem 1.5rem; }
+            .container { padding: 0 1.5rem; }
+            .hero-title { font-size: 2.8rem; }
+            .hero-sub { font-size: 0.95rem; }
+            #dither-canvas { opacity: 0.15; }
+            .hero-right { width: 100%; }
+            .terminal-body { font-size: 0.65rem; min-height: 200px; max-height: 260px; }
             .cards-3 { grid-template-columns: 1fr; }
-            .pillars-row { flex-direction: column; }
-            .waitlist-form { flex-direction: column; }
-            .wl-btn { width: 100%; }
-            .stats-row { flex-direction: column; align-items: center; }
+            .how-steps { grid-template-columns: 1fr; gap: 2rem; }
+            .stats-row { grid-template-columns: 1fr; }
+            .wl-form { flex-direction: column; }
+            .nav-group .nav-btn:not(#langToggle):not(.nav-btn--accent) { display: none; }
+            .footer-inner { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-<!-- WebGL shader -->
-<div id="webgl-bg"></div>
+    <!-- Header -->
+    <header>
+        <div class="logo">RIG</div>
+        <nav class="nav-group">
+            <button class="nav-btn" id="langToggle">RU</button>
+            <a href="#waitlist" class="nav-btn nav-btn--accent" data-en="Get started" data-ru="Начать">Get started</a>
+        </nav>
+    </header>
 
-<!-- Ambient tech labels -->
-<div class="tech-label tl-top">RIG.CLI // ACTIVE</div>
-<div class="tech-label tl-bottom">PRACTICE_LAYER_</div>
-<div class="tech-label tl-right">
-    <span>RULES</span><span>+</span><span>HOOKS</span><span>+</span><span>WORKFLOWS</span><span>+</span><span>MEMORY</span>
-</div>
+    <!-- Hero -->
+    <section class="hero">
+        <canvas id="dither-canvas"></canvas>
+        <div class="container">
+            <div class="hero-content">
 
-<!-- Top bar -->
-<div class="top-bar">
-    <button class="top-btn" id="langToggle">RU</button>
-    <a href="#waitlist" class="top-cta" data-en="Get started" data-ru="Начать">Get started</a>
-</div>
+                <!-- Left: copy -->
+                <div class="hero-left">
+                    <span class="hero-label" data-en="Managed AI Dev Practice" data-ru="Управляемая AI-разработка">Managed AI Dev Practice</span>
+                    <h1 class="hero-title" data-en="Your AI agents<br>need a <span class='accent'>harness</span>." data-ru="Вашим AI-агентам<br>нужен <span class='accent'>каркас</span>.">Your AI agents<br>need a <span class="accent">harness</span>.</h1>
+                    <p class="hero-sub" data-en="Rules, hooks, workflows, and <strong>shared team memory</strong> that make your AI coding agents reliable. Works with <span class='accent'>Claude Code</span>, Cursor, and Copilot." data-ru="Правила, хуки, процессы и <strong>общая память команды</strong>, которые делают ваших AI-агентов надёжными. Работает с <span class='accent'>Claude Code</span>, Cursor и Copilot.">Rules, hooks, workflows, and <strong>shared team memory</strong> that make your AI coding agents reliable. Works with <span class="accent">Claude Code</span>, Cursor, and Copilot.</p>
 
-<!-- ── HERO ── -->
-<section class="hero">
-    <div class="hero-layout">
-
-        <!-- LEFT: Terminal on shader -->
-        <div class="term-wrapper">
-            <div class="terminal">
-                <div class="terminal-bar">
-                    <span class="td td-r"></span>
-                    <span class="td td-y"></span>
-                    <span class="td td-g"></span>
-                    <div class="terminal-bar-spacer"></div>
-                </div>
-                <div class="terminal-body" id="termBody"></div>
-            </div>
-        </div>
-
-        <!-- RIGHT: Glass panel -->
-        <div class="panel-wrapper">
-            <div class="glass-panel">
-
-                <div class="sys-badge">Managed AI Dev Practice</div>
-
-                <div class="pain-trigger" id="painTrigger"></div>
-
-                <h1 data-en="Your AI agents<br>need a <span class='accent'>harness</span>." data-ru="Вашим AI-агентам<br>нужен <span class='accent'>каркас</span>.">Your AI agents<br>need a <span class="accent">harness</span>.</h1>
-
-                <p class="subtitle" data-en="Rules, hooks, and workflows that make your AI coding agents <strong>reliable</strong>. Works with <span class='accent'>Claude Code</span>, Cursor, and Copilot." data-ru="Правила, хуки и процессы, которые делают ваших AI-агентов <strong>надёжными</strong>. Работает с <span class='accent'>Claude Code</span>, Cursor и Copilot.">Rules, hooks, and workflows that make your AI coding agents <strong>reliable</strong>. Works with <span class="accent">Claude Code</span>, Cursor, and Copilot.</p>
-
-                <div class="pillars-row">
-                    <div class="pillar-chip"><span class="chip-icon">&#x2713;</span> Rules</div>
-                    <div class="pillar-chip"><span class="chip-icon">&#x25CF;</span> Hooks</div>
-                    <div class="pillar-chip"><span class="chip-icon">&#x21BB;</span> Updates</div>
-                    <div class="pillar-chip"><span class="chip-icon">&#x1F9E0;</span> Memory</div>
+                    <a href="#waitlist" class="hero-cta" data-en="Get started" data-ru="Начать">Get started</a>
                 </div>
 
-                <div id="waitlist">
-                    <form class="waitlist-form" id="waitlistForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-                        <input class="wl-input" type="email" name="email" placeholder="you@company.com" required>
-                        <button class="wl-btn" type="submit" data-en="Get started" data-ru="Начать">Get started</button>
-                    </form>
-                    <div class="wl-msg" id="waitlistMsg"></div>
-                    <div class="wl-fine" data-en="Free forever. No spam." data-ru="Бесплатно навсегда. Без спама.">Free forever. No spam.</div>
+                <!-- Right: terminal -->
+                <div class="hero-right">
+                    <div class="terminal">
+                        <div class="terminal-bar">
+                            <span class="td td-r"></span>
+                            <span class="td td-y"></span>
+                            <span class="td td-g"></span>
+                        </div>
+                        <div class="terminal-body" id="termBody"></div>
+                    </div>
                 </div>
 
             </div>
         </div>
+    </section>
 
-    </div>
-
-    <div class="scroll-hint" data-en="Scroll" data-ru="Вниз">
-        Scroll<br>&#x25BE;
-    </div>
-</section>
-
-<!-- ── Below fold ── -->
-<div class="below-fold">
-
-    <!-- Pillars -->
-    <section class="s s-border">
+    <!-- What you get -->
+    <section class="section border-top">
         <div class="container">
             <div class="s-label" data-en="What you get" data-ru="Что внутри">What you get</div>
-            <h2 data-en="Your agents. Our <span class='accent'>structure</span>." data-ru="Ваши агенты. Наша <span class='accent'>структура</span>.">Your agents. Our <span class="accent">structure</span>.</h2>
+            <h2 class="s-title" data-en="Your agents. Our <span class='accent'>structure</span>." data-ru="Ваши агенты. Наша <span class='accent'>структура</span>.">Your agents. Our <span class="accent">structure</span>.</h2>
             <p class="s-sub" data-en="RIG doesn't replace your AI tools. It adds the practice layer they're missing — so the code they write actually ships." data-ru="RIG не заменяет ваши AI-инструменты. Он добавляет слой практики, которого им не хватает — чтобы код, который они пишут, реально попадал в продакшен.">RIG doesn't replace your AI tools. It adds the practice layer they're missing — so the code they write actually ships.</p>
 
             <div class="cards-3">
@@ -542,7 +686,7 @@
                     <p data-en="Pre-commit hooks catch what prompts miss. Lint, typecheck, security gates before <span class='accent'>every commit</span>. Hooks = 100%. Prompts &asymp; 80%." data-ru="Pre-commit хуки ловят то, что промпты пропускают. Линт, типы, безопасность — перед <span class='accent'>каждым коммитом</span>. Хуки = 100%. Промпты &asymp; 80%.">Pre-commit hooks catch what prompts miss. Lint, typecheck, security gates before <span class="accent">every commit</span>. Hooks = 100%. Prompts &asymp; 80%.</p>
                 </div>
                 <div class="card">
-                    <div class="card-icon ci-sage">&#x25A0;</div>
+                    <div class="card-icon ci-green">&#x25A0;</div>
                     <h3 data-en="Opinionated defaults" data-ru="Готовые настройки">Opinionated defaults</h3>
                     <p data-en="Code review, security rules, agent orchestration — pre-configured from <span class='accent'>real research</span>. Not opinions. Not vibes." data-ru="Ревью кода, правила безопасности, оркестрация агентов — преднастроено на основе <span class='accent'>реальных исследований</span>. Не мнения. Не вайбы.">Code review, security rules, agent orchestration — pre-configured from <span class="accent">real research</span>. Not opinions. Not vibes.</p>
                 </div>
@@ -556,10 +700,9 @@
             <!-- Quote -->
             <div class="quote-block">
                 <blockquote data-en="&ldquo;The more autonomy you give AI agents,<br>the more <em>structure</em> they need. RIG is that structure.&rdquo;" data-ru="&laquo;Чем больше автономии вы даёте AI-агентам,<br>тем больше <em>структуры</em> им нужно. RIG — эта структура.&raquo;">&ldquo;The more autonomy you give AI agents,<br>the more <em>structure</em> they need. RIG is that structure.&rdquo;</blockquote>
-                <div class="quote-attr" data-en="The Dark Factory Principle" data-ru="Принцип Тёмной Фабрики">The Dark Factory Principle</div>
             </div>
 
-            <!-- Research citations -->
+            <!-- Research stats -->
             <div class="stats-row">
                 <div class="stat-item" data-en="<strong>1.7x more bugs</strong>AI-generated code vs human-written. CodeRabbit, 2025" data-ru="<strong>1.7x больше багов</strong>В AI-коде по сравнению с человеческим. CodeRabbit, 2025"><strong>1.7x more bugs</strong>AI-generated code vs human-written. CodeRabbit, 2025</div>
                 <div class="stat-item" data-en="<strong>&asymp;80% compliance</strong>CLAUDE.md rules are advisory. Only hooks give 100%" data-ru="<strong>&asymp;80% соблюдение</strong>Правила CLAUDE.md — рекомендательные. Только хуки дают 100%"><strong>&asymp;80% compliance</strong>CLAUDE.md rules are advisory. Only hooks give 100%</div>
@@ -569,10 +712,10 @@
     </section>
 
     <!-- Team features -->
-    <section class="s s-border">
+    <section class="section border-top">
         <div class="container">
             <div class="s-label" data-en="Team features" data-ru="Для команд">Team features</div>
-            <h2 data-en="One harness. <span class='accent'>Whole team</span> aligned." data-ru="Один каркас. <span class='accent'>Вся команда</span> в синхроне.">One harness. <span class="accent">Whole team</span> aligned.</h2>
+            <h2 class="s-title" data-en="One harness. <span class='accent'>Whole team</span> aligned." data-ru="Один каркас. <span class='accent'>Вся команда</span> в синхроне.">One harness. <span class="accent">Whole team</span> aligned.</h2>
             <p class="s-sub" data-en="When your team uses RIG, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI." data-ru="Когда команда использует RIG, каждый агент — на каждой машине — следует одним конвенциям. Никакого &laquo;у меня работает&raquo; для AI.">When your team uses RIG, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI.</p>
 
             <div class="cards-3">
@@ -582,7 +725,7 @@
                     <p data-en="Commit <code>CLAUDE.md</code> and <code>.cursor/rules/</code> to your repo. Every teammate's agent inherits the <span class='accent'>same rules</span> — code style, review process, security." data-ru="Закоммитьте <code>CLAUDE.md</code> и <code>.cursor/rules/</code> в репозиторий. Агент каждого коллеги наследует <span class='accent'>одни правила</span> — стиль кода, ревью, безопасность.">Commit <code>CLAUDE.md</code> and <code>.cursor/rules/</code> to your repo. Every teammate's agent inherits the <span class="accent">same rules</span> — code style, review process, security.</p>
                 </div>
                 <div class="card">
-                    <div class="card-icon ci-sage">&#x1F517;</div>
+                    <div class="card-icon ci-green">&#x1F517;</div>
                     <h3 data-en="Shared context" data-ru="Общий контекст">Shared context</h3>
                     <p data-en="Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class='accent'>knows what the dev's agent</span> just shipped." data-ru="Агенты разделяют <code>PROGRESS.md</code> и <code>DECISIONS.md</code> — статус, блокеры, архитектурные решения. Агент PM'а <span class='accent'>знает, что зашипил</span> агент разработчика.">Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class="accent">knows what the dev's agent</span> just shipped.</p>
                 </div>
@@ -595,12 +738,52 @@
         </div>
     </section>
 
+    <!-- How it works -->
+    <section class="section border-top">
+        <div class="container">
+            <div class="s-label" data-en="How it works" data-ru="Как это работает">How it works</div>
+            <div class="how-steps">
+                <div>
+                    <div class="step-num">01</div>
+                    <div class="step-code">npx create-rig</div>
+                    <div class="step-text" data-en="Pick your preset and stack. RIG generates CLAUDE.md, agents, rules, hooks, and workflows. 30 seconds." data-ru="Выберите пресет и стек. RIG сгенерирует CLAUDE.md, агентов, правила, хуки и процессы. 30 секунд.">Pick your preset and stack. RIG generates CLAUDE.md, agents, rules, hooks, and workflows. 30 seconds.</div>
+                </div>
+                <div>
+                    <div class="step-num">02</div>
+                    <div class="step-code">code with AI</div>
+                    <div class="step-text" data-en="Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster." data-ru="Ваши агенты теперь следуют вашим правилам. Хуки ловят ошибки. Код-ревью запускается автоматически. Вы шипите быстрее.">Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster.</div>
+                </div>
+                <div>
+                    <div class="step-num">03</div>
+                    <div class="step-code">rig update</div>
+                    <div class="step-text" data-en="Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance." data-ru="Claude обновился? Cursor изменился? Мы шипим новые правила. Одна команда — ваш сетап актуален. Никакого ручного обслуживания.">Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist -->
+    <section class="section border-top" id="waitlist">
+        <div class="container">
+            <div class="waitlist-inner">
+                <h2 class="waitlist-title" data-en="Get started" data-ru="Начать">Get started</h2>
+                <p class="waitlist-sub" data-en="Leave your email — we'll send setup instructions and early updates." data-ru="Оставьте email — пришлём инструкцию по установке и ранние обновления.">Leave your email — we'll send setup instructions and early updates.</p>
+                <form class="wl-form" id="waitlistForm" action="https://formspree.io/f/mwvaoknr" method="POST">
+                    <input type="email" name="email" class="wl-input" placeholder="you@company.com" required>
+                    <button type="submit" class="wl-btn" data-en="Get started" data-ru="Начать">Get started</button>
+                </form>
+                <div class="wl-msg" id="waitlistMsg"></div>
+                <div class="wl-fine" data-en="Free forever. No spam." data-ru="Бесплатно навсегда. Без спама.">Free forever. No spam.</div>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ -->
-    <section class="s s-border">
+    <section class="section border-top">
         <div class="container">
             <div class="s-label">FAQ</div>
-            <h2 data-en="Common <span class='accent'>questions</span>" data-ru="Частые <span class='accent'>вопросы</span>">Common <span class="accent">questions</span></h2>
-            <div style="height:10px"></div>
+            <h2 class="s-title" data-en="Common <span class='accent'>questions</span>" data-ru="Частые <span class='accent'>вопросы</span>">Common <span class="accent">questions</span></h2>
+            <div style="height:8px"></div>
 
             <div class="faq-grid">
                 <div class="faq-item">
@@ -639,301 +822,205 @@
         </div>
     </section>
 
-</div>
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <strong>RIG</strong> — Managed AI dev practice. Rules, hooks, and workflows for teams who ship with AI.
+    <!-- Footer -->
+    <footer class="border-top">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <strong>RIG</strong> — Managed AI dev practice. Rules, hooks, and workflows for teams who ship with AI.
+                </div>
+                <div class="footer-links">
+                    <a href="#waitlist" data-en="Waitlist" data-ru="Запись">Waitlist</a>
+                    <a href="https://t.me/rig_dev" target="_blank">Telegram</a>
+                </div>
             </div>
-            <div class="footer-links">
-                <a href="#waitlist" data-en="Waitlist" data-ru="Запись">Waitlist</a>
-                <a href="https://www.npmjs.com/package/create-rig" target="_blank">npm</a>
-                <a href="mailto:hello@rig.dev">hello@rig.dev</a>
-                <a href="https://t.me/rig_dev" target="_blank">Telegram</a>
+            <div class="footer-copy">
+                <span>&copy; 2026 RIG</span>
+                <span data-en="Built for people who ship with AI" data-ru="Для тех, кто шипит с AI">Built for people who ship with AI</span>
             </div>
         </div>
-        <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-            <span class="footer-copy">&copy; 2026 RIG</span>
-            <span class="footer-copy" data-en="Built for people who ship with AI" data-ru="Для тех, кто шипит с AI">Built for people who ship with AI</span>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-<script>
-/* ── Language toggle ── */
-const htmlEl = document.documentElement;
-const langBtn = document.getElementById('langToggle');
-let lang = 'en';
-langBtn.addEventListener('click', () => {
-    lang = lang === 'en' ? 'ru' : 'en';
-    htmlEl.setAttribute('lang', lang);
-    langBtn.textContent = lang === 'en' ? 'RU' : 'EN';
-    document.querySelectorAll('[data-en]').forEach(el => {
-        const t = el.getAttribute('data-' + lang);
-        if (t) el.innerHTML = t;
+    <script>
+    /* ── Language toggle ── */
+    const langBtn = document.getElementById('langToggle');
+    let lang = (navigator.language || '').startsWith('ru') ? 'ru' : 'en';
+
+    function applyLang() {
+        langBtn.textContent = lang === 'en' ? 'RU' : 'EN';
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-en]').forEach(el => {
+            const t = el.getAttribute('data-' + lang);
+            if (t) el.innerHTML = t;
+        });
+    }
+
+    langBtn.addEventListener('click', () => {
+        lang = lang === 'en' ? 'ru' : 'en';
+        applyLang();
     });
-});
 
-/* ── Pain trigger rotation ── */
-const pains = {
-    en: [
-        '\u201C3 hours configuring CLAUDE.md. The code still doesn\u2019t lint.\u201D',
-        '\u201CMy agent ignored half the rules. Again.\u201D',
-        '\u201CSet it up once. Now it\u2019s outdated and nobody updates it.\u201D',
-        '\u201CEach dev\u2019s agent does something different. Same repo.\u201D',
-    ],
-    ru: [
-        '\u00AB3 часа настраивал CLAUDE.md. Код всё ещё не линтится.\u00BB',
-        '\u00ABАгент проигнорировал половину правил. Опять.\u00BB',
-        '\u00ABНастроил один раз. Теперь устарело, никто не обновляет.\u00BB',
-        '\u00ABУ каждого дева агент делает своё. Один репозиторий.\u00BB',
-    ]
-};
-const painEl = document.getElementById('painTrigger');
-let painIdx = 0;
-function showPain() {
-    painEl.style.opacity = 0;
-    setTimeout(() => {
-        painEl.textContent = pains[lang][painIdx % pains[lang].length];
-        painEl.style.opacity = 1;
-        painIdx++;
-    }, 400);
-}
-painEl.style.transition = 'opacity 0.4s ease';
-showPain();
-setInterval(showPain, 4000);
+    applyLang();
 
-/* ── FAQ ── */
-document.querySelectorAll('.faq-q').forEach(q => {
-    q.addEventListener('click', () => {
-        const item = q.parentElement;
-        const wasOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-        if (!wasOpen) item.classList.add('open');
+    /* ── FAQ accordion ── */
+    document.querySelectorAll('.faq-q').forEach(q => {
+        q.addEventListener('click', () => {
+            const item = q.parentElement;
+            const wasOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+            if (!wasOpen) item.classList.add('open');
+        });
     });
-});
 
-/* ── Waitlist (Formspree) ── */
-const form = document.getElementById('waitlistForm');
-const msg = document.getElementById('waitlistMsg');
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = form.querySelector('input[name="email"]').value;
-    const btn = form.querySelector('.wl-btn');
-    btn.disabled = true;
-    btn.textContent = '...';
+    /* ── Waitlist (Formspree) ── */
+    const form = document.getElementById('waitlistForm');
+    const msg = document.getElementById('waitlistMsg');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = form.querySelector('input[name="email"]').value;
+        const btn = form.querySelector('.wl-btn');
+        btn.disabled = true;
+        btn.textContent = '...';
 
-    fetch(form.action, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-    })
-    .then(r => {
-        if (!r.ok) throw new Error(r.status);
-        form.style.display = 'none';
-        msg.innerHTML = (lang === 'ru'
-            ? '<span style="color:var(--terminal-green)">&#x2713;</span> Отлично! Установите: <code style="font-family:var(--mono);background:rgba(0,0,197,0.07);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>'
-            : '<span style="color:var(--terminal-green)">&#x2713;</span> You\u2019re in! Install now: <code style="font-family:var(--mono);background:rgba(0,0,197,0.07);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>');
-        msg.style.height = 'auto';
-    })
-    .catch(() => {
-        btn.disabled = false;
-        btn.textContent = lang === 'ru' ? 'Начать' : 'Get started';
-        msg.innerHTML = '<span style="color:#dc2626">Something went wrong. Try again.</span>';
-        msg.style.height = 'auto';
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        })
+        .then(r => {
+            if (!r.ok) throw new Error(r.status);
+            form.style.display = 'none';
+            msg.innerHTML = lang === 'ru'
+                ? '<span style="color:var(--green)">&#x2713;</span> Отлично! Установите: <code style="font-family:var(--mono);background:var(--accent-soft);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>'
+                : '<span style="color:var(--green)">&#x2713;</span> You\u2019re in! Install now: <code style="font-family:var(--mono);background:var(--accent-soft);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>';
+        })
+        .catch(() => {
+            btn.disabled = false;
+            btn.textContent = lang === 'ru' ? 'Начать' : 'Get started';
+            msg.innerHTML = '<span style="color:#dc2626">Something went wrong. Try again.</span>';
+        });
     });
-});
 
-/* ── Terminal animation ── */
-const termBody = document.getElementById('termBody');
-const termLines = [
-    { type: 'prompt', text: 'npx create-rig@latest', delay: 0 },
-    { type: 'muted', text: '', delay: 500 },
-    { type: 'muted', text: 'Fetching RIG practice templates...', delay: 400 },
-    { type: 'muted', text: '', delay: 600 },
-    { type: 'green', text: '\u2713 Generated CLAUDE.md', delay: 200 },
-    { type: 'green', text: '\u2713 Generated .cursor/rules/', delay: 180 },
-    { type: 'green', text: '\u2713 Generated AGENTS.md', delay: 170 },
-    { type: 'green', text: '\u2713 Installed pre-commit hooks', delay: 180 },
-    { type: 'green', text: '\u2713 Created rig.toml', delay: 160 },
-    { type: 'muted', text: '', delay: 400 },
-    { type: 'box', title: 'READY', lines: [
-        '<span style="font-weight:500">Your AI dev practice is configured.</span>',
-        '',
-        '<span class="t-muted">Your agents now follow your rules.</span>',
-        '<span class="t-muted">Pre-commit hooks enforce quality.</span>',
-        '',
-        'Next: <span class="t-green">claude "build my feature"</span>',
-        'Update: <span class="t-green">rig update</span>',
-    ], delay: 350 },
-    { type: 'muted', text: '', delay: 500 },
-    { type: 'prompt-end', text: '', delay: 400 },
-];
+    /* ── Terminal animation ── */
+    const termBody = document.getElementById('termBody');
+    const termLines = [
+        { type: 'prompt', text: 'npx create-rig@latest', delay: 0 },
+        { type: 'muted', text: '', delay: 500 },
+        { type: 'muted', text: 'Fetching RIG practice templates...', delay: 400 },
+        { type: 'muted', text: '', delay: 600 },
+        { type: 'green', text: '\u2713 Generated CLAUDE.md', delay: 200 },
+        { type: 'green', text: '\u2713 Generated .cursor/rules/', delay: 180 },
+        { type: 'green', text: '\u2713 Generated AGENTS.md', delay: 170 },
+        { type: 'green', text: '\u2713 Installed pre-commit hooks', delay: 180 },
+        { type: 'green', text: '\u2713 Created rig.toml', delay: 160 },
+        { type: 'muted', text: '', delay: 400 },
+        { type: 'box', title: 'READY', lines: [
+            '<span style="font-weight:500">Your AI dev practice is configured.</span>',
+            '',
+            '<span class="t-muted">Your agents now follow your rules.</span>',
+            '<span class="t-muted">Pre-commit hooks enforce quality.</span>',
+            '',
+            'Next: <span class="t-green">claude "build my feature"</span>',
+            'Update: <span class="t-green">rig update</span>',
+        ], delay: 350 },
+        { type: 'muted', text: '', delay: 500 },
+        { type: 'prompt-end', text: '', delay: 400 },
+    ];
 
-function renderTerminal() {
-    termBody.innerHTML = '';
-    let total = 300;
-    termLines.forEach(line => {
-        total += line.delay;
-        const d = total;
-        setTimeout(() => {
-            const el = document.createElement('div');
-            el.className = 't-line';
-            if (line.type === 'prompt') {
-                el.innerHTML = '<span class="t-prompt">~</span> <span class="t-dollar">$</span> <span class="t-cmd">' + line.text + '</span>';
-            } else if (line.type === 'prompt-end') {
-                el.innerHTML = '<span class="t-prompt">~/my-project</span> <span class="t-dollar">$</span> <span class="t-cursor"></span>';
-            } else if (line.type === 'green') {
-                el.innerHTML = '<span class="t-green">' + line.text + '</span>';
-            } else if (line.type === 'accent') {
-                el.innerHTML = '<span class="t-accent">' + line.text + '</span>';
-            } else if (line.type === 'white') {
-                el.innerHTML = '<span style="color:#fff">' + line.text + '</span>';
-            } else if (line.type === 'box') {
-                el.className = 't-line t-box';
-                el.innerHTML = '<div class="t-box-label">' + line.title + '</div>' +
-                    line.lines.map(l => '<div>' + (l || '&nbsp;') + '</div>').join('');
-            } else {
-                el.innerHTML = '<span class="t-muted">' + (line.text || '&nbsp;') + '</span>';
+    function renderTerminal() {
+        termBody.innerHTML = '';
+        let total = 300;
+        termLines.forEach(line => {
+            total += line.delay;
+            const d = total;
+            setTimeout(() => {
+                const el = document.createElement('div');
+                el.className = 't-line';
+                if (line.type === 'prompt') {
+                    el.innerHTML = '<span class="t-prompt">~</span> <span class="t-dollar">$</span> <span class="t-cmd">' + line.text + '</span>';
+                } else if (line.type === 'prompt-end') {
+                    el.innerHTML = '<span class="t-prompt">~/my-project</span> <span class="t-dollar">$</span> <span class="t-cursor"></span>';
+                } else if (line.type === 'green') {
+                    el.innerHTML = '<span class="t-green">' + line.text + '</span>';
+                } else if (line.type === 'box') {
+                    el.className = 't-line t-box';
+                    el.innerHTML = '<div class="t-box-label">' + line.title + '</div>' +
+                        line.lines.map(l => '<div>' + (l || '&nbsp;') + '</div>').join('');
+                } else {
+                    el.innerHTML = '<span class="t-muted">' + (line.text || '&nbsp;') + '</span>';
+                }
+                termBody.appendChild(el);
+                termBody.scrollTop = termBody.scrollHeight;
+            }, d);
+        });
+    }
+
+    const termObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                renderTerminal();
+                termObs.unobserve(e.target);
             }
-            termBody.appendChild(el);
-            termBody.scrollTop = termBody.scrollHeight;
-        }, d);
-    });
-}
+        });
+    }, { threshold: 0.2 });
+    termObs.observe(document.querySelector('.terminal'));
 
-// Start animation when terminal is visible
-const termObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) {
-            renderTerminal();
-            termObs.unobserve(e.target);
+    /* ── Dither Canvas Animation ── */
+    const canvas = document.getElementById('dither-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, t = 0;
+
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const bayer = [
+        [0, 8, 2, 10],
+        [12, 4, 14, 6],
+        [3, 11, 1, 9],
+        [15, 7, 13, 5]
+    ];
+
+    function draw() {
+        ctx.fillStyle = '#111111';
+        ctx.fillRect(0, 0, w, h);
+
+        const g = 6;
+        const cols = Math.ceil(w / g);
+        const rows = Math.ceil(h / g);
+        const cy = rows * 0.55;
+        const amp = rows / 5;
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const wave1 = Math.sin(x * 0.04 + t) * amp;
+                const wave2 = Math.cos(x * 0.02 - t * 0.7) * (amp * 0.5);
+                const wave3 = Math.sin(x * 0.07 + t * 1.3) * (amp * 0.25);
+                const dist = Math.abs(y - (cy + wave1 + wave2 + wave3));
+
+                let intensity = Math.max(0, 1 - dist / 12);
+                intensity += (Math.random() - 0.5) * 0.08;
+
+                const threshold = (bayer[y % 4][x % 4] / 16) - 0.5;
+
+                if (intensity + threshold > 0.5) {
+                    ctx.fillStyle = intensity > 0.7
+                        ? 'rgb(' + Math.floor(140 + intensity * 60) + ',' + Math.floor(140 + intensity * 60) + ',255)'
+                        : '#eee';
+                    ctx.fillRect(x * g, y * g, g - 1, g - 1);
+                }
+            }
         }
-    });
-}, { threshold: 0.2 });
-termObs.observe(document.querySelector('.terminal'));
 
-/* ── WebGL Shader ── */
-const container = document.getElementById('webgl-bg');
-const scene = new THREE.Scene();
-const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
-camera.position.z = 1;
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-container.appendChild(renderer.domElement);
-
-const vertexShader = `
-    varying vec2 vUv;
-    void main() {
-        vUv = uv;
-        gl_Position = vec4(position, 1.0);
-    }
-`;
-
-const fragmentShader = `
-    uniform float u_time;
-    uniform vec2 u_resolution;
-    uniform vec2 u_mouse;
-    uniform vec3 u_colorCore;
-    uniform vec3 u_colorFringe;
-    varying vec2 vUv;
-
-    vec2 hash(vec2 p) {
-        p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-        return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+        t += 0.015;
+        requestAnimationFrame(draw);
     }
 
-    float noise(in vec2 p) {
-        const float K1 = 0.366025404;
-        const float K2 = 0.211324865;
-        vec2 i = floor(p + (p.x + p.y) * K1);
-        vec2 a = p - i + (i.x + i.y) * K2;
-        vec2 o = (a.x > a.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-        vec2 b = a - o + K2;
-        vec2 c = a - 1.0 + 2.0 * K2;
-        vec3 h = max(0.5 - vec3(dot(a, a), dot(b, b), dot(c, c)), 0.0);
-        vec3 n = h * h * h * h * vec3(dot(a, hash(i + 0.0)), dot(b, hash(i + o)), dot(c, hash(i + 1.0)));
-        return dot(n, vec3(70.0));
-    }
-
-    float sdArc(vec2 p, vec2 center, float radius, float width, float warp) {
-        p.y += sin(p.x * 3.0 + u_time * 0.5) * warp;
-        p.x += noise(p * 2.0 + u_time * 0.2) * (warp * 0.5);
-        float d = length(p - center) - radius;
-        return abs(d) - width;
-    }
-
-    void main() {
-        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-        vec2 st = uv;
-        st.x *= u_resolution.x / u_resolution.y;
-
-        vec2 mouseOffset = (u_mouse - 0.5) * 0.08;
-        st += mouseOffset;
-
-        vec2 center = vec2(0.2, 0.5);
-
-        float d1 = sdArc(st, center, 0.8, 0.01, 0.1);
-        float d2 = sdArc(st, center, 0.82, 0.04, 0.15);
-
-        float coreGlow = exp(-d1 * 40.0);
-        float fringeGlow = exp(-d2 * 15.0);
-        float wash = smoothstep(1.0, -0.2, st.x) * 0.25;
-
-        vec3 finalColor = vec3(0.0);
-        finalColor += u_colorCore * coreGlow * 1.2;
-        finalColor += u_colorFringe * fringeGlow;
-        finalColor += u_colorFringe * wash * (sin(u_time) * 0.1 + 0.9);
-
-        float alpha = clamp((coreGlow * 1.5 + fringeGlow + wash * 0.4), 0.0, 0.55);
-        finalColor = vec3(1.0) - exp(-finalColor * 2.0);
-
-        gl_FragColor = vec4(finalColor, alpha);
-    }
-`;
-
-const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    uniforms: {
-        u_time: { value: 0.0 },
-        u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-        u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
-        u_colorCore: { value: new THREE.Color('#0000C5') },
-        u_colorFringe: { value: new THREE.Color('#6670AA') },
-    },
-    transparent: true,
-    blending: THREE.NormalBlending
-});
-
-const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-scene.add(mesh);
-
-let targetMouse = new THREE.Vector2(0.5, 0.5);
-document.addEventListener('mousemove', (e) => {
-    targetMouse.x = e.clientX / window.innerWidth;
-    targetMouse.y = 1.0 - (e.clientY / window.innerHeight);
-});
-
-const clock = new THREE.Clock();
-function animate() {
-    requestAnimationFrame(animate);
-    material.uniforms.u_time.value = clock.getElapsedTime();
-    material.uniforms.u_mouse.value.lerp(targetMouse, 0.05);
-    renderer.render(scene, camera);
-}
-animate();
-
-window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    material.uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
-});
-</script>
-
+    draw();
+    </script>
 </body>
 </html>
