@@ -13,9 +13,9 @@
 
     <style>
         :root {
-            --bg: #F5F3F0;
-            --bg-section: #EDEAE6;
-            --surface: #FEFDFB;
+            --bg: #F5F0E8;
+            --bg-section: #EDE8DF;
+            --surface: #FFFCF7;
             --text: #1C1C1C;
             --text-mid: #4A4A4A;
             --text-muted: #6B6B6B;
@@ -195,13 +195,10 @@
             justify-content: center; padding-left: 5%;
         }
         .glass-panel {
-            width: 100%; max-width: 440px;
-            background: rgba(255,255,255,0.55);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255,255,255,0.6);
-            border-radius: 36px;
-            padding: 40px 36px;
-            display: flex; flex-direction: column; gap: 22px;
+            width: 100%; max-width: 520px;
+            background: none;
+            padding: 0;
+            display: flex; flex-direction: column; gap: 26px;
         }
 
         .sys-badge {
@@ -214,19 +211,22 @@
 
         .pain-trigger {
             font-family: var(--mono); font-size: 11px;
-            color: var(--terminal-amber); line-height: 1.5;
+            color: var(--text-muted); line-height: 1.5;
+            border-left: 2px solid var(--border);
+            padding-left: 10px;
+            font-style: italic;
             min-height: 28px;
             display: flex; align-items: center;
         }
 
         .glass-panel h1 {
-            font-family: var(--font-brand); font-size: 30px; font-weight: 600;
-            letter-spacing: -0.03em; line-height: 1.15;
+            font-family: var(--font-brand); font-size: clamp(32px, 3.5vw, 42px); font-weight: 600;
+            letter-spacing: -0.03em; line-height: 1.12;
         }
 
         .glass-panel .subtitle {
-            font-size: 14px; color: var(--text-mid);
-            line-height: 1.55;
+            font-size: 15px; color: var(--text-mid);
+            line-height: 1.6; max-width: 420px;
         }
         .glass-panel .subtitle strong { color: var(--text); font-weight: 600; }
 
@@ -319,11 +319,9 @@
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
         }
         .card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 24px 20px;
-            transition: border-color 0.2s;
+            background: none; border: none;
+            padding: 8px 0;
         }
-        .card:hover { border-color: var(--accent); }
         .card-icon {
             width: 36px; height: 36px; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
@@ -336,7 +334,7 @@
         .card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
         .card code {
             font-family: var(--mono); font-size: 11px;
-            background: var(--accent-light); padding: 1px 4px; border-radius: 3px;
+            background: rgba(0,0,197,0.07); padding: 1px 4px; border-radius: 3px;
         }
         .coming-badge {
             display: inline-block;
@@ -437,7 +435,7 @@
             }
             .term-wrapper { order: 1; }
             .panel-wrapper { order: 2; padding-left: 0; justify-content: center; }
-            .glass-panel { max-width: 100%; border-radius: 24px; padding: 28px 24px; }
+            .glass-panel { max-width: 100%; padding: 0 8px; }
             .terminal { max-width: 100%; }
             .tech-label { display: none; }
             .top-bar { top: 12px; right: 16px; }
@@ -469,7 +467,7 @@
 <!-- Top bar -->
 <div class="top-bar">
     <button class="top-btn" id="langToggle">RU</button>
-    <a href="#waitlist" class="top-cta" data-en="Get Early Access" data-ru="Get Early Access">Get Early Access</a>
+    <a href="#waitlist" class="top-cta" data-en="Get Early Access" data-ru="Записаться">Get Early Access</a>
 </div>
 
 <!-- ── HERO ── -->
@@ -682,16 +680,16 @@ langBtn.addEventListener('click', () => {
 /* ── Pain trigger rotation ── */
 const pains = {
     en: [
-        '\u26A0 3h configuring CLAUDE.md \u2014 agent still skips lint',
-        '\u26A0 agent ignored 4 of 7 rules. same session',
-        '\u26A0 setup done. 2 months later \u2014 outdated, nobody updates',
-        '\u26A0 3 devs, 3 agents, 3 different code styles. one repo',
+        '\u201C3 hours configuring CLAUDE.md. The code still doesn\u2019t lint.\u201D',
+        '\u201CMy agent ignored half the rules. Again.\u201D',
+        '\u201CSet it up once. Now it\u2019s outdated and nobody updates it.\u201D',
+        '\u201CEach dev\u2019s agent does something different. Same repo.\u201D',
     ],
     ru: [
-        '\u26A0 3ч на CLAUDE.md \u2014 агент всё ещё пропускает линт',
-        '\u26A0 агент проигнорировал 4 из 7 правил. та же сессия',
-        '\u26A0 настроил. через 2 месяца \u2014 устарело, никто не обновляет',
-        '\u26A0 3 дева, 3 агента, 3 стиля кода. один репозиторий',
+        '\u00AB3 часа настраивал CLAUDE.md. Код всё ещё не линтится.\u00BB',
+        '\u00ABАгент проигнорировал половину правил. Опять.\u00BB',
+        '\u00ABНастроил один раз. Теперь устарело, никто не обновляет.\u00BB',
+        '\u00ABУ каждого дева агент делает своё. Один репозиторий.\u00BB',
     ]
 };
 const painEl = document.getElementById('painTrigger');
