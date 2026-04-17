@@ -1,11 +1,19 @@
 {
   "name": "rig-monorepo",
   "private": true,
+  "description": "Managed AI dev practice — rules, hooks, workflows. Installed via npm, kept current via rig update.",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
   "packageManager": "pnpm@9.15.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oktsh/RIG.git"
+  },
+  "homepage": "https://rig.dev",
+  "author": "oktsh",
+  "license": "MIT",
   "scripts": {
     "build": "pnpm -r build",
     "test": "vitest run --passWithNoTests",

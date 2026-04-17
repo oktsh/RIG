@@ -35,3 +35,13 @@ For multi-step tasks, use `context: fork` on subagents — intermediate search r
 - **One task per conversation** — starting fresh costs ~20K tokens. Context degradation costs far more.
 - **Don't let context exceed 60% capacity** — leave room for the actual work.
 - **Compress context, don't expand it** — summarize findings, don't paste raw output.
+
+## Tool Usage
+
+Always use dedicated tools for file operations. This applies to ALL files in the project:
+- **Read** files with the Read tool — never use `cat`, `head`, or `tail`
+- **Search** with Grep (content) or Glob (filenames) — never use `grep`, `find`, or `rg` via Bash
+- **Edit** with the Edit tool — never use `sed` or `awk`
+- **Write** new files with the Write tool — never use `echo` or `cat` with heredoc
+
+Reserve Bash exclusively for: git commands, package manager commands, build/test/lint commands, and system operations.
