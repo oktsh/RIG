@@ -1,7 +1,7 @@
 {
   "name": "rig-cli",
   "version": "0.1.0",
-  "description": "Manage your AI dev practice — update, doctor, generate",
+  "description": "Manage your AI dev practice — rig update, rig doctor, rig generate. Living updates for Claude Code, Cursor, Copilot rules.",
   "type": "module",
   "bin": {
     "rig": "dist/index.js"
@@ -15,14 +15,30 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oktsh/RIG.git",
+    "directory": "packages/rig-cli"
+  },
+  "homepage": "https://rig.dev",
+  "author": "oktsh",
   "license": "MIT",
   "keywords": [
-    "ai",
-    "agents",
+    "rig-cli",
+    "rig",
+    "ai-dev",
+    "ai-agents",
     "claude",
+    "claude-code",
     "cursor",
+    "copilot",
+    "codex",
     "dev-tools",
-    "cli"
+    "cli",
+    "living-updates",
+    "rules",
+    "hooks",
+    "workflows"
   ],
   "dependencies": {
     "@iarna/toml": "^2.2.5",

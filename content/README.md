@@ -1,90 +1,71 @@
 # RIG Content Directory
 
-This directory contains all seed content for the RIG knowledge base stored as Markdown files with YAML frontmatter. Content is organized by type and can be read by both the frontend (via `gray-matter`) and the backend seed process.
+This directory IS the product. Everything RIG installs into user projects comes from here — agents, rules, hooks, templates, workflows. Code in `packages/` reads this directory and renders it into user-facing files.
 
 ## Directory Structure
 
 ```
 content/
-├── README.md                           # This file
-├── prompts/                            # AI prompts and prompt frameworks
-│   ├── 01-competitor-analysis.md
-│   ├── 02-code-review-agent.md
-│   ├── 03-user-segmentation.md
-│   └── 04-microservices-architecture.md
-├── guides/                             # Step-by-step guides and tutorials
-│   ├── 01-rig-deployment.md
-│   ├── 02-repo-configuration.md
-│   ├── 03-decision-journal.md
-│   └── 04-advanced-agents.md
-└── rulesets/                           # Code style rules for AI assistants
-    ├── react-typescript.md
-    └── fastapi-python.md
+├── CHANGELOG.md                # What changed between versions
+├── presets/
+│   ├── shared/                 # Content included in ALL presets
+│   │   ├── agents/             # code-reviewer, verification
+│   │   ├── rules/              # context-discipline, security
+│   │   └── templates/          # progress, decisions, spec templates
+│   ├── pm/                     # PM-builder preset additions
+│   │   ├── rules/              # pm-guardrails
+│   │   └── workflows/          # discovery workflow
+│   ├── small-team/             # Small team preset additions
+│   │   ├── agents/             # debugger, frontend-react, python-dev, spec-*, tech-lead
+│   │   ├── protocols/          # checkpoint-commits, team-coordination
+│   │   ├── rules/              # agent-orchestration, tool-gate
+│   │   └── workflows/          # spec-pipeline
+│   └── solo-dev/               # Solo dev preset (minimal — uses shared only)
+├── stacks/
+│   ├── nextjs/                 # Next.js stack-specific rules + hooks
+│   └── python-fastapi/         # Python/FastAPI stack-specific rules + hooks
+└── templates/                  # Handlebars templates (.hbs)
+    ├── claude-md.hbs           # Main CLAUDE.md template
+    ├── agents-md.hbs           # AGENTS.md template
+    ├── cursor-mdc.hbs          # .cursor/rules/ template
+    ├── rig-toml.hbs            # rig.toml template
+    └── partials/               # Reusable template sections
+        ├── about-rig.hbs
+        ├── agent-list.hbs
+        ├── commands.hbs
+        ├── feedback.hbs
+        ├── git-workflow.hbs
+        ├── role-mindset.hbs
+        ├── shared-state.hbs
+        └── workflow.hbs
 ```
 
-## File Naming Convention
+## How Content Flows
 
-- **Prompts and Guides**: Prefixed with a two-digit number for ordering: `NN-slug.md` (e.g., `01-competitor-analysis.md`)
-- **Rulesets**: Named by the technology they cover: `technology-name.md` (e.g., `react-typescript.md`)
-- Slugs use lowercase with hyphens (kebab-case)
-- No spaces or special characters in file names
+```
+content/ → @rig/core (generator) → user's project
+         ↓
+  presets/shared/ + presets/{preset}/ + stacks/{stack}/
+         ↓
+  Handlebars templates render with preset/stack context
+         ↓
+  CLAUDE.md, AGENTS.md, .claude/agents/, .claude/rules/, .cursor/rules/
+```
 
-## Frontmatter Schema
+## Content-as-Data Principle
 
-Each file begins with YAML frontmatter between `---` delimiters. Fields vary by content type.
+- All text belongs in `content/`, never hardcoded in `packages/`
+- Rules and agents are Markdown files, not code
+- Templates use Handlebars for conditional rendering per preset/stack
+- `[RIG-MANAGED]` markers in output define what `rig update` can overwrite
 
-### Prompts
+## Versioning
 
-| Field         | Type       | Required | Description                             |
-|---------------|------------|----------|-----------------------------------------|
-| `title`       | string     | yes      | Display title                           |
-| `description` | string     | yes      | Short description (1-2 sentences)       |
-| `author`      | string     | yes      | Author name                             |
-| `tags`        | string[]   | yes      | Category tags (uppercase)               |
-| `tech`        | string     | yes      | Recommended AI tools or technologies    |
-| `copies`      | number     | no       | Number of times the prompt was copied   |
-| `status`      | string     | yes      | `published`, `draft`, or `pending`      |
+Content is versioned in `CHANGELOG.md`. Each `rig update` pulls the latest content and applies changes to `[RIG-MANAGED]` sections only.
 
-### Guides
+## Contributing
 
-| Field         | Type       | Required | Description                             |
-|---------------|------------|----------|-----------------------------------------|
-| `title`       | string     | yes      | Display title                           |
-| `description` | string     | yes      | Short description (1-2 sentences)       |
-| `author`      | string     | yes      | Author name                             |
-| `category`    | string     | yes      | Category (e.g., CLAUDE CODE, CURSOR)    |
-| `time`        | string     | yes      | Estimated reading time                  |
-| `views`       | number     | no       | View count                              |
-| `date`        | string     | yes      | Publication date                        |
-| `status`      | string     | yes      | `published`, `draft`, or `pending`      |
-
-### Rulesets
-
-| Field         | Type       | Required | Description                             |
-|---------------|------------|----------|-----------------------------------------|
-| `title`       | string     | yes      | Display title                           |
-| `description` | string     | yes      | Short description (1-2 sentences)       |
-| `language`    | string     | yes      | Primary language (uppercase)            |
-| `status`      | string     | yes      | `published`, `draft`, or `pending`      |
-
-## How to Contribute New Content
-
-1. **Pick the content type** (prompt, guide, or ruleset) and navigate to the corresponding directory.
-
-2. **Create a new Markdown file** following the naming convention:
-   - For prompts/guides: use the next available number prefix (e.g., `05-my-new-prompt.md`)
-   - For rulesets: use the technology name (e.g., `go-stdlib.md`)
-
-3. **Add YAML frontmatter** at the top of the file with all required fields for the content type (see schema above). Set `status: draft` for new content.
-
-4. **Write the body content** in Markdown below the frontmatter. Use Russian for all user-facing content. Structure with headings (`##`), code blocks, and lists.
-
-5. **Submit a pull request** for review. A moderator will review the content and change the status to `published` when approved.
-
-### Content Guidelines
-
-- All user-facing content should be written in Russian
-- Use proper Markdown formatting: headings, code blocks with language tags, lists
-- Include practical examples and code snippets where applicable
-- Keep descriptions concise but informative
-- Tags in frontmatter should be uppercase Russian words
+1. Pick the right directory: `presets/shared/` for universal content, `presets/{preset}/` for preset-specific
+2. Write Markdown — keep it explicit and actionable (Claude 4.7 follows instructions literally)
+3. Test with `pnpm build && pnpm test` — e2e tests verify content generation
+4. Submit a PR

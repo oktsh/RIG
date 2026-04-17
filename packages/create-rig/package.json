@@ -1,7 +1,7 @@
 {
   "name": "create-rig",
   "version": "0.1.0",
-  "description": "Create a managed AI dev practice setup",
+  "description": "Scaffold a managed AI dev practice — agents, rules, hooks, workflows for Claude Code, Cursor, Copilot",
   "type": "module",
   "bin": {
     "create-rig": "dist/index.js"
@@ -15,14 +15,31 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oktsh/RIG.git",
+    "directory": "packages/create-rig"
+  },
+  "homepage": "https://rig.dev",
+  "author": "oktsh",
   "license": "MIT",
   "keywords": [
-    "ai",
-    "agents",
+    "create-rig",
+    "rig",
+    "ai-dev",
+    "ai-agents",
     "claude",
+    "claude-code",
     "cursor",
+    "copilot",
+    "codex",
     "dev-tools",
-    "cli"
+    "cli",
+    "scaffolding",
+    "rules",
+    "hooks",
+    "workflows",
+    "claude-md"
   ],
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",

@@ -16,12 +16,27 @@ Anything that MUST happen → put in a hook. Guidance and preferences → put in
 
 ## Model-Per-Tier
 
-| Tier | Model | Role | Why |
-|------|-------|------|-----|
-| **Oversight** | opus | tech-lead, code-reviewer, verification | Quality matters most — these are the safety net |
-| **Planning** | opus | spec-writer, spec-planner | Architectural decisions compound — worth the cost |
-| **Implementation** | sonnet | frontend-react, python-dev, task-breakdown | Speed + cost efficiency — review catches errors |
-| **Diagnostics** | sonnet | debugger | Speed for iteration — escalate if stuck |
+| Tier | Model | Effort | Role | Why |
+|------|-------|--------|------|-----|
+| **Oversight** | opus | xhigh | tech-lead, code-reviewer, verification | Quality matters most — these are the safety net |
+| **Planning** | opus | xhigh | spec-writer, spec-planner | Architectural decisions compound — worth the cost |
+| **Implementation** | sonnet | high | frontend-react, python-dev, task-breakdown | Speed + cost efficiency — review catches errors |
+| **Diagnostics** | sonnet | high | debugger | Speed for iteration — escalate if stuck |
+
+> **Effort levels:** `xhigh` for tasks requiring deep reasoning and multi-step tool use. `high` for implementation. Lower levels risk under-thinking on complex tasks.
+
+## When to Spawn Subagents
+
+Spawn a subagent when ANY of these apply:
+- Task touches 3+ files across different modules
+- Task requires a specialized role (code-reviewer, debugger, spec-writer)
+- Research or exploration that would pollute the main context
+- Parallel independent research queries
+
+Do NOT spawn a subagent when:
+- Single file change or small edit
+- Task is a straightforward command (lint, test, deploy)
+- You already have enough context to act directly
 
 ## Sequential Pipeline
 
@@ -41,10 +56,11 @@ ONE agent writes at a time. No parallel writers on the same tree.
 - code-reviewer is always a FRESH spawn (never the implementer)
 - Read-only agents (code-reviewer, tech-lead, verification) = no Write/Edit tools
 - Complex multi-file → spawn worker. Single file → orchestrator writes directly.
+- Workers MUST use tools (Read, Grep, Glob) to verify state before and after changes — do not rely on reasoning alone.
 
 ## Worker Completion Checklist
 
-Before reporting "done", every worker completes ALL steps. Skip = incomplete.
+Before reporting "done", every worker MUST complete ALL steps below. Do NOT skip any step — each one is required.
 
 | # | Step | Action |
 |---|------|--------|
