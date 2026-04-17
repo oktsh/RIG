@@ -507,7 +507,7 @@
                 </div>
 
                 <div id="waitlist">
-                    <form class="waitlist-form" id="waitlistForm">
+                    <form class="waitlist-form" id="waitlistForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
                         <input class="wl-input" type="email" name="email" placeholder="you@company.com" required>
                         <button class="wl-btn" type="submit" data-en="Get started" data-ru="Начать">Get started</button>
                     </form>
@@ -716,22 +716,35 @@ document.querySelectorAll('.faq-q').forEach(q => {
     });
 });
 
-/* ── Waitlist ── */
+/* ── Waitlist (Formspree) ── */
 const form = document.getElementById('waitlistForm');
 const msg = document.getElementById('waitlistMsg');
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = form.querySelector('input[name="email"]').value;
-    // TODO: replace with Formspree or CF Worker POST
-    const list = JSON.parse(localStorage.getItem('rig_waitlist') || '[]');
-    list.push({ email, ts: new Date().toISOString() });
-    localStorage.setItem('rig_waitlist', JSON.stringify(list));
-    // Show install command
-    form.style.display = 'none';
-    msg.innerHTML = (lang === 'ru'
-        ? '<span style="color:var(--terminal-green)">&#x2713;</span> Отлично! Установите: <code style="font-family:var(--mono);background:rgba(0,0,197,0.07);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>'
-        : '<span style="color:var(--terminal-green)">&#x2713;</span> You\u2019re in! Install now: <code style="font-family:var(--mono);background:rgba(0,0,197,0.07);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>');
-    msg.style.height = 'auto';
+    const btn = form.querySelector('.wl-btn');
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+    })
+    .then(r => {
+        if (!r.ok) throw new Error(r.status);
+        form.style.display = 'none';
+        msg.innerHTML = (lang === 'ru'
+            ? '<span style="color:var(--terminal-green)">&#x2713;</span> Отлично! Установите: <code style="font-family:var(--mono);background:rgba(0,0,197,0.07);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>'
+            : '<span style="color:var(--terminal-green)">&#x2713;</span> You\u2019re in! Install now: <code style="font-family:var(--mono);background:rgba(0,0,197,0.07);padding:2px 8px;border-radius:4px;font-size:13px;user-select:all">npx create-rig@latest</code>');
+        msg.style.height = 'auto';
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.textContent = lang === 'ru' ? 'Начать' : 'Get started';
+        msg.innerHTML = '<span style="color:#dc2626">Something went wrong. Try again.</span>';
+        msg.style.height = 'auto';
+    });
 });
 
 /* ── Terminal animation ── */
