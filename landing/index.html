@@ -287,43 +287,7 @@
 
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* ── Marquee ── */
-        .marquee {
-            overflow: hidden;
-            white-space: nowrap;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            padding: 0.9rem 0;
-            position: relative;
-            z-index: 5;
-            background: var(--bg);
-        }
-
-        .marquee-track {
-            display: inline-flex;
-            animation: marquee 25s linear infinite;
-        }
-
-        .marquee-item {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
-            padding: 0 2rem;
-        }
-
-        .marquee-item .sep {
-            color: rgba(255,255,255,0.08);
-            margin-left: 2rem;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* ── Sections ── */
+/* ── Sections ── */
         .section {
             padding: 6rem 0;
             position: relative;
@@ -902,33 +866,7 @@
         </div>
     </section>
 
-    <!-- Marquee -->
-    <div class="marquee">
-        <div class="marquee-track">
-            <span class="marquee-item">Rules<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Hooks<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Workflows<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Living updates<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Team memory<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Claude Code<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Cursor<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Copilot<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Codex CLI<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Windsurf<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Rules<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Hooks<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Workflows<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Living updates<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Team memory<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Claude Code<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Cursor<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Copilot<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Codex CLI<span class="sep">&bull;</span></span>
-            <span class="marquee-item">Windsurf<span class="sep">&bull;</span></span>
-        </div>
-    </div>
-
-    <!-- The Problem -->
+<!-- The Problem -->
     <section class="section border-top">
         <div class="container">
             <div class="s-label" data-en="The problem" data-ru="Проблема">The problem</div>
