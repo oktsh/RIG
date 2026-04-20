@@ -1,17 +1,17 @@
-# RIG
+# GYRD
 
-**Managed AI dev practice. Rules, hooks, workflows — installed via npm, kept current via `rig update`.**
+**Managed AI dev practice. Rules, hooks, workflows — installed via npm, kept current via `gyrd update`.**
 
 > Your agents. Our structure.
 
-RIG gives your project an opinionated setup for AI-assisted development: agent definitions, quality rules, pre-commit hooks, and workflow guidance — all configured for your stack and team size.
+GYRD gives your project an opinionated setup for AI-assisted development: agent definitions, quality rules, pre-commit hooks, and workflow guidance — all configured for your stack and team size.
 
 Think of it as Django for AI dev practices — you get a working setup out of the box, not a blank canvas.
 
 ## Quick Start
 
 ```bash
-npx create-rig@latest
+npx create-gyrd@latest
 ```
 
 The wizard asks your stack and preset, then generates everything into your project:
@@ -20,7 +20,7 @@ The wizard asks your stack and preset, then generates everything into your proje
 your-project/
 ├── CLAUDE.md              # AI instructions (Claude Code, Claude Desktop)
 ├── AGENTS.md              # Cross-tool instructions (Cursor, Copilot, Codex)
-├── rig.toml               # RIG configuration
+├── gyrd.toml              # GYRD configuration
 ├── .claude/
 │   ├── agents/            # Agent definitions (code-reviewer, tech-lead, etc.)
 │   ├── rules/             # Always-loaded rules (security, context discipline)
@@ -32,26 +32,26 @@ your-project/
 
 | Command | What it does |
 |---------|-------------|
-| `npx create-rig` | Interactive setup wizard — creates complete AI dev practice config |
-| `rig update` | Pull latest rules, agents, templates. `[RIG-MANAGED]` sections update; your customizations stay |
-| `rig generate` | Regenerate all managed files from `rig.toml` |
-| `rig doctor` | Check setup health: missing files, outdated versions, broken references |
+| `npx create-gyrd` | Interactive setup wizard — creates complete AI dev practice config |
+| `gyrd update` | Pull latest rules, agents, templates. `[GYRD-MANAGED]` sections update; your customizations stay |
+| `gyrd generate` | Regenerate all managed files from `gyrd.toml` |
+| `gyrd doctor` | Check setup health: missing files, outdated versions, broken references |
 
 ## How It Works
 
-1. **Install** — `npx create-rig` scaffolds CLAUDE.md, agents, rules, hooks for your stack
-2. **Develop** — Your AI agents (Claude, Cursor, Copilot) follow the rules RIG installed
-3. **Update** — `rig update` ships new rules when models change (e.g., Claude 4.7 adaptation)
-4. **Customize** — Edit anything outside `[RIG-MANAGED]` markers — those sections are yours
+1. **Install** — `npx create-gyrd` scaffolds CLAUDE.md, agents, rules, hooks for your stack
+2. **Develop** — Your AI agents (Claude, Cursor, Copilot) follow the rules GYRD installed
+3. **Update** — `gyrd update` ships new rules when models change (e.g., Claude 4.7 adaptation)
+4. **Customize** — Edit anything outside `[GYRD-MANAGED]` markers — those sections are yours
 
 ### Managed vs Custom
 
 ```markdown
-## [RIG-MANAGED] Git & Safety          ← RIG updates this
+## [GYRD-MANAGED] Git & Safety          ← GYRD updates this
 - Review git status before commit
 - Stage specific files (not git add .)
 
-## My Custom Rules                      ← RIG never touches this
+## My Custom Rules                      ← GYRD never touches this
 - Use Jira ticket IDs in commit messages
 - Always deploy to staging first
 ```
@@ -73,10 +73,10 @@ Same agents and capabilities in all presets. Different onboarding tone and proce
 | **nextjs** | ESLint + tsc | App Router, Server Components, import aliases |
 | **python-fastapi** | ruff + mypy | FastAPI patterns, Pydantic, async conventions |
 
-## Why RIG?
+## Why GYRD?
 
 - **Out of the box** — Working setup in 30 seconds, not 3 hours of CLAUDE.md tuning
-- **Living updates** — When Claude 4.7 drops, `rig update` ships adapted rules within days
+- **Living updates** — When Claude 4.7 drops, `gyrd update` ships adapted rules within days
 - **Pre-commit gates** — Lint + typecheck before every commit (human and agent)
 - **Team memory** — Shared state files (PROGRESS.md, DECISIONS.md) survive context compaction [Coming]
 
@@ -88,33 +88,33 @@ Same agents and capabilities in all presets. Different onboarding tone and proce
 ## Development
 
 ```bash
-git clone https://github.com/oktsh/rig.git
-cd rig
+git clone https://github.com/oktsh/gyrd.git
+cd gyrd
 pnpm install
 pnpm build
-pnpm test          # 197 tests
+pnpm test          # 203 tests
 pnpm typecheck
 ```
 
 ### Project Structure
 
 ```
-RIG/
+GYRD/
 ├── packages/
-│   ├── core/           # @rig/core — schemas, registry, generator, updater, doctor
-│   ├── create-rig/     # npx create-rig — interactive setup wizard
-│   └── rig-cli/        # rig update / generate / doctor
+│   ├── core/           # @gyrd/core — schemas, registry, generator, updater, doctor
+│   ├── create-gyrd/    # npx create-gyrd — interactive setup wizard
+│   └── gyrd-cli/       # gyrd update / generate / doctor
 ├── content/
 │   ├── presets/         # Agent/rule/workflow content by preset
 │   ├── stacks/         # Stack-specific hooks and rules
 │   └── templates/      # Handlebars templates for output generation
 ├── tests/e2e/          # End-to-end tests
-└── landing/            # Landing page (rig.dev)
+└── landing/            # Landing page (gyrd.dev)
 ```
 
 ### Content-as-Data
 
-The `content/` directory IS the product. Agents, rules, hooks, templates live there as structured data — not hardcoded in source. When you run `rig update`, this is what gets refreshed.
+The `content/` directory IS the product. Agents, rules, hooks, templates live there as structured data — not hardcoded in source. When you run `gyrd update`, this is what gets refreshed.
 
 ## Contributing
 
