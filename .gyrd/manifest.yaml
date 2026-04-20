@@ -1,0 +1,53 @@
+rig_version: 0.1.0
+generated_at: 2026-04-15T10:54:18.145Z
+config_hash: c7f84e8587b3920f61ecc5ba3a2338ba6e503e07644b879c26b539dc525cce23
+components:
+  agents:
+    version: 0.1.0
+    count: 9
+    schema: agent-frontmatter-v1
+  hooks:
+    version: 0.1.0
+    count: 1
+  rules:
+    version: 0.1.0
+    count: 6
+  formats:
+    cursor_mdc: generated
+    agents_md: generated
+    claude_md: generated
+  templates:
+    version: 0.1.0
+    count: 3
+compatibility:
+  claude-code: ">=1.0"
+  cursor: ">=0.40"
+files:
+  .claude/agents/code-reviewer.md: f5f2bc8851f26ecffbcb2afee810cc6d9b4d27fcf14c5cf7f572c4be53bc48e8
+  .claude/agents/debugger.md: fd528aff5ade5a887f4f2f25e87adf21844b11ef342431087d342c65f8021597
+  .claude/agents/frontend-react.md: 9ee7dc6391684bcafd4e5254f711f1a83ed3d812a4c262c01ffc66c3334d5a1a
+  .claude/agents/python-dev.md: 4bfc29a4883e7b737c34cba66d240206a034109002108ee2d6c0391f292bd770
+  .claude/agents/spec-planner.md: 5d9fc5374fd2bafa27e1baa5946b8c754176ba894c7850b8d2a6b9b921b6559d
+  .claude/agents/spec-writer.md: f1a0fa83cc4188a47a5dbaecf4bd8acad0b66a3da30a25bff5b7fef6002e4ce3
+  .claude/agents/task-breakdown.md: 9633ca46766d651783541863fa1e0346fd52c840477f2a012c115a920b1ff79a
+  .claude/agents/tech-lead.md: b7dbc57ee85669f428929412c7b6ec987c2309ebd6db10a0d55d028c263e083d
+  .claude/agents/verification.md: 776c4615f07da9a7e2a3dea6fdd80569383d81af549648d7ae2118a8b994e18d
+  .claude/hooks/pre-commit-guard.sh: 03a4550904bec31308baf2a79c98d1825f577c47172ca3abbe430beba6f57bdb
+  .claude/rules/agent-orchestration.md: bb885b409d79b79a528006def4dddef42b66b139e449bf76678fc02f4cd7cd5f
+  .claude/rules/context-discipline.md: ec51e11b1163ee1bb023963ebe5200bd30aadc44a2167671d1d66bf880e01d66
+  .claude/rules/nextjs-stack-rules.md: f2b16b7a3f6de2527b8cb4e35005ec3e1c41fe42ffa8dd7d5cd9408776cf1063
+  .claude/rules/safety-guardrails.md: 5575a1705ed7319d881182d0fd821bcaf6513d732202efa529e0f265165e449f
+  .claude/rules/security.md: 8964ace4141b99c042e07210db2f221dc61b75b3035549794a6865fdad93c3ae
+  .claude/rules/tool-gate.md: bf4ca310f528ee1984b269a16c4589ee6d34c9f63db56d402fb5daa104b11965
+  .claude/templates/decisions-template.md: d92468cf5892b7896838874309c6bd9f5e7038798a0a17c30415e2a9b8a48f5b
+  .claude/templates/progress-template.md: 57d2af0cb622fdbb41e2419a42eb784df91e5f151c35d0059650ec4587a1a852
+  .claude/templates/spec-template.md: 650e3a0f114e08ce5d8fc2520516e48200a14fceb64fc90387045f60ef3fa748
+  .cursor/rules/agent-orchestration.mdc: 52343744585ad7b96101d0255067b1f285a1bb2d1f884b40fc15da02ab8c537b
+  .cursor/rules/context-discipline.mdc: f039902adb38168f54154f10bbddfa9fd8e8d189fd90386aaf25441da89cb411
+  .cursor/rules/nextjs-stack-rules.mdc: 396f8a0582d7fad9d7dbf1241d7992d93247ea26201bb440184c76a133a901fd
+  .cursor/rules/safety-guardrails.mdc: 39184303856d07b1fe3146e47eb6b8f2fdf4176e66dee9c241247317c95cd819
+  .cursor/rules/security.mdc: fddd832cadba69940aee098c6ea987a48bb3d93a8127eaeae774329aeac3d489
+  .cursor/rules/tool-gate.mdc: 902d5d92ccff72732d6993594d0ee31714cca4db7dcea6858902a8e236025c0a
+  AGENTS.md: 0662aa014ef154c01fd1412199b2021ea089da98ac2eebd91cf11c7996b3229a
+  CLAUDE.md: 2901bd303679ba7af85cd931d113ae38bf3d7f63f26225ec52e35d84902458da
+  rig.toml: ee849a9ace29d328d8a1f66eea4f8e5a8e9f26534978b0c46e78ecf8671f4830

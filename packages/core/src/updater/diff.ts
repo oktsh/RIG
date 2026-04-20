@@ -65,8 +65,8 @@ export async function compareVersions(
   }
 
   return {
-    currentVersion: currentManifest.rig_version,
-    newVersion: newManifest.rig_version,
+    currentVersion: currentManifest.gyrd_version,
+    newVersion: newManifest.gyrd_version,
     changes,
     hasChanges: changes.length > 0,
   };
@@ -90,5 +90,5 @@ function getComponentVersion(manifest: Manifest, component: string): string {
       return entry.version;
     }
   }
-  return manifest.rig_version;
+  return manifest.gyrd_version;
 }

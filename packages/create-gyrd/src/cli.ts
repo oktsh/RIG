@@ -8,8 +8,8 @@ import {
   generateProject,
   PresetSchema,
   StackSchema,
-} from '@rig/core';
-import type { RigConfig, Preset, Stack } from '@rig/core';
+} from '@gyrd/core';
+import type { GyrdConfig, Preset, Stack } from '@gyrd/core';
 import { collectOptions, confirmOverwrite } from './prompts.js';
 
 // Resolve content root relative to this file (bundled into dist/index.js)
@@ -22,7 +22,7 @@ function buildConfig(opts: {
   stack: Stack;
   name: string;
   teamSize?: number;
-}): RigConfig {
+}): GyrdConfig {
   return {
     project: {
       name: opts.name,
@@ -35,14 +35,14 @@ function buildConfig(opts: {
 
 export function createProgram(): Command {
   const program = new Command()
-    .name('create-rig')
+    .name('create-gyrd')
     .description('Create a managed AI dev practice setup')
     .version(VERSION)
     .option('--preset <preset>', 'Preset: pm, small-team, solo-dev')
     .option('--stack <stack>', 'Stack: nextjs, python-fastapi')
     .option('--name <name>', 'Project name')
     .option('--team-size <size>', 'Team size (small-team only)', parseInt)
-    .option('--force', 'Overwrite existing rig.toml')
+    .option('--force', 'Overwrite existing gyrd.toml')
     .action(async (options) => {
       try {
         const hasAllRequired = options.preset && options.stack && options.name;
@@ -89,18 +89,18 @@ export function createProgram(): Command {
         }
 
         const cwd = process.cwd();
-        const rigTomlPath = join(cwd, 'rig.toml');
+        const rigTomlPath = join(cwd, 'gyrd.toml');
 
-        // Check existing rig.toml
+        // Check existing gyrd.toml
         if (existsSync(rigTomlPath) && !options.force) {
           if (hasAllRequired) {
             // Non-interactive mode without --force: error
-            Logger.error('rig.toml already exists. Use --force to overwrite.');
+            Logger.error('gyrd.toml already exists. Use --force to overwrite.');
             process.exit(1);
           }
           const overwrite = await confirmOverwrite();
           if (!overwrite) {
-            Logger.info('Cancelled. Existing rig.toml left unchanged.');
+            Logger.info('Cancelled. Existing gyrd.toml left unchanged.');
             process.exit(0);
           }
         }
@@ -115,7 +115,7 @@ export function createProgram(): Command {
         console.log('');
 
         const keyFiles = result.files
-          .filter((f) => ['rig.toml', 'CLAUDE.md', 'AGENTS.md'].includes(f.path))
+          .filter((f) => ['gyrd.toml', 'CLAUDE.md', 'AGENTS.md'].includes(f.path))
           .map((f) => f.path);
         for (const file of keyFiles) {
           Logger.dim(`  ${file}`);
@@ -124,9 +124,9 @@ export function createProgram(): Command {
         console.log('');
         Logger.info('Next steps:');
         Logger.summary([
-          '1. Review rig.toml and customize',
-          "2. Run 'rig generate' to regenerate after changes",
-          "3. Run 'rig doctor' to check your setup",
+          '1. Review gyrd.toml and customize',
+          "2. Run 'gyrd generate' to regenerate after changes",
+          "3. Run 'gyrd doctor' to check your setup",
         ]);
         console.log('');
       } catch (err: unknown) {

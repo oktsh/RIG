@@ -27,11 +27,11 @@ function runCLI(args: string, opts: { cwd?: string; expectFail?: boolean } = {})
   }
 }
 
-describe('create-rig CLI', () => {
+describe('create-gyrd CLI', () => {
   let tempDir: string;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'create-rig-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'create-gyrd-test-'));
   });
 
   afterEach(() => {
@@ -45,7 +45,7 @@ describe('create-rig CLI', () => {
 
   it('--help prints usage text', () => {
     const output = runCLI('--help');
-    expect(output).toContain('create-rig');
+    expect(output).toContain('create-gyrd');
     expect(output).toContain('--preset');
     expect(output).toContain('--stack');
     expect(output).toContain('--name');
@@ -59,7 +59,7 @@ describe('create-rig CLI', () => {
     );
     expect(output).toContain('Generated');
     expect(output).toContain('files');
-    expect(existsSync(join(tempDir, 'rig.toml'))).toBe(true);
+    expect(existsSync(join(tempDir, 'gyrd.toml'))).toBe(true);
     expect(existsSync(join(tempDir, 'CLAUDE.md'))).toBe(true);
     expect(existsSync(join(tempDir, 'AGENTS.md'))).toBe(true);
   });
@@ -80,8 +80,8 @@ describe('create-rig CLI', () => {
     expect(output).toContain('Invalid stack');
   });
 
-  it('refuses to overwrite existing rig.toml without --force', () => {
-    writeFileSync(join(tempDir, 'rig.toml'), 'existing content');
+  it('refuses to overwrite existing gyrd.toml without --force', () => {
+    writeFileSync(join(tempDir, 'gyrd.toml'), 'existing content');
     const output = runCLI(
       '--preset pm --stack nextjs --name test-project',
       { cwd: tempDir, expectFail: true },
@@ -89,14 +89,14 @@ describe('create-rig CLI', () => {
     expect(output).toContain('already exists');
   });
 
-  it('--force overwrites existing rig.toml', () => {
-    writeFileSync(join(tempDir, 'rig.toml'), 'old content');
+  it('--force overwrites existing gyrd.toml', () => {
+    writeFileSync(join(tempDir, 'gyrd.toml'), 'old content');
     const output = runCLI(
       '--preset pm --stack nextjs --name test-project --force',
       { cwd: tempDir },
     );
     expect(output).toContain('Generated');
-    const content = readFileSync(join(tempDir, 'rig.toml'), 'utf8');
+    const content = readFileSync(join(tempDir, 'gyrd.toml'), 'utf8');
     expect(content).not.toBe('old content');
     expect(content).toContain('test-project');
   });
@@ -107,7 +107,7 @@ describe('create-rig CLI', () => {
       { cwd: tempDir },
     );
     expect(output).toContain('Generated');
-    const toml = readFileSync(join(tempDir, 'rig.toml'), 'utf8');
+    const toml = readFileSync(join(tempDir, 'gyrd.toml'), 'utf8');
     expect(toml).toContain('team-proj');
   });
 });

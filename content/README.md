@@ -1,6 +1,6 @@
-# RIG Content Directory
+# GYRD Content Directory
 
-This directory IS the product. Everything RIG installs into user projects comes from here — agents, rules, hooks, templates, workflows. Code in `packages/` reads this directory and renders it into user-facing files.
+This directory IS the product. Everything GYRD installs into user projects comes from here — agents, rules, hooks, templates, workflows. Code in `packages/` reads this directory and renders it into user-facing files.
 
 ## Directory Structure
 
@@ -28,9 +28,9 @@ content/
     ├── claude-md.hbs           # Main CLAUDE.md template
     ├── agents-md.hbs           # AGENTS.md template
     ├── cursor-mdc.hbs          # .cursor/rules/ template
-    ├── rig-toml.hbs            # rig.toml template
+    ├── gyrd-toml.hbs            # gyrd.toml template
     └── partials/               # Reusable template sections
-        ├── about-rig.hbs
+        ├── about-gyrd.hbs
         ├── agent-list.hbs
         ├── commands.hbs
         ├── feedback.hbs
@@ -43,7 +43,7 @@ content/
 ## How Content Flows
 
 ```
-content/ → @rig/core (generator) → user's project
+content/ → @gyrd/core (generator) → user's project
          ↓
   presets/shared/ + presets/{preset}/ + stacks/{stack}/
          ↓
@@ -57,11 +57,11 @@ content/ → @rig/core (generator) → user's project
 - All text belongs in `content/`, never hardcoded in `packages/`
 - Rules and agents are Markdown files, not code
 - Templates use Handlebars for conditional rendering per preset/stack
-- `[RIG-MANAGED]` markers in output define what `rig update` can overwrite
+- `[GYRD-MANAGED]` markers in output define what `gyrd update` can overwrite
 
 ## Versioning
 
-Content is versioned in `CHANGELOG.md`. Each `rig update` pulls the latest content and applies changes to `[RIG-MANAGED]` sections only.
+Content is versioned in `CHANGELOG.md`. Each `gyrd update` pulls the latest content and applies changes to `[GYRD-MANAGED]` sections only.
 
 ## Contributing
 

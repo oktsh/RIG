@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RIG pre-commit hook — Python / FastAPI
+# GYRD pre-commit hook — Python / FastAPI
 # Auto-detects toolchain (venv, uv, global) and runs ruff + mypy before commit.
 # Exit non-zero blocks the commit.
 
@@ -36,28 +36,28 @@ fi
 
 # --- Ruff lint ---
 if [[ -n "$RUFF_CMD" ]]; then
-  echo "[rig] Running $RUFF_CMD check..."
+  echo "[gyrd] Running $RUFF_CMD check..."
   if ! $RUFF_CMD check . 2>&1; then
     ERRORS+=("Ruff lint failed — run '$RUFF_CMD check .' to see details")
   fi
 else
-  echo "[rig] ruff not found. Skipping lint."
+  echo "[gyrd] ruff not found. Skipping lint."
 fi
 
 # --- Mypy typecheck ---
 if [[ -n "$MYPY_CMD" ]]; then
-  echo "[rig] Running $MYPY_CMD..."
+  echo "[gyrd] Running $MYPY_CMD..."
   if ! $MYPY_CMD . 2>&1; then
     ERRORS+=("Mypy failed — run '$MYPY_CMD .' to see details")
   fi
 else
-  echo "[rig] mypy not found. Skipping typecheck."
+  echo "[gyrd] mypy not found. Skipping typecheck."
 fi
 
 # --- Result ---
 if [[ ${#ERRORS[@]} -gt 0 ]]; then
   echo ""
-  echo "[rig] Pre-commit checks FAILED:"
+  echo "[gyrd] Pre-commit checks FAILED:"
   for err in "${ERRORS[@]}"; do
     echo "  - $err"
   done
@@ -66,5 +66,5 @@ if [[ ${#ERRORS[@]} -gt 0 ]]; then
   exit 1
 fi
 
-echo "[rig] All checks passed."
+echo "[gyrd] All checks passed."
 exit 0

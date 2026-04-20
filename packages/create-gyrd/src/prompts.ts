@@ -1,5 +1,5 @@
 import { select, input, confirm } from '@inquirer/prompts';
-import type { Preset, Stack } from '@rig/core';
+import type { Preset, Stack } from '@gyrd/core';
 
 export interface CollectedOptions {
   preset: Preset;
@@ -11,7 +11,7 @@ export interface CollectedOptions {
 export async function collectOptions(
   partial: Partial<CollectedOptions> = {},
 ): Promise<CollectedOptions> {
-  console.log('\n  Welcome to RIG — Managed AI Dev Practice\n');
+  console.log('\n  Welcome to GYRD — Managed AI Dev Practice\n');
 
   const preset =
     partial.preset ??
@@ -79,7 +79,7 @@ export async function collectOptions(
 
 export async function confirmOverwrite(): Promise<boolean> {
   return confirm({
-    message: 'Existing rig.toml found. Overwrite?',
+    message: 'Existing gyrd.toml found. Overwrite?',
     default: false,
   });
 }

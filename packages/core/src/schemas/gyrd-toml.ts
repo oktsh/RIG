@@ -5,7 +5,7 @@ export const StackSchema = z.enum(['nextjs', 'python-fastapi']);
 export const FormatTargetSchema = z.enum(['claude_md', 'agents_md', 'cursor_mdc']);
 export const UpdateChannelSchema = z.enum(['stable', 'latest']);
 
-export const RigConfigSchema = z.object({
+export const GyrdConfigSchema = z.object({
   project: z.object({
     name: z.string().min(1),
     preset: PresetSchema,
@@ -32,7 +32,7 @@ export const RigConfigSchema = z.object({
   }).optional(),
 });
 
-export type RigConfig = z.infer<typeof RigConfigSchema>;
+export type GyrdConfig = z.infer<typeof GyrdConfigSchema>;
 export type Preset = z.infer<typeof PresetSchema>;
 export type Stack = z.infer<typeof StackSchema>;
 export type FormatTarget = z.infer<typeof FormatTargetSchema>;

@@ -4,12 +4,12 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { buildManifest, writeManifest, readManifest } from '../index.js';
 import { computeHash } from '../../utils/index.js';
-import type { RigConfig } from '../../schemas/index.js';
+import type { GyrdConfig } from '../../schemas/index.js';
 import type { GeneratedFile } from '../../generator/types.js';
 
 const FIXED_DATE = '2025-01-01T00:00:00.000Z';
 
-function makeConfig(overrides?: Partial<RigConfig>): RigConfig {
+function makeConfig(overrides?: Partial<GyrdConfig>): GyrdConfig {
   return {
     project: { name: 'test-app', preset: 'solo-dev', stack: 'nextjs' },
     ...overrides,
@@ -18,7 +18,7 @@ function makeConfig(overrides?: Partial<RigConfig>): RigConfig {
 
 function makeFiles(): GeneratedFile[] {
   return [
-    { path: 'rig.toml', content: '[project]\nname = "test"', component: 'config' },
+    { path: 'gyrd.toml', content: '[project]\nname = "test"', component: 'config' },
     { path: 'CLAUDE.md', content: '# Test\nCLAUDE.md content', component: 'formats' },
     { path: 'AGENTS.md', content: '# Agents\nagent list', component: 'formats' },
     { path: '.claude/agents/reviewer.md', content: '---\nname: reviewer\n---\nbody', component: 'agents' },
@@ -50,7 +50,7 @@ describe('buildManifest', () => {
     const files = makeFiles();
     const manifest = buildManifest(config, files, '0.1.0', { generatedAt: FIXED_DATE });
 
-    expect(manifest.rig_version).toBe('0.1.0');
+    expect(manifest.gyrd_version).toBe('0.1.0');
     expect(manifest.generated_at).toBe(FIXED_DATE);
     expect(manifest.config_hash).toBe(computeHash(JSON.stringify(config)));
 
@@ -109,7 +109,7 @@ describe('writeManifest + readManifest', () => {
     const loaded = await readManifest(dir);
 
     expect(loaded).not.toBeNull();
-    expect(loaded!.rig_version).toBe(original.rig_version);
+    expect(loaded!.gyrd_version).toBe(original.gyrd_version);
     expect(loaded!.generated_at).toBe(original.generated_at);
     expect(loaded!.config_hash).toBe(original.config_hash);
     expect(loaded!.components).toEqual(original.components);

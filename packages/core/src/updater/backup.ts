@@ -8,7 +8,7 @@ import { ensureDir } from '../utils/index.js';
  * Create a backup of all managed files before applying an update.
  *
  * - If git repo: creates a backup branch via `git stash create`
- * - If not git: copies managed files to `.rig/backups/{ISO-timestamp}/`
+ * - If not git: copies managed files to `.gyrd/backups/{ISO-timestamp}/`
  *
  * Returns the backup location path.
  */
@@ -31,7 +31,7 @@ async function createGitBackup(dir: string): Promise<string> {
   const exec = promisify(execFile);
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const branchName = `rig-backup/${timestamp}`;
+  const branchName = `gyrd-backup/${timestamp}`;
 
   try {
     await exec('git', ['branch', branchName], { cwd: dir });
@@ -47,7 +47,7 @@ async function createFileBackup(
   managedFiles: string[],
 ): Promise<string> {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const backupDir = join(dir, '.rig', 'backups', timestamp);
+  const backupDir = join(dir, '.gyrd', 'backups', timestamp);
   await ensureDir(backupDir);
 
   for (const filePath of managedFiles) {

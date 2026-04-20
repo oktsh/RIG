@@ -1,15 +1,15 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { runChecks, Logger } from '@rig/core';
-import type { CheckResult, CheckStatus } from '@rig/core';
+import { runChecks, Logger } from '@gyrd/core';
+import type { CheckResult, CheckStatus } from '@gyrd/core';
 
 /**
- * Resolve the content root directory based on @rig/core's package location.
+ * Resolve the content root directory based on @gyrd/core's package location.
  * Same logic as in generate.ts.
  */
 function resolveContentRoot(): string {
-  const coreEntry = import.meta.resolve('@rig/core');
+  const coreEntry = import.meta.resolve('@gyrd/core');
   const coreDistDir = dirname(fileURLToPath(coreEntry));
   return join(coreDistDir, '..', 'content');
 }

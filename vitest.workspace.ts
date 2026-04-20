@@ -6,12 +6,12 @@ export default defineWorkspace([
     test: { name: 'core' },
   },
   {
-    extends: 'packages/create-rig/vitest.config.ts',
-    test: { name: 'create-rig', globalSetup: ['./vitest.setup.ts'] },
+    extends: 'packages/create-gyrd/vitest.config.ts',
+    test: { name: 'create-gyrd', globalSetup: ['./vitest.setup.ts'] },
   },
   {
-    extends: 'packages/rig-cli/vitest.config.ts',
-    test: { name: 'rig-cli', globalSetup: ['./vitest.setup.ts'] },
+    extends: 'packages/gyrd-cli/vitest.config.ts',
+    test: { name: 'gyrd-cli', globalSetup: ['./vitest.setup.ts'] },
   },
   {
     extends: 'tests/vitest.config.ts',

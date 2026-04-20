@@ -1,7 +1,7 @@
 {
-  "name": "rig-monorepo",
+  "name": "gyrd-monorepo",
   "private": true,
-  "description": "Managed AI dev practice — rules, hooks, workflows. Installed via npm, kept current via rig update.",
+  "description": "Managed AI dev practice — rules, hooks, workflows. Installed via npm, kept current via gyrd update.",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "https://github.com/oktsh/RIG.git"
   },
-  "homepage": "https://rig.dev",
+  "homepage": "https://gyrd.dev",
   "author": "oktsh",
   "license": "MIT",
   "scripts": {

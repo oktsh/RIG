@@ -6,32 +6,32 @@
  * Algorithm:
  * 1. Parse existing CLAUDE.md into sections (split on `## ` at line start)
  * 2. Classify each section:
- *    - `[RIG-MANAGED]` in heading -> RIG-owned, candidate for replacement
+ *    - `[GYRD-MANAGED]` in heading -> GYRD-owned, candidate for replacement
  *    - No prefix -> user-added, ALWAYS preserved
- * 3. Parse new RIG content into sections (all will be `[RIG-MANAGED]`)
+ * 3. Parse new GYRD content into sections (all will be `[GYRD-MANAGED]`)
  * 4. Build result:
  *    - For each section in existing:
- *      - If RIG-MANAGED -> replace with corresponding section from new content
+ *      - If GYRD-MANAGED -> replace with corresponding section from new content
  *      - If user-added -> keep as-is
  *    - If new content has sections not in existing -> append at end
  * 5. Preserve the header (everything before first `##`)
  */
 
 interface Section {
-  heading: string; // The full heading line, e.g. "## [RIG-MANAGED] Agents"
+  heading: string; // The full heading line, e.g. "## [GYRD-MANAGED] Agents"
   key: string; // Normalized key for matching, e.g. "agents"
   isManaged: boolean;
   body: string; // Everything after the heading line until the next section
 }
 
-const RIG_MANAGED_PREFIX = '[RIG-MANAGED]';
+const RIG_MANAGED_PREFIX = '[GYRD-MANAGED]';
 
 /**
- * Merge an existing CLAUDE.md with new RIG-generated content.
+ * Merge an existing CLAUDE.md with new GYRD-generated content.
  *
- * - RIG-MANAGED sections are replaced with new content
+ * - GYRD-MANAGED sections are replaced with new content
  * - User-added sections are preserved
- * - New RIG sections not in existing are appended
+ * - New GYRD sections not in existing are appended
  * - Header (before first ##) is preserved
  */
 export function mergeClaudeMd(existing: string, newRigContent: string): string {
@@ -58,8 +58,8 @@ export function mergeClaudeMd(existing: string, newRigContent: string): string {
         resultSections.push(replacement.heading + replacement.body);
         consumed.add(section.key);
       } else {
-        // RIG-managed section removed in new version — drop it
-        // (This is intentional: if RIG no longer generates a section, it should be removed)
+        // GYRD-managed section removed in new version — drop it
+        // (This is intentional: if GYRD no longer generates a section, it should be removed)
         resultSections.push(section.heading + section.body);
       }
     } else {
@@ -126,7 +126,7 @@ function makeSection(heading: string, body: string): Section {
 function normalizeKey(heading: string): string {
   return heading
     .replace(/^##\s*/, '')
-    .replace(/\[RIG-MANAGED\]\s*/g, '')
+    .replace(/\[GYRD-MANAGED\]\s*/g, '')
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')

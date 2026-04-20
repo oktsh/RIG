@@ -1,15 +1,14 @@
 {
-  "name": "create-rig",
+  "name": "@gyrd/cli",
   "version": "0.1.0",
-  "description": "Scaffold a managed AI dev practice — agents, rules, hooks, workflows for Claude Code, Cursor, Copilot",
+  "description": "Manage your AI dev practice — gyrd update, gyrd doctor, gyrd generate. Living updates for Claude Code, Cursor, Copilot rules.",
   "type": "module",
   "bin": {
-    "create-rig": "dist/index.js"
+    "gyrd": "dist/index.js"
   },
   "main": "dist/index.js",
-  "files": ["dist", "content"],
+  "files": ["dist"],
   "scripts": {
-    "prebuild": "rm -rf content && cp -r ../../content content",
     "build": "tsup",
     "typecheck": "tsc --noEmit"
   },
@@ -19,14 +18,14 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/oktsh/RIG.git",
-    "directory": "packages/create-rig"
+    "directory": "packages/gyrd-cli"
   },
-  "homepage": "https://rig.dev",
+  "homepage": "https://gyrd.dev",
   "author": "oktsh",
   "license": "MIT",
   "keywords": [
-    "create-rig",
-    "rig",
+    "gyrd-cli",
+    "gyrd",
     "ai-dev",
     "ai-agents",
     "claude",
@@ -36,15 +35,14 @@
     "codex",
     "dev-tools",
     "cli",
-    "scaffolding",
+    "living-updates",
     "rules",
     "hooks",
-    "workflows",
-    "claude-md"
+    "workflows"
   ],
   "dependencies": {
-    "@inquirer/prompts": "^8.4.1",
-    "@rig/core": "workspace:^",
+    "@iarna/toml": "^2.2.5",
+    "@gyrd/core": "workspace:^",
     "commander": "^14.0.3"
   }
 }

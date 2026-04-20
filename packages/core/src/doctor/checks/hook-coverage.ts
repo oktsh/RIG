@@ -18,7 +18,7 @@ export async function checkHookCoverage(dir: string): Promise<CheckResult> {
       name: 'hook-coverage',
       status: 'fail',
       message: 'No .claude/hooks/ directory found',
-      remediation: 'Run `rig generate` to create hooks.',
+      remediation: 'Run `gyrd generate` to create hooks.',
     };
   }
 
@@ -29,7 +29,7 @@ export async function checkHookCoverage(dir: string): Promise<CheckResult> {
       name: 'hook-coverage',
       status: 'fail',
       message: '.claude/hooks/ exists but contains no hook files',
-      remediation: 'Run `rig generate` to create hooks.',
+      remediation: 'Run `gyrd generate` to create hooks.',
     };
   }
 

@@ -4,7 +4,7 @@ import type { Manifest } from '../../schemas/index.js';
 
 function makeManifest(files: Record<string, string>): Manifest {
   return {
-    rig_version: '0.1.0',
+    gyrd_version: '0.1.0',
     generated_at: '2026-01-01T00:00:00Z',
     config_hash: 'abc123',
     components: {

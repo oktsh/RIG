@@ -11,7 +11,7 @@ function makeManifest(
   version = '0.1.0',
 ): Manifest {
   return {
-    rig_version: version,
+    gyrd_version: version,
     generated_at: '2026-01-01T00:00:00Z',
     config_hash: 'abc123',
     components: {

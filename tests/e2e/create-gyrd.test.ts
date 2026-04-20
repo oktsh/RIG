@@ -1,12 +1,12 @@
 /**
- * E2E tests for create-rig CLI.
+ * E2E tests for create-gyrd CLI.
  *
- * Runs the *built* CLI binary (`packages/create-rig/dist/index.js`) inside
+ * Runs the *built* CLI binary (`packages/create-gyrd/dist/index.js`) inside
  * disposable temp directories and validates generated output — file structure,
  * content quality, manifest integrity, and preset-specific behavior.
  *
  * These tests complement (not duplicate) the unit-level CLI tests at
- * `packages/create-rig/src/__tests__/cli.test.ts` and the generator tests at
+ * `packages/create-gyrd/src/__tests__/cli.test.ts` and the generator tests at
  * `packages/core/src/generator/__tests__/generate.test.ts`.
  */
 
@@ -24,14 +24,14 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { parse as parseToml } from '@iarna/toml';
 import { parse as parseYaml } from 'yaml';
-import { computeHash } from '@rig/core';
+import { computeHash } from '@gyrd/core';
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CLI_PATH = join(RIG_ROOT, 'packages', 'create-rig', 'dist', 'index.js');
+const CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
 
 const PRESETS = ['pm', 'small-team', 'solo-dev'] as const;
 const STACKS = ['nextjs', 'python-fastapi'] as const;
@@ -56,7 +56,7 @@ const EXPECTED_AGENTS = [
 let tempDirs: string[] = [];
 
 function makeTmpDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'rig-e2e-'));
+  const dir = mkdtempSync(join(tmpdir(), 'gyrd-e2e-'));
   tempDirs.push(dir);
   return dir;
 }
@@ -99,16 +99,16 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('create-rig E2E', () => {
+describe('create-gyrd E2E', () => {
   // 1. Solo-dev + nextjs — all expected file categories exist
   it('solo-dev + nextjs generates all expected file categories', () => {
     const dir = makeTmpDir();
     runCreate('--preset=solo-dev --stack=nextjs --name=test-solo', dir);
 
-    expect(existsSync(join(dir, 'rig.toml'))).toBe(true);
+    expect(existsSync(join(dir, 'gyrd.toml'))).toBe(true);
     expect(existsSync(join(dir, 'CLAUDE.md'))).toBe(true);
     expect(existsSync(join(dir, 'AGENTS.md'))).toBe(true);
-    expect(existsSync(join(dir, '.rig', 'manifest.yaml'))).toBe(true);
+    expect(existsSync(join(dir, '.gyrd', 'manifest.yaml'))).toBe(true);
 
     // .claude/agents/ must contain agent .md files
     const agentsDir = join(dir, '.claude', 'agents');
@@ -178,7 +178,7 @@ describe('create-rig E2E', () => {
     // Should not throw
     const output = runCreate(`--preset=${preset} --stack=${stack} --name=${name}`, dir);
     expect(output).toContain('Generated');
-    expect(existsSync(join(dir, 'rig.toml'))).toBe(true);
+    expect(existsSync(join(dir, 'gyrd.toml'))).toBe(true);
   });
 
   // 5. All agent files parse — valid YAML frontmatter
@@ -237,7 +237,7 @@ describe('create-rig E2E', () => {
     const dir = makeTmpDir();
     runCreate('--preset=solo-dev --stack=nextjs --name=test-manifest', dir);
 
-    const manifestPath = join(dir, '.rig', 'manifest.yaml');
+    const manifestPath = join(dir, '.gyrd', 'manifest.yaml');
     expect(existsSync(manifestPath)).toBe(true);
 
     const manifestRaw = readFileSync(manifestPath, 'utf8');
@@ -288,14 +288,14 @@ describe('create-rig E2E', () => {
     }
   });
 
-  // 10. LLM-native onboarding (AC-RIG-048)
+  // 10. LLM-native onboarding (AC-GYRD-048)
   describe('LLM-native onboarding in CLAUDE.md', () => {
-    it('contains [RIG-MANAGED] About RIG section', () => {
+    it('contains [GYRD-MANAGED] About GYRD section', () => {
       const dir = makeTmpDir();
       runCreate('--preset=solo-dev --stack=nextjs --name=test-onboard', dir);
 
       const claudeMd = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
-      expect(claudeMd).toContain('[RIG-MANAGED] About RIG');
+      expect(claudeMd).toContain('[GYRD-MANAGED] About GYRD');
     });
 
     it('PM preset includes PM-specific onboarding text', () => {
@@ -325,22 +325,22 @@ describe('create-rig E2E', () => {
     });
   });
 
-  // 11. RIG-MANAGED markers on all RIG-owned sections
-  it('CLAUDE.md has >= 5 [RIG-MANAGED] markers', () => {
+  // 11. GYRD-MANAGED markers on all GYRD-owned sections
+  it('CLAUDE.md has >= 5 [GYRD-MANAGED] markers', () => {
     const dir = makeTmpDir();
     runCreate('--preset=small-team --stack=nextjs --name=test-markers', dir);
 
     const claudeMd = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
-    const markerCount = (claudeMd.match(/\[RIG-MANAGED\]/g) || []).length;
+    const markerCount = (claudeMd.match(/\[GYRD-MANAGED\]/g) || []).length;
     expect(markerCount).toBeGreaterThanOrEqual(5);
   });
 
-  // 12. rig.toml is valid TOML and matches input
-  it('rig.toml is valid TOML with correct preset and stack', () => {
+  // 12. gyrd.toml is valid TOML and matches input
+  it('gyrd.toml is valid TOML with correct preset and stack', () => {
     const dir = makeTmpDir();
     runCreate('--preset=small-team --stack=python-fastapi --name=my-project', dir);
 
-    const raw = readFileSync(join(dir, 'rig.toml'), 'utf8');
+    const raw = readFileSync(join(dir, 'gyrd.toml'), 'utf8');
     const parsed = parseToml(raw) as Record<string, unknown>;
 
     expect(parsed).toHaveProperty('project');
@@ -355,10 +355,10 @@ describe('create-rig E2E', () => {
     const dir = makeTmpDir();
     runCreate('--preset=solo-dev --stack=nextjs --name=test-manifest-schema', dir);
 
-    const raw = readFileSync(join(dir, '.rig', 'manifest.yaml'), 'utf8');
+    const raw = readFileSync(join(dir, '.gyrd', 'manifest.yaml'), 'utf8');
     const manifest = parseYaml(raw) as Record<string, unknown>;
 
-    expect(manifest).toHaveProperty('rig_version');
+    expect(manifest).toHaveProperty('gyrd_version');
     expect(manifest).toHaveProperty('generated_at');
     expect(manifest).toHaveProperty('config_hash');
     expect(manifest).toHaveProperty('components');

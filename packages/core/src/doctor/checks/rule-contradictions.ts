@@ -2,7 +2,7 @@ import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { CheckResult } from '../types.js';
 
-// Core rules that should always exist in a RIG project
+// Core rules that should always exist in a GYRD project
 const EXPECTED_CORE_RULES = [
   'agent-orchestration',
   'context-discipline',
@@ -26,7 +26,7 @@ export async function checkRuleContradictions(dir: string): Promise<CheckResult>
       name: 'rule-contradictions',
       status: 'warn',
       message: 'No .claude/rules/ directory found',
-      remediation: 'Run `rig generate` to create rules.',
+      remediation: 'Run `gyrd generate` to create rules.',
     };
   }
 
@@ -41,7 +41,7 @@ export async function checkRuleContradictions(dir: string): Promise<CheckResult>
       name: 'rule-contradictions',
       status: 'warn',
       message: `${missing.length} core rule(s) missing: ${missing.join(', ')}`,
-      remediation: 'Run `rig generate` to recreate missing rules.',
+      remediation: 'Run `gyrd generate` to recreate missing rules.',
     };
   }
 

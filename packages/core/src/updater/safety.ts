@@ -1,7 +1,7 @@
 import type { Manifest } from '../schemas/index.js';
 
 /**
- * Patterns for files that RIG must NEVER overwrite or manage.
+ * Patterns for files that GYRD must NEVER overwrite or manage.
  * These are user-owned files that should survive any update.
  */
 const NEVER_MANAGED: (string | RegExp)[] = [
@@ -13,7 +13,7 @@ const NEVER_MANAGED: (string | RegExp)[] = [
 ];
 
 /**
- * Get the set of files that are managed by RIG (tracked in the manifest).
+ * Get the set of files that are managed by GYRD (tracked in the manifest).
  */
 export function getManagedFiles(manifest: Manifest): Set<string> {
   return new Set(Object.keys(manifest.files));
@@ -45,7 +45,7 @@ export function validateUpdateTarget(path: string, manifest: Manifest): void {
   for (const pattern of NEVER_MANAGED) {
     if (typeof pattern === 'string') {
       if (path === pattern) {
-        throw new Error(`Cannot update '${path}': this file is never managed by RIG`);
+        throw new Error(`Cannot update '${path}': this file is never managed by GYRD`);
       }
     } else {
       if (pattern.test(path)) {

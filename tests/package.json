@@ -1,5 +1,5 @@
 {
-  "name": "@rig/tests",
+  "name": "@gyrd/tests",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@rig/core": "workspace:^",
+    "@gyrd/core": "workspace:^",
     "@iarna/toml": "^2.2.5",
     "yaml": "^2.8.3"
   },

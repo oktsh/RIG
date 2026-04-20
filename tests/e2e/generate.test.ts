@@ -1,8 +1,8 @@
 /**
- * E2E tests for `rig generate` command.
+ * E2E tests for `gyrd generate` command.
  *
- * Full lifecycle: create-rig -> modify rig.toml -> rig generate -> verify changes.
- * Complements unit tests at packages/rig-cli/src/__tests__/generate.test.ts.
+ * Full lifecycle: create-gyrd -> modify gyrd.toml -> gyrd generate -> verify changes.
+ * Complements unit tests at packages/gyrd-cli/src/__tests__/generate.test.ts.
  */
 
 import { describe, it, expect, afterEach } from 'vitest';
@@ -17,15 +17,15 @@ import {
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { parse as parseYaml } from 'yaml';
-import { computeHash } from '@rig/core';
+import { computeHash } from '@gyrd/core';
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-rig', 'dist', 'index.js');
-const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'rig-cli', 'dist', 'index.js');
+const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
+const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -83,8 +83,8 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('rig generate E2E', () => {
-  // 1. Create project, modify rig.toml, regenerate, verify changes
+describe('gyrd generate E2E', () => {
+  // 1. Create project, modify gyrd.toml, regenerate, verify changes
   it('regenerates after preset change — CLAUDE.md reflects new preset', () => {
     const dir = makeTmpDir();
 
@@ -94,12 +94,12 @@ describe('rig generate E2E', () => {
     const claudeBefore = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
     expect(claudeBefore).toMatch(/[Jj]ust code/); // solo-dev onboarding
 
-    // Step 2: Modify rig.toml to change preset to pm
-    const rigToml = readFileSync(join(dir, 'rig.toml'), 'utf8');
+    // Step 2: Modify gyrd.toml to change preset to pm
+    const rigToml = readFileSync(join(dir, 'gyrd.toml'), 'utf8');
     const updatedToml = rigToml.replace('preset = "solo-dev"', 'preset = "pm"');
-    writeFileSync(join(dir, 'rig.toml'), updatedToml);
+    writeFileSync(join(dir, 'gyrd.toml'), updatedToml);
 
-    // Step 3: Run rig generate
+    // Step 3: Run gyrd generate
     const { stdout, exitCode } = runRig('generate', dir);
     expect(exitCode).toBe(0);
     expect(stdout).toContain('Regenerated');
@@ -112,24 +112,24 @@ describe('rig generate E2E', () => {
   });
 
   // 2. Manifest updated after regeneration
-  it('manifest is updated after rig generate', () => {
+  it('manifest is updated after gyrd generate', () => {
     const dir = makeTmpDir();
 
     // Create initial project
     runCreate('--preset=solo-dev --stack=nextjs --name=e2e-manifest', dir);
 
-    const manifestBefore = readFileSync(join(dir, '.rig', 'manifest.yaml'), 'utf8');
+    const manifestBefore = readFileSync(join(dir, '.gyrd', 'manifest.yaml'), 'utf8');
 
     // Modify preset
-    const rigToml = readFileSync(join(dir, 'rig.toml'), 'utf8');
-    writeFileSync(join(dir, 'rig.toml'), rigToml.replace('preset = "solo-dev"', 'preset = "pm"'));
+    const rigToml = readFileSync(join(dir, 'gyrd.toml'), 'utf8');
+    writeFileSync(join(dir, 'gyrd.toml'), rigToml.replace('preset = "solo-dev"', 'preset = "pm"'));
 
     // Regenerate
     const { exitCode } = runRig('generate', dir);
     expect(exitCode).toBe(0);
 
     // Manifest should have changed (different config_hash due to preset change)
-    const manifestAfter = readFileSync(join(dir, '.rig', 'manifest.yaml'), 'utf8');
+    const manifestAfter = readFileSync(join(dir, '.gyrd', 'manifest.yaml'), 'utf8');
     expect(manifestAfter).not.toBe(manifestBefore);
 
     // Verify manifest hashes match actual files
@@ -154,8 +154,8 @@ describe('rig generate E2E', () => {
     const agentsBefore = readFileSync(join(dir, 'AGENTS.md'), 'utf8');
 
     // Change preset
-    const rigToml = readFileSync(join(dir, 'rig.toml'), 'utf8');
-    writeFileSync(join(dir, 'rig.toml'), rigToml.replace('preset = "solo-dev"', 'preset = "pm"'));
+    const rigToml = readFileSync(join(dir, 'gyrd.toml'), 'utf8');
+    writeFileSync(join(dir, 'gyrd.toml'), rigToml.replace('preset = "solo-dev"', 'preset = "pm"'));
 
     // Regenerate only CLAUDE.md
     const { exitCode } = runRig('generate claude_md', dir);
@@ -171,7 +171,7 @@ describe('rig generate E2E', () => {
   });
 
   // 4. Regeneration is idempotent
-  it('consecutive rig generate produces identical output', () => {
+  it('consecutive gyrd generate produces identical output', () => {
     const dir = makeTmpDir();
 
     runCreate('--preset=small-team --stack=python-fastapi --name=e2e-idempotent', dir);
