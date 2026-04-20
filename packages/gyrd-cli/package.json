@@ -20,7 +20,10 @@
     "url": "https://github.com/oktsh/RIG.git",
     "directory": "packages/gyrd-cli"
   },
-  "homepage": "https://gyrd.dev",
+  "homepage": "https://gyrd.ai",
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "oktsh",
   "license": "MIT",
   "keywords": [
