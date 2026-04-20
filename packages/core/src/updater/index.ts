@@ -12,7 +12,7 @@ import type { UpdatePlan, UpdateResult } from './types.js';
 /**
  * Clean parsed TOML data before Zod validation.
  *
- * Generated rig.toml files may have empty strings for optional enum fields
+ * Generated gyrd.toml files may have empty strings for optional enum fields
  * (e.g. default_memory = "") that would fail Zod validation. Remove these
  * so that Zod defaults kick in.
  */
@@ -44,15 +44,15 @@ function cleanParsedConfig(data: Record<string, unknown>): Record<string, unknow
 }
 
 /**
- * Parse the rig.toml config from a project directory.
+ * Parse the gyrd.toml config from a project directory.
  * Uses @iarna/toml since that's what the project already depends on.
  * Cleans empty values from optional enum fields before returning.
  */
 async function loadProjectConfig(dir: string): Promise<Record<string, unknown>> {
   const { readFileSafe } = await import('../utils/index.js');
-  const tomlContent = await readFileSafe(join(dir, 'rig.toml'));
+  const tomlContent = await readFileSafe(join(dir, 'gyrd.toml'));
   if (!tomlContent) {
-    throw new Error('No rig.toml found — is this a RIG project?');
+    throw new Error('No gyrd.toml found — is this a GYRD project?');
   }
   const TOML = await import('@iarna/toml');
   const parsed = TOML.parse(tomlContent) as Record<string, unknown>;
@@ -72,13 +72,13 @@ export async function checkForUpdates(
 ): Promise<UpdatePlan> {
   const currentManifest = await readManifest(dir);
   if (!currentManifest) {
-    throw new Error('No manifest found — run `rig generate` first');
+    throw new Error('No manifest found — run `gyrd generate` first');
   }
 
   const config = await loadProjectConfig(dir);
 
   // Generate new version in temp directory
-  const tempDir = await mkdtemp(join(tmpdir(), 'rig-update-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'gyrd-update-'));
   try {
     await generateProject(config as Parameters<typeof generateProject>[0], tempDir, {
       version: VERSION,
@@ -111,13 +111,13 @@ export async function performUpdate(
 ): Promise<UpdateResult> {
   const currentManifest = await readManifest(dir);
   if (!currentManifest) {
-    throw new Error('No manifest found — run `rig generate` first');
+    throw new Error('No manifest found — run `gyrd generate` first');
   }
 
   const config = await loadProjectConfig(dir);
 
   // Generate new version in temp directory
-  const tempDir = await mkdtemp(join(tmpdir(), 'rig-update-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'gyrd-update-'));
   try {
     await generateProject(config as Parameters<typeof generateProject>[0], tempDir, {
       version: VERSION,

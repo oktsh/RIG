@@ -1,8 +1,8 @@
-# RIG Changelog
+# GYRD Changelog
 
 ## v0.2.0 (Claude 4.7 Adaptation)
 
-> Adapts all RIG content for Claude Opus 4.7's literal instruction following behavior.
+> Adapts all GYRD content for Claude Opus 4.7's literal instruction following behavior.
 > Models that follow instructions literally need rules that ARE literal.
 
 ### Rules — Updated

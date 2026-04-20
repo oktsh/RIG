@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { generateProject } from '../../generator/index.js';
 import { computeHash } from '../../utils/index.js';
 import { readFileSafe } from '../../utils/index.js';
-import type { RigConfig } from '../../schemas/index.js';
+import type { GyrdConfig } from '../../schemas/index.js';
 import type { CheckResult } from '../types.js';
 
 const FORMAT_FILES = ['CLAUDE.md', 'AGENTS.md'] as const;
@@ -16,7 +16,7 @@ const FORMAT_FILES = ['CLAUDE.md', 'AGENTS.md'] as const;
  */
 export async function checkFormatSync(
   dir: string,
-  config: RigConfig,
+  config: GyrdConfig,
   contentRoot?: string,
 ): Promise<CheckResult> {
   const tempDir = await mkdtemp(join(tmpdir(), 'rig-doctor-'));
@@ -49,7 +49,7 @@ export async function checkFormatSync(
         name: 'format-sync',
         status: 'warn',
         message: `${drifted.length} format file(s) have drifted: ${drifted.join(', ')}`,
-        remediation: 'Run `rig generate` to sync.',
+        remediation: 'Run `gyrd generate` to sync.',
       };
     }
 

@@ -1,5 +1,5 @@
 /**
- * Subprocess tests for `rig doctor` CLI command.
+ * Subprocess tests for `gyrd doctor` CLI command.
  *
  * Tests the CLI binary as a subprocess, verifying output format and exit codes.
  */
@@ -15,8 +15,8 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..', '..', '..');
-const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-rig', 'dist', 'index.js');
-const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'rig-cli', 'dist', 'index.js');
+const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
+const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -75,7 +75,7 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('rig doctor CLI', () => {
+describe('gyrd doctor CLI', () => {
   // 1. Fresh project exits 0
   it('fresh project — exits 0', () => {
     const dir = makeTmpDir();

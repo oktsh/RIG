@@ -2,9 +2,9 @@
  * E2E tests for autonomous agent compatibility (T024).
  *
  * Validates that generated content works for factory-style autonomous agents:
- * - CLAUDE.md contains commit message format (AC-RIG-042)
- * - Rules contain "if running interactively" qualifiers (AC-RIG-043)
- * - Hook scripts detect non-TTY and are CI-safe (AC-RIG-044)
+ * - CLAUDE.md contains commit message format (AC-GYRD-042)
+ * - Rules contain "if running interactively" qualifiers (AC-GYRD-043)
+ * - Hook scripts detect non-TTY and are CI-safe (AC-GYRD-044)
  */
 
 import { describe, it, expect, afterEach } from 'vitest';
@@ -23,7 +23,7 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CLI_PATH = join(RIG_ROOT, 'packages', 'create-rig', 'dist', 'index.js');
+const CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
 // Helpers

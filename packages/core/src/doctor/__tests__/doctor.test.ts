@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { generateProject } from '../../generator/index.js';
 import { runChecks } from '../index.js';
-import type { RigConfig } from '../../schemas/index.js';
+import type { GyrdConfig } from '../../schemas/index.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -21,7 +21,7 @@ import type { RigConfig } from '../../schemas/index.js';
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const CONTENT_ROOT = join(THIS_DIR, '..', '..', '..', '..', '..', 'content');
 
-const TEST_CONFIG: RigConfig = {
+const TEST_CONFIG: GyrdConfig = {
   project: {
     name: 'doctor-test',
     preset: 'solo-dev',
@@ -99,7 +99,7 @@ describe('doctor checks', () => {
     const formatCheck = result.checks.find((c) => c.name === 'format-sync');
     expect(formatCheck).toBeDefined();
     expect(formatCheck!.status).toBe('warn');
-    expect(formatCheck!.remediation).toContain('rig generate');
+    expect(formatCheck!.remediation).toContain('gyrd generate');
   });
 
   // 4. Remove .claude/hooks/ — hook-coverage FAIL
@@ -113,7 +113,7 @@ describe('doctor checks', () => {
     const hookCheck = result.checks.find((c) => c.name === 'hook-coverage');
     expect(hookCheck).toBeDefined();
     expect(hookCheck!.status).toBe('fail');
-    expect(hookCheck!.remediation).toContain('rig generate');
+    expect(hookCheck!.remediation).toContain('gyrd generate');
   });
 
   // 5. Missing .gitignore — security-baseline WARN
@@ -206,8 +206,8 @@ describe('doctor checks', () => {
     expect(deadCheck!.message).toContain('dead reference');
   });
 
-  // 10. No rig.toml — config FAIL
-  it('no rig.toml — fails fast with config error', async () => {
+  // 10. No gyrd.toml — config FAIL
+  it('no gyrd.toml — fails fast with config error', async () => {
     // Don't create a project, just use empty temp dir
     const result = await runChecks(tempDir);
 

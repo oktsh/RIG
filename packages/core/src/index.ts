@@ -1,6 +1,6 @@
 // Schemas
-export { RigConfigSchema, PresetSchema, StackSchema, FormatTargetSchema } from './schemas/index.js';
-export type { RigConfig, Preset, Stack, FormatTarget } from './schemas/index.js';
+export { GyrdConfigSchema, PresetSchema, StackSchema, FormatTargetSchema } from './schemas/index.js';
+export type { GyrdConfig, Preset, Stack, FormatTarget } from './schemas/index.js';
 export { ManifestSchema } from './schemas/index.js';
 export type { Manifest } from './schemas/index.js';
 export { AgentFrontmatterSchema } from './schemas/index.js';

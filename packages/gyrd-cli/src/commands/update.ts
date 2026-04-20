@@ -5,38 +5,38 @@ import {
   checkForUpdates,
   performUpdate,
   Logger,
-} from '@rig/core';
-import type { UpdatePlan, UpdateResult } from '@rig/core';
+} from '@gyrd/core';
+import type { UpdatePlan, UpdateResult } from '@gyrd/core';
 
 /**
- * Resolve the content root directory based on @rig/core's package location.
- * Content is shipped inside @rig/core at <core>/content/
+ * Resolve the content root directory based on @gyrd/core's package location.
+ * Content is shipped inside @gyrd/core at <core>/content/
  */
 function resolveContentRoot(): string {
-  const coreEntry = import.meta.resolve('@rig/core');
+  const coreEntry = import.meta.resolve('@gyrd/core');
   const coreDistDir = dirname(fileURLToPath(coreEntry));
   return join(coreDistDir, '..', 'content');
 }
 
 /**
- * Run the `rig update` command.
+ * Run the `gyrd update` command.
  *
- * Checks the current project against the installed RIG version,
+ * Checks the current project against the installed GYRD version,
  * prints a diff plan, and applies changes (unless --dry-run).
  */
 export async function runUpdate(options: { dryRun?: boolean; component?: string }): Promise<void> {
   const cwd = process.cwd();
   const contentRoot = resolveContentRoot();
 
-  // 1. Check for rig.toml
-  if (!existsSync(join(cwd, 'rig.toml'))) {
-    Logger.error('No rig.toml found. Run `npx create-rig` first.');
+  // 1. Check for gyrd.toml
+  if (!existsSync(join(cwd, 'gyrd.toml'))) {
+    Logger.error('No gyrd.toml found. Run `npx create-gyrd` first.');
     process.exit(1);
   }
 
   // 2. Check for manifest
-  if (!existsSync(join(cwd, '.rig', 'manifest.yaml'))) {
-    Logger.error('No manifest found. Run `rig generate` first.');
+  if (!existsSync(join(cwd, '.gyrd', 'manifest.yaml'))) {
+    Logger.error('No manifest found. Run `gyrd generate` first.');
     process.exit(1);
   }
 

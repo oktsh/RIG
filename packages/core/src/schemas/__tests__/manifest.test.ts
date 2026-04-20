@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { ManifestSchema } from '../manifest.js';
 
 const validManifest = {
-  rig_version: '0.1.0',
+  gyrd_version: '0.1.0',
   generated_at: '2026-04-15T00:00:00Z',
   config_hash: 'abc123',
   components: {
@@ -22,8 +22,8 @@ describe('ManifestSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('rejects manifest missing rig_version', () => {
-    const { rig_version: _, ...rest } = validManifest;
+  it('rejects manifest missing gyrd_version', () => {
+    const { gyrd_version: _, ...rest } = validManifest;
     const result = ManifestSchema.safeParse(rest);
     expect(result.success).toBe(false);
   });

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const ManifestSchema = z.object({
-  rig_version: z.string(),
+  gyrd_version: z.string(),
   generated_at: z.string(),
   config_hash: z.string(),
   components: z.object({

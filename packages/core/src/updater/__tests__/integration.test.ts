@@ -7,9 +7,9 @@ import { generateProject } from '../../generator/index.js';
 import { readManifest } from '../../manifest/index.js';
 import { compareVersions } from '../diff.js';
 import { applyUpdate } from '../apply.js';
-import type { RigConfig } from '../../schemas/index.js';
+import type { GyrdConfig } from '../../schemas/index.js';
 
-const TEST_CONFIG: RigConfig = {
+const TEST_CONFIG: GyrdConfig = {
   project: {
     name: 'test-integration',
     preset: 'solo-dev',
@@ -20,7 +20,7 @@ const TEST_CONFIG: RigConfig = {
 // Content root is at repo-root/content/
 function getContentRoot(): string {
   const thisDir = dirname(fileURLToPath(import.meta.url));
-  // __tests__/ -> updater/ -> src/ -> core/ -> packages/ -> RIG-root/
+  // __tests__/ -> updater/ -> src/ -> core/ -> packages/ -> GYRD-root/
   return join(thisDir, '..', '..', '..', '..', '..', 'content');
 }
 
@@ -68,7 +68,7 @@ describe('updater integration', () => {
       const plan = await compareVersions(currentManifest!, newManifest!, projectDir);
 
       // There should be changes (version bump changes hashes if version is in content)
-      // Even if no content changes, the rig.toml will differ due to version not being in files
+      // Even if no content changes, the gyrd.toml will differ due to version not being in files
       // The security.md should be marked as customized
       const securityChange = plan.changes
         .flatMap((c) => c.files)
@@ -138,7 +138,7 @@ describe('updater integration', () => {
     }
   });
 
-  it('preserves user CLAUDE.md sections while updating RIG sections', async () => {
+  it('preserves user CLAUDE.md sections while updating GYRD sections', async () => {
     // Step 1: Generate initial project
     await generateProject(TEST_CONFIG, projectDir, GENERATE_OPTIONS);
     const claudeMdPath = join(projectDir, 'CLAUDE.md');
@@ -189,8 +189,8 @@ describe('updater integration', () => {
       const updatedClaude = await readFile(claudeMdPath, 'utf8');
       expect(updatedClaude).toContain('My Team Notes');
       expect(updatedClaude).toContain('Important team information here.');
-      // RIG sections should still be present
-      expect(updatedClaude).toContain('[RIG-MANAGED]');
+      // GYRD sections should still be present
+      expect(updatedClaude).toContain('[GYRD-MANAGED]');
     } finally {
       await rm(newDir, { recursive: true, force: true });
     }

@@ -12,7 +12,7 @@ function makeManifest(
   version = '0.1.0',
 ): Manifest {
   return {
-    rig_version: version,
+    gyrd_version: version,
     generated_at: '2026-01-01T00:00:00Z',
     config_hash: 'abc123',
     components: {
@@ -49,7 +49,7 @@ describe('applyUpdate', () => {
     projectDir = await mkdtemp(join(tmpdir(), 'rig-apply-project-'));
     newDir = await mkdtemp(join(tmpdir(), 'rig-apply-new-'));
     // Create .rig dir for manifest writes
-    await mkdir(join(projectDir, '.rig'), { recursive: true });
+    await mkdir(join(projectDir, '.gyrd'), { recursive: true });
   });
 
   afterEach(async () => {
@@ -137,7 +137,7 @@ describe('applyUpdate', () => {
 
 > Custom header
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Old agents
 
@@ -148,9 +148,9 @@ Keep these notes
 
     const newClaude = `# Default
 
-> RIG header
+> GYRD header
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 New agents
 `;
@@ -177,7 +177,7 @@ New agents
     expect(result.applied).toHaveLength(1);
 
     const mergedContent = await readFile(join(projectDir, 'CLAUDE.md'), 'utf8');
-    expect(mergedContent).toContain('New agents'); // RIG section updated
+    expect(mergedContent).toContain('New agents'); // GYRD section updated
     expect(mergedContent).toContain('My Notes'); // User section preserved
     expect(mergedContent).toContain('Custom header'); // Existing header preserved
   });
@@ -293,7 +293,7 @@ New agents
     await applyUpdate(plan, projectDir, newDir, currentManifest, newManifest);
 
     // Manifest should be written
-    const manifestContent = await readFile(join(projectDir, '.rig', 'manifest.yaml'), 'utf8');
+    const manifestContent = await readFile(join(projectDir, '.gyrd', 'manifest.yaml'), 'utf8');
     expect(manifestContent).toContain('0.2.0');
   });
 });

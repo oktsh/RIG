@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { parse as parseToml } from '@iarna/toml';
-import { RigConfigSchema } from '../schemas/index.js';
+import { GyrdConfigSchema } from '../schemas/index.js';
 import { readManifest } from '../manifest/index.js';
 import {
   checkSchemaFreshness,
@@ -23,7 +23,7 @@ export interface RunChecksOptions {
 
 /**
  * Clean parsed TOML data before Zod validation.
- * Same logic as in rig-cli generate command.
+ * Same logic as in gyrd-cli generate command.
  */
 function cleanParsedConfig(data: Record<string, unknown>): Record<string, unknown> {
   const cleaned = { ...data };
@@ -62,15 +62,15 @@ function worstStatus(statuses: CheckStatus[]): CheckStatus {
  * Run all doctor checks against a project directory.
  */
 export async function runChecks(dir: string, options?: RunChecksOptions): Promise<DoctorResult> {
-  // 1. Read rig.toml
-  const rigTomlPath = join(dir, 'rig.toml');
+  // 1. Read gyrd.toml
+  const rigTomlPath = join(dir, 'gyrd.toml');
   if (!existsSync(rigTomlPath)) {
     return {
       checks: [{
         name: 'config',
         status: 'fail',
-        message: 'No rig.toml found. This does not appear to be a RIG project.',
-        remediation: 'Run `npx create-rig` to initialize.',
+        message: 'No gyrd.toml found. This does not appear to be a GYRD project.',
+        remediation: 'Run `npx create-gyrd` to initialize.',
       }],
       overall: 'fail',
     };
@@ -85,22 +85,22 @@ export async function runChecks(dir: string, options?: RunChecksOptions): Promis
       checks: [{
         name: 'config',
         status: 'fail',
-        message: 'Invalid TOML syntax in rig.toml',
-        remediation: 'Fix the syntax error in rig.toml.',
+        message: 'Invalid TOML syntax in gyrd.toml',
+        remediation: 'Fix the syntax error in gyrd.toml.',
       }],
       overall: 'fail',
     };
   }
 
   const cleaned = cleanParsedConfig(parsed as Record<string, unknown>);
-  const configResult = RigConfigSchema.safeParse(cleaned);
+  const configResult = GyrdConfigSchema.safeParse(cleaned);
   if (!configResult.success) {
     return {
       checks: [{
         name: 'config',
         status: 'fail',
-        message: 'Invalid rig.toml config: ' + configResult.error.issues.map((i) => i.message).join(', '),
-        remediation: 'Fix the config errors in rig.toml.',
+        message: 'Invalid gyrd.toml config: ' + configResult.error.issues.map((i) => i.message).join(', '),
+        remediation: 'Fix the config errors in gyrd.toml.',
       }],
       overall: 'fail',
     };

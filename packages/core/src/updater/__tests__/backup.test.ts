@@ -7,7 +7,7 @@ import type { Manifest } from '../../schemas/index.js';
 
 function makeManifest(files: Record<string, string>): Manifest {
   return {
-    rig_version: '0.1.0',
+    gyrd_version: '0.1.0',
     generated_at: '2026-01-01T00:00:00Z',
     config_hash: 'abc123',
     components: {
@@ -26,21 +26,21 @@ describe('createBackup (non-git)', () => {
   let tempDir: string;
 
   beforeEach(async () => {
-    tempDir = await mkdtemp(join(tmpdir(), 'rig-backup-test-'));
+    tempDir = await mkdtemp(join(tmpdir(), 'gyrd-backup-test-'));
   });
 
   afterEach(async () => {
     await rm(tempDir, { recursive: true, force: true });
   });
 
-  it('creates backup in .rig/backups/ for non-git dir', async () => {
+  it('creates backup in .gyrd/backups/ for non-git dir', async () => {
     // Write a managed file
     await writeFile(join(tempDir, 'CLAUDE.md'), '# Test Project');
 
     const manifest = makeManifest({ 'CLAUDE.md': 'somehash' });
     const backupPath = await createBackup(tempDir, manifest);
 
-    expect(backupPath).toContain('.rig/backups/');
+    expect(backupPath).toContain('.gyrd/backups/');
     expect(backupPath).toContain(tempDir);
   });
 

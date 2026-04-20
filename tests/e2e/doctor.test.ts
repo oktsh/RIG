@@ -1,7 +1,7 @@
 /**
- * E2E tests for `rig doctor` command.
+ * E2E tests for `gyrd doctor` command.
  *
- * Full lifecycle: create-rig -> rig doctor -> verify exit codes.
+ * Full lifecycle: create-gyrd -> gyrd doctor -> verify exit codes.
  */
 
 import { describe, it, expect, afterEach } from 'vitest';
@@ -19,8 +19,8 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-rig', 'dist', 'index.js');
-const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'rig-cli', 'dist', 'index.js');
+const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
+const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -79,9 +79,9 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('rig doctor E2E', () => {
-  // 1. create-rig -> rig doctor -> exit 0
-  it('fresh create-rig project passes doctor with exit 0', () => {
+describe('gyrd doctor E2E', () => {
+  // 1. create-gyrd -> gyrd doctor -> exit 0
+  it('fresh create-gyrd project passes doctor with exit 0', () => {
     const dir = makeTmpDir();
     runCreate('--preset=solo-dev --stack=nextjs --name=e2e-doctor', dir);
 
@@ -93,7 +93,7 @@ describe('rig doctor E2E', () => {
     expect(stdout.length).toBeGreaterThan(0);
   });
 
-  // 2. create-rig -> delete file -> rig doctor -> exit non-zero
+  // 2. create-gyrd -> delete file -> gyrd doctor -> exit non-zero
   it('project with deleted hooks fails doctor with non-zero exit', () => {
     const dir = makeTmpDir();
     runCreate('--preset=solo-dev --stack=nextjs --name=e2e-doctor-fail', dir);

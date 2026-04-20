@@ -5,24 +5,24 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { parse as parseToml } from '@iarna/toml';
 import {
-  RigConfigSchema,
+  GyrdConfigSchema,
   generateProject,
   Logger,
   buildManifest,
   writeManifest,
   writeFileAtomic,
   VERSION,
-} from '@rig/core';
-import type { GeneratedFile } from '@rig/core';
+} from '@gyrd/core';
+import type { GeneratedFile } from '@gyrd/core';
 
 /**
- * Resolve the content root directory based on @rig/core's package location.
- * Content is shipped inside @rig/core at <core>/content/
- * @rig/core entry is at <core>/dist/index.js
+ * Resolve the content root directory based on @gyrd/core's package location.
+ * Content is shipped inside @gyrd/core at <core>/content/
+ * @gyrd/core entry is at <core>/dist/index.js
  * So: dist/ -> core/ -> content/
  */
 function resolveContentRoot(): string {
-  const coreEntry = import.meta.resolve('@rig/core');
+  const coreEntry = import.meta.resolve('@gyrd/core');
   const coreDistDir = dirname(fileURLToPath(coreEntry));
   // dist/ -> core package root -> content/
   return join(coreDistDir, '..', 'content');
@@ -39,7 +39,7 @@ function isValidTarget(value: string): value is Target {
 /**
  * Clean parsed TOML data before Zod validation.
  *
- * Generated rig.toml files may have empty strings for optional enum fields
+ * Generated gyrd.toml files may have empty strings for optional enum fields
  * (e.g. default_memory = "") that would fail Zod validation. Remove these
  * so that Zod defaults kick in.
  */
@@ -87,29 +87,29 @@ function filterFilesByTarget(files: GeneratedFile[], target: Target): GeneratedF
 
 export async function generateAction(target?: string): Promise<void> {
   const cwd = process.cwd();
-  const rigTomlPath = join(cwd, 'rig.toml');
+  const rigTomlPath = join(cwd, 'gyrd.toml');
 
-  // 1. Check rig.toml exists
+  // 1. Check gyrd.toml exists
   if (!existsSync(rigTomlPath)) {
-    Logger.error('No rig.toml found. Run `npx create-rig` first.');
+    Logger.error('No gyrd.toml found. Run `npx create-gyrd` first.');
     process.exit(1);
   }
 
-  // 2. Read and parse rig.toml
+  // 2. Read and parse gyrd.toml
   const raw = await readFile(rigTomlPath, 'utf8');
   let parsed: unknown;
   try {
     parsed = parseToml(raw);
   } catch (err) {
-    Logger.error(`Invalid TOML syntax in rig.toml: ${err instanceof Error ? err.message : String(err)}`);
+    Logger.error(`Invalid TOML syntax in gyrd.toml: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
   }
 
   // 3. Clean empty values from optional sections, then validate with Zod schema
   const cleaned = cleanParsedConfig(parsed as Record<string, unknown>);
-  const result = RigConfigSchema.safeParse(cleaned);
+  const result = GyrdConfigSchema.safeParse(cleaned);
   if (!result.success) {
-    Logger.error('Invalid rig.toml config:');
+    Logger.error('Invalid gyrd.toml config:');
     for (const issue of result.error.issues) {
       Logger.error(`  ${issue.path.join('.')}: ${issue.message}`);
     }

@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { stringify, parse } from 'yaml';
 import { ManifestSchema } from '../schemas/index.js';
 import type { Manifest } from '../schemas/index.js';
-import type { RigConfig } from '../schemas/index.js';
+import type { GyrdConfig } from '../schemas/index.js';
 import type { GeneratedFile } from '../generator/types.js';
 import { computeHash } from '../utils/index.js';
 import { ensureDir, writeFileAtomic, readFileSafe } from '../utils/index.js';
@@ -12,7 +12,7 @@ export interface BuildManifestOptions {
 }
 
 export function buildManifest(
-  config: RigConfig,
+  config: GyrdConfig,
   files: GeneratedFile[],
   version: string,
   options?: BuildManifestOptions,
@@ -43,7 +43,7 @@ export function buildManifest(
   const fileHashes: Record<string, string> = Object.fromEntries(fileEntries);
 
   return {
-    rig_version: version,
+    gyrd_version: version,
     generated_at: generatedAt,
     config_hash: configHash,
     components: {
@@ -62,7 +62,7 @@ export function buildManifest(
 }
 
 export async function writeManifest(dir: string, manifest: Manifest): Promise<void> {
-  const manifestDir = join(dir, '.rig');
+  const manifestDir = join(dir, '.gyrd');
   await ensureDir(manifestDir);
   const manifestPath = join(manifestDir, 'manifest.yaml');
   const content = stringify(manifest);
@@ -70,7 +70,7 @@ export async function writeManifest(dir: string, manifest: Manifest): Promise<vo
 }
 
 export async function readManifest(dir: string): Promise<Manifest | null> {
-  const manifestPath = join(dir, '.rig', 'manifest.yaml');
+  const manifestPath = join(dir, '.gyrd', 'manifest.yaml');
   const raw = await readFileSafe(manifestPath);
   if (raw === null) return null;
   const parsed = parse(raw) as unknown;

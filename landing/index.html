@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIG — Managed AI Dev Practice</title>
-    <meta name="description" content="Managed rules, hooks, and workflows for AI-assisted development. Your agents. Our structure.">
+    <title>GYRD — The Practice Layer for Coding Agents</title>
+    <meta name="description" content="Rules, hooks, workflows, and shared memory that make coding agents predictable. One config, every tool.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -22,8 +22,9 @@
             --accent-soft: rgba(139, 195, 74, 0.12);
             --green: #34D399;
             --amber: #FBBF24;
-            --font: 'Inter', system-ui, -apple-system, sans-serif;
-            --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+            --font-display: 'Syne', sans-serif;
+            --font: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
             --max-w: 1100px;
         }
 
@@ -63,9 +64,10 @@
         }
 
         .logo {
-            font-size: 1.3rem;
-            font-weight: 600;
-            letter-spacing: -0.03em;
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
         }
 
         .nav-group {
@@ -165,8 +167,9 @@
         }
 
         .hero-title {
+            font-family: var(--font-display);
             font-size: clamp(2.8rem, 7vw, 5.5rem);
-            font-weight: 600;
+            font-weight: 800;
             line-height: 0.95;
             letter-spacing: -0.04em;
             margin-bottom: 1.5rem;
@@ -218,7 +221,7 @@
 
         /* Hero right — terminal */
         .hero-right {
-            width: 380px;
+            width: 340px;
             flex-shrink: 0;
         }
 
@@ -402,8 +405,9 @@
         }
 
         .s-title {
+            font-family: var(--font-display);
             font-size: clamp(1.8rem, 4vw, 2.6rem);
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: -0.03em;
             line-height: 1.1;
             margin-bottom: 0.75rem;
@@ -552,8 +556,9 @@
         }
 
         .waitlist-title {
+            font-family: var(--font-display);
             font-size: clamp(1.8rem, 4vw, 2.6rem);
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: -0.03em;
             margin-bottom: 0.5rem;
         }
@@ -727,8 +732,9 @@
             position: absolute;
             bottom: -30px;
             right: -20px;
+            font-family: var(--font-display);
             font-size: 12rem;
-            font-weight: 700;
+            font-weight: 800;
             color: rgba(255,255,255,0.02);
             pointer-events: none;
             letter-spacing: -0.05em;
@@ -797,6 +803,14 @@
             gap: 0.5rem;
         }
 
+        /* ── Cyrillic: Syne has no Cyrillic, fall back to Space Grotesk ── */
+        :lang(ru) .hero-title,
+        :lang(ru) .s-title,
+        :lang(ru) .waitlist-title {
+            font-family: var(--font);
+            font-weight: 700;
+        }
+
         /* ── Mobile ── */
         @media (max-width: 900px) {
             .hero-content { flex-direction: column; gap: 2.5rem; }
@@ -827,11 +841,11 @@
 
     <!-- Header -->
     <header>
-        <div class="logo">RIG</div>
+        <div class="logo">GYRD</div>
         <nav class="nav-group">
             <a href="#faq" class="nav-btn">FAQ</a>
             <button class="nav-btn" id="langToggle">RU</button>
-            <a href="#waitlist" class="nav-btn nav-btn--accent" data-en="Get started" data-ru="Подключить">Get started</a>
+            <a href="#waitlist" class="nav-btn nav-btn--accent" data-en="Get started" data-ru="Начать">Get started</a>
         </nav>
     </header>
 
@@ -843,11 +857,11 @@
 
                 <!-- Left: copy -->
                 <div class="hero-left">
-                    <span class="hero-label" data-en="Managed AI Dev Practice" data-ru="AI-практика для разработки">Managed AI Dev Practice</span>
-                    <h1 class="hero-title" data-en="Your AI agents<br>need a <span class='accent'>harness</span>." data-ru="Вашим AI-агентам<br>нужна <span class='accent'>обвязка</span>.">Your AI agents<br>need a <span class="accent">harness</span>.</h1>
-                    <p class="hero-sub"><span data-en="Rules, hooks, workflows, and <strong>shared team memory</strong> that make your AI coding agents reliable." data-ru="Правила, хуки, процессы и <strong>общая память команды</strong>, — чтобы ваши AI-агенты работали предсказуемо.">Rules, hooks, workflows, and <strong>shared team memory</strong> that make your AI coding agents reliable.</span><br><span data-en="Works with" data-ru="Работает с">Works with</span> <span class="rotating-tool accent" id="rotatingTool">Claude Code</span><span class="cursor-blink">_</span></p>
+                    <span class="hero-label" data-en="The practice layer for coding agents" data-ru="Конфигурация AI-агентов">The practice layer for coding agents</span>
+                    <h1 class="hero-title" data-en="Stop re-explaining<br>your <span class='accent'>standards</span>." data-ru="Хватит объяснять<br>агентам <span class='accent'>одно и то же</span>.">Stop re-explaining<br>your <span class="accent">standards</span>.</h1>
+                    <p class="hero-sub"><span data-en="One config — rules, hooks, and shared memory across <strong>every coding agent</strong>. Your team's playbook, enforced." data-ru="Один конфиг — правила, хуки и память для <strong>всех AI-агентов</strong>. Не советы — enforcement.">One config — rules, hooks, and shared memory across <strong>every coding agent</strong>. Your team's playbook, enforced.</span><br><span data-en="Works with" data-ru="Работает с">Works with</span> <span class="rotating-tool accent" id="rotatingTool">Claude Code</span><span class="cursor-blink">_</span></p>
 
-                    <a href="#waitlist" class="hero-cta" data-en="Get started" data-ru="Подключить">Get started</a>
+                    <a href="#waitlist" class="hero-cta" data-en="Get started" data-ru="Начать">Get started</a>
                 </div>
 
                 <!-- Right: terminal -->
@@ -883,7 +897,7 @@
                 <div class="problem-card">
                     <div class="problem-num">02</div>
                     <div class="problem-quote" data-en="&ldquo;My agent ignored half the rules. Again.&rdquo;" data-ru="&laquo;Мой агент опять проигнорировал половину правил.&raquo;">&ldquo;My agent ignored half the rules. Again.&rdquo;</div>
-                    <div class="problem-detail" data-en="Hand-written rules lack structure. Agents need tested, research-backed conventions — not vibes." data-ru="Написанные руками правила — бессистемны. Агентам нужны проверенные, исследованные конвенции — не вайбы.">Hand-written rules lack structure. Agents need tested, research-backed conventions — not vibes.</div>
+                    <div class="problem-detail" data-en="Hand-written rules lack structure. Agents need tested, research-backed conventions — not vibes." data-ru="Написанные руками правила — бессистемны. Агентам нужны конвенции на базе исследований — не вайбы.">Hand-written rules lack structure. Agents need tested, research-backed conventions — not vibes.</div>
                 </div>
                 <div class="problem-card">
                     <div class="problem-num">03</div>
@@ -892,7 +906,7 @@
                 </div>
                 <div class="problem-card">
                     <div class="problem-num">04</div>
-                    <div class="problem-quote" data-en="&ldquo;Each dev's agent does something different. Same repo.&rdquo;" data-ru="&laquo;У каждого в команде агент делает что-то своё. Один репо.&raquo;">&ldquo;Each dev's agent does something different. Same repo.&rdquo;</div>
+                    <div class="problem-quote" data-en="&ldquo;Each dev's agent does something different. Same repo.&rdquo;" data-ru="&laquo;У каждого в команде агент делает что-то своё. Одно репо.&raquo;">&ldquo;Each dev's agent does something different. Same repo.&rdquo;</div>
                     <div class="problem-detail" data-en="Without shared conventions, every agent works differently. No consistency, no shared context, no team memory." data-ru="Без общих конвенций каждый агент работает по-своему. Нет единообразия, нет общего контекста, нет командной памяти.">Without shared conventions, every agent works differently. No consistency, no shared context, no team memory.</div>
                 </div>
             </div>
@@ -909,7 +923,7 @@
                     </ul>
                 </div>
                 <div class="comp-col comp-col--after">
-                    <div class="comp-label" data-en="With RIG" data-ru="С RIG">With RIG</div>
+                    <div class="comp-label" data-en="With GYRD" data-ru="С GYRD">With GYRD</div>
                     <ul class="comp-list">
                         <li data-en="Research-backed setup, auto-updated" data-ru="Сетап на базе исследований, обновляется сам">Research-backed setup, auto-updated</li>
                         <li data-en="Pre-commit hooks enforce 100% compliance" data-ru="Pre-commit хуки гарантируют 100% соблюдение">Pre-commit hooks enforce 100% compliance</li>
@@ -926,7 +940,7 @@
         <div class="container">
             <div class="s-label" data-en="What you get" data-ru="Что внутри">What you get</div>
             <h2 class="s-title" data-en="Your agents. Our <span class='accent'>structure</span>." data-ru="Ваши агенты. Наша <span class='accent'>структура</span>.">Your agents. Our <span class="accent">structure</span>.</h2>
-            <p class="s-sub" data-en="RIG doesn't replace your AI tools. It adds the practice layer they're missing — so the code they write actually ships." data-ru="RIG не заменяет ваши AI-инструменты. Он добавляет слой практики, которого им не хватает — чтобы код, который они пишут, написанный код реально доезжал до прода.">RIG doesn't replace your AI tools. It adds the practice layer they're missing — so the code they write actually ships.</p>
+            <p class="s-sub" data-en="GYRD doesn't replace your AI tools. It's the practice layer they're missing — one config that makes every agent follow your team's playbook." data-ru="GYRD не заменяет ваши AI-инструменты. Это слой практики, которого им не хватает — один конфиг, и каждый агент следует плейбуку вашей команды.">GYRD doesn't replace your AI tools. It's the practice layer they're missing — one config that makes every agent follow your team's playbook.</p>
 
             <div class="features-list">
                 <div class="feat">
@@ -939,13 +953,13 @@
                 </div>
                 <div class="feat">
                     <h3 data-en="Living updates" data-ru="Живые обновления">Living updates</h3>
-                    <p data-en="New research, better prompts, improved workflows. <code>rig update</code> pulls the latest. <span class='accent'>Your customizations</span> stay untouched." data-ru="Новые исследования, улучшенные промпты, актуальные процессы. <code>rig update</code> подтягивает свежее. <span class='accent'>Ваши кастомизации</span> остаются нетронутыми.">New research, better prompts, improved workflows. <code>rig update</code> pulls the latest. <span class="accent">Your customizations</span> stay untouched.</p>
+                    <p data-en="New research, better prompts, improved workflows. <code>gyrd update</code> pulls the latest. <span class='accent'>Your customizations</span> stay untouched." data-ru="Новые исследования, улучшенные промпты, актуальные процессы. <code>gyrd update</code> подтягивает свежее. <span class='accent'>Ваши кастомизации</span> остаются нетронутыми.">New research, better prompts, improved workflows. <code>gyrd update</code> pulls the latest. <span class="accent">Your customizations</span> stay untouched.</p>
                 </div>
             </div>
 
             <!-- Quote -->
             <div class="quote-block">
-                <blockquote data-en="&ldquo;The more autonomy you give AI agents,<br>the more <em>structure</em> they need. RIG is that structure.&rdquo;" data-ru="&laquo;Чем больше свободы вы даёте AI-агентам,<br>тем больше <em>структуры</em> им нужно. RIG — и есть эта структура.&raquo;">&ldquo;The more autonomy you give AI agents,<br>the more <em>structure</em> they need. RIG is that structure.&rdquo;</blockquote>
+                <blockquote data-en="&ldquo;The more autonomy you give AI agents,<br>the more <em>discipline</em> they need. GYRD is that discipline.&rdquo;" data-ru="&laquo;Чем больше свободы вы даёте AI-агентам,<br>тем больше <em>дисциплины</em> им нужно. GYRD — и есть эта дисциплина.&raquo;">&ldquo;The more autonomy you give AI agents,<br>the more <em>discipline</em> they need. GYRD is that discipline.&rdquo;</blockquote>
             </div>
 
             <!-- Value props -->
@@ -962,8 +976,8 @@
     <section class="section border-top">
         <div class="container">
             <div class="s-label" data-en="Team features" data-ru="Для команд">Team features</div>
-            <h2 class="s-title" data-en="One harness. <span class='accent'>Whole team</span> aligned." data-ru="Одна обвязка. <span class='accent'>Вся команда</span> в синхроне.">One harness. <span class="accent">Whole team</span> aligned.</h2>
-            <p class="s-sub" data-en="When your team uses RIG, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI." data-ru="Когда команда на RIG, каждый агент — на каждой машине — следует одним конвенциям. Никакого &laquo;у меня работает&raquo; для AI.">When your team uses RIG, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI.</p>
+            <h2 class="s-title" data-en="One config. <span class='accent'>Whole team</span> aligned." data-ru="Один конфиг. <span class='accent'>Вся команда</span> на одной волне.">One config. <span class="accent">Whole team</span> aligned.</h2>
+            <p class="s-sub" data-en="When your team uses GYRD, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI." data-ru="Когда команда на GYRD, каждый агент — на каждой машине — следует одним конвенциям. Никакого &laquo;у меня работает&raquo; для AI.">When your team uses GYRD, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI.</p>
 
             <div class="features-list">
                 <div class="feat">
@@ -972,11 +986,11 @@
                 </div>
                 <div class="feat">
                     <h3 data-en="Shared context" data-ru="Общий контекст">Shared context</h3>
-                    <p data-en="Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class='accent'>knows what the dev's agent</span> just shipped." data-ru="Агенты делят <code>PROGRESS.md</code> и <code>DECISIONS.md</code> — статус, блокеры, архитектурные решения. Агент PM'а <span class='accent'>знает, что зашипил</span> агент разработчика.">Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class="accent">knows what the dev's agent</span> just shipped.</p>
+                    <p data-en="Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class='accent'>knows what the dev's agent</span> just shipped." data-ru="Агенты делят <code>PROGRESS.md</code> и <code>DECISIONS.md</code> — статус, блокеры, архитектурные решения. Агент PM'а <span class='accent'>знает, что выкатил</span> агент разработчика.">Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class="accent">knows what the dev's agent</span> just shipped.</p>
                 </div>
                 <div class="feat">
                     <h3><span class="coming-badge">Coming</span> <span data-en="Shared memory" data-ru="Общая память">Shared memory</span></h3>
-                    <p data-en="Persistent memory across machines — patterns learned, mistakes avoided. <span class='accent'>Your team's AI gets smarter</span> with every session." data-ru="Память между машинами — паттерны усвоены, ошибки не повторяются. <span class='accent'>Команда накапливает опыт</span> с каждой сессией.">Persistent memory across machines — patterns learned, mistakes avoided. <span class="accent">Your team's AI gets smarter</span> with every session.</p>
+                    <p data-en="Persistent memory across machines — patterns learned, mistakes avoided. <span class='accent'>Your team's AI gets smarter</span> with every session." data-ru="Общая память на все машины — паттерны усвоены, ошибки не повторяются. <span class='accent'>Команда накапливает опыт</span> с каждой сессией.">Persistent memory across machines — patterns learned, mistakes avoided. <span class="accent">Your team's AI gets smarter</span> with every session.</p>
                 </div>
             </div>
         </div>
@@ -989,18 +1003,18 @@
             <div class="how-steps">
                 <div>
                     <div class="step-num">01</div>
-                    <div class="step-code">npx create-rig</div>
-                    <div class="step-text" data-en="Pick your preset and stack. RIG generates CLAUDE.md, agents, rules, hooks, and workflows. 30 seconds." data-ru="Выбираете пресет и стек. RIG генерирует CLAUDE.md, агентов, правила, хуки и процессы. 30 секунд.">Pick your preset and stack. RIG generates CLAUDE.md, agents, rules, hooks, and workflows. 30 seconds.</div>
+                    <div class="step-code">npx create-gyrd</div>
+                    <div class="step-text" data-en="Pick your preset and stack. GYRD generates CLAUDE.md, .cursorrules, agents, hooks — for every tool at once. 30 seconds." data-ru="Выбираете пресет и стек. GYRD генерирует CLAUDE.md, .cursorrules, агентов, хуки — для всех инструментов сразу. 30 секунд.">Pick your preset and stack. GYRD generates CLAUDE.md, .cursorrules, agents, hooks — for every tool at once. 30 seconds.</div>
                 </div>
                 <div>
                     <div class="step-num">02</div>
                     <div class="step-code">code with AI</div>
-                    <div class="step-text" data-en="Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster." data-ru="Агенты теперь следуют правилам. Pre-commit хуки ловят ошибки. Код-ревью запускается само. Вы шипите быстрее.">Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster.</div>
+                    <div class="step-text" data-en="Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster." data-ru="Агенты теперь следуют правилам. Pre-commit хуки ловят ошибки. Код-ревью запускается само. Вы выкатываете быстрее.">Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster.</div>
                 </div>
                 <div>
                     <div class="step-num">03</div>
-                    <div class="step-code">rig update</div>
-                    <div class="step-text" data-en="Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance." data-ru="Claude обновился? Cursor изменился? Мы шипим новые правила. Одна команда — и ваш сетап актуален. Без ручного обслуживания.">Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance.</div>
+                    <div class="step-code">gyrd update</div>
+                    <div class="step-text" data-en="Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance." data-ru="Claude обновился? Cursor изменился? Мы выпускаем новые правила. Одна команда — и ваш сетап актуален. Никакой ручной возни.">Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance.</div>
                 </div>
             </div>
         </div>
@@ -1010,11 +1024,11 @@
     <section class="section border-top" id="waitlist">
         <div class="container">
             <div class="waitlist-inner">
-                <h2 class="waitlist-title" data-en="Get started" data-ru="Подключить RIG">Get started</h2>
+                <h2 class="waitlist-title" data-en="Get started" data-ru="Начать работу">Get started</h2>
                 <p class="waitlist-sub" data-en="Leave your email — we'll send setup instructions and early updates." data-ru="Оставьте email — пришлём инструкцию и ранний доступ к обновлениям.">Leave your email — we'll send setup instructions and early updates.</p>
                 <form class="wl-form" id="waitlistForm" action="https://formspree.io/f/mwvaoknr" method="POST">
                     <input type="email" name="email" class="wl-input" placeholder="you@company.com" required>
-                    <button type="submit" class="wl-btn" data-en="Get started" data-ru="Подключить">Get started</button>
+                    <button type="submit" class="wl-btn" data-en="Get started" data-ru="Начать">Get started</button>
                 </form>
                 <div class="wl-msg" id="waitlistMsg"></div>
                 <div class="wl-fine" data-en="Free forever. No spam." data-ru="Бесплатно навсегда. Без спама.">Free forever. No spam.</div>
@@ -1031,24 +1045,24 @@
 
             <div class="faq-grid">
                 <div class="faq-item">
-                    <div class="faq-q" data-en="I already have CLAUDE.md. Why do I need RIG?" data-ru="У меня уже есть CLAUDE.md. Зачем мне RIG?">I already have CLAUDE.md. Why do I need RIG?</div>
-                    <div class="faq-a" data-en="You wrote it by hand, spent hours getting it right, and your agent still ignores half of it. Now multiply that by every new project. And when new best practices come out — who updates it? RIG gives you a <strong>tested, research-backed</strong> setup in 30 seconds, keeps it current with <code>rig update</code>, and adds pre-commit hooks that <span class='accent'>enforce</span> what prompts can only suggest." data-ru="Вы написали его руками, потратили часы — а агент всё равно игнорирует половину. Умножьте на каждый новый проект. Выходят новые практики — кто обновит? RIG даёт <strong>проверенный</strong> сетап за 30 секунд, поддерживает его актуальным через <code>rig update</code> и добавляет pre-commit хуки, которые <span class='accent'>гарантируют</span> то, что промпты могут лишь предложить.">I already have CLAUDE.md. Why do I need RIG?</div>
+                    <div class="faq-q" data-en="I already have CLAUDE.md. Why do I need GYRD?" data-ru="У меня уже есть CLAUDE.md. Зачем мне GYRD?">I already have CLAUDE.md. Why do I need GYRD?</div>
+                    <div class="faq-a" data-en="You wrote it by hand, spent hours getting it right, and your agent still ignores half of it. Now multiply that by every new project. And when new best practices come out — who updates it? GYRD gives you a <strong>tested, research-backed</strong> setup in 30 seconds, keeps it current with <code>gyrd update</code>, and adds pre-commit hooks that <span class='accent'>enforce</span> what prompts can only suggest." data-ru="Вы написали его руками, потратили часы — а агент всё равно игнорирует половину. Умножьте на каждый новый проект. Выходят новые практики — кто обновит? GYRD даёт <strong>проверенный</strong> сетап за 30 секунд, поддерживает его актуальным через <code>gyrd update</code> и добавляет pre-commit хуки, которые <span class='accent'>гарантируют</span> то, что промпты могут лишь предложить.">I already have CLAUDE.md. Why do I need GYRD?</div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-q" data-en="What is RIG?" data-ru="Что такое RIG?">What is RIG?</div>
-                    <div class="faq-a" data-en="RIG is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx create-rig</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use." data-ru="RIG — управляемый набор правил, хуков и процессов для AI-разработки. Установите через <code>npx create-rig</code> — он сгенерирует конфиги, которые сделают ваших AI-агентов предсказуемыми. Это <strong>слой практики</strong> — не новый инструмент, а структура для тех инструментов, что вы уже используете.">RIG is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx create-rig</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use.</div>
+                    <div class="faq-q" data-en="What is GYRD?" data-ru="Что такое GYRD?">What is GYRD?</div>
+                    <div class="faq-a" data-en="GYRD is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx create-gyrd</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use." data-ru="GYRD — управляемый набор правил, хуков и процессов для AI-разработки. Установите через <code>npx create-gyrd</code> — он сгенерирует конфиги, которые сделают ваших AI-агентов предсказуемыми. Это <strong>слой практики</strong> — не новый инструмент, а структура для тех инструментов, что вы уже используете.">GYRD is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx create-gyrd</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use.</div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-q" data-en="What are AI coding agents?" data-ru="Что такое AI-агенты для кода?">What are AI coding agents?</div>
-                    <div class="faq-a" data-en="Tools like Claude Code, Cursor, GitHub Copilot that write and edit code for you. They're powerful — but without structure, they ignore conventions, skip tests, and produce inconsistent results. RIG adds that structure." data-ru="Инструменты вроде Claude Code, Cursor, GitHub Copilot — они пишут и редактируют код за вас. Мощные, но без структуры игнорируют конвенции, пропускают тесты, дают непредсказуемый результат. RIG добавляет эту структуру.">Tools like Claude Code, Cursor, GitHub Copilot that write and edit code for you. They're powerful — but without structure, they ignore conventions, skip tests, and produce inconsistent results. RIG adds that structure.</div>
+                    <div class="faq-a" data-en="Tools like Claude Code, Cursor, GitHub Copilot that write and edit code for you. They're powerful — but without structure, they ignore conventions, skip tests, and produce inconsistent results. GYRD adds that structure." data-ru="Инструменты вроде Claude Code, Cursor, GitHub Copilot — они пишут и редактируют код за вас. Мощные, но без структуры игнорируют конвенции, пропускают тесты, дают непредсказуемый результат. GYRD добавляет эту структуру.">Tools like Claude Code, Cursor, GitHub Copilot that write and edit code for you. They're powerful — but without structure, they ignore conventions, skip tests, and produce inconsistent results. GYRD adds that structure.</div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-q" data-en="Does RIG provide its own agents?" data-ru="RIG предоставляет своих агентов?">Does RIG provide its own agents?</div>
-                    <div class="faq-a" data-en="<strong>No.</strong> Your agents come from your LLM provider and your tools. RIG provides the <strong>harness</strong> — rules they follow, hooks that enforce quality, workflows that keep your codebase healthy. You keep all your agents, plugins, and custom skills." data-ru="<strong>Нет.</strong> Ваши агенты — от LLM-провайдера и ваших инструментов. RIG даёт <strong>обвязку</strong>: правила, которым агенты следуют, хуки для контроля качества, процессы для здоровья кодбейса. Все ваши агенты, плагины и кастомные навыки остаются на месте."><strong>No.</strong> Your agents come from your LLM provider and your tools. RIG provides the <strong>harness</strong> — rules they follow, hooks that enforce quality, workflows that keep your codebase healthy. You keep all your agents, plugins, and custom skills.</div>
+                    <div class="faq-q" data-en="Does GYRD provide its own agents?" data-ru="GYRD предоставляет своих агентов?">Does GYRD provide its own agents?</div>
+                    <div class="faq-a" data-en="<strong>No.</strong> Your agents come from your LLM provider and your tools. GYRD provides the <strong>practice layer</strong> — rules they follow, hooks that enforce quality, workflows that keep your codebase healthy. You keep all your agents, plugins, and custom skills." data-ru="<strong>Нет.</strong> Ваши агенты — от LLM-провайдера и ваших инструментов. GYRD даёт <strong>слой практики</strong>: правила, которым агенты следуют, хуки для контроля качества, процессы для здорового кодбейса. Все ваши агенты, плагины и кастомные навыки остаются на месте."><strong>No.</strong> Your agents come from your LLM provider and your tools. GYRD provides the <strong>practice layer</strong> — rules they follow, hooks that enforce quality, workflows that keep your codebase healthy. You keep all your agents, plugins, and custom skills.</div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-q" data-en="How does it work technically?" data-ru="Как это работает технически?">How does it work technically?</div>
-                    <div class="faq-a" data-en="RIG generates <code>CLAUDE.md</code> for Claude Code, <code>.cursor/rules/</code> for Cursor, <code>AGENTS.md</code> for Copilot. Plus pre-commit hooks. All from one <code>rig.toml</code> config. Sections marked <code>[RIG-MANAGED]</code> get updated by <code>rig update</code>; your customizations stay untouched." data-ru="RIG генерирует <code>CLAUDE.md</code> для Claude Code, <code>.cursor/rules/</code> для Cursor, <code>AGENTS.md</code> для Copilot — плюс pre-commit хуки. Всё из одного <code>rig.toml</code>. Секции с тегом <code>[RIG-MANAGED]</code> обновляются через <code>rig update</code>; ваши кастомизации остаются нетронутыми.">RIG generates <code>CLAUDE.md</code> for Claude Code, <code>.cursor/rules/</code> for Cursor, <code>AGENTS.md</code> for Copilot. Plus pre-commit hooks. All from one <code>rig.toml</code> config. Sections marked <code>[RIG-MANAGED]</code> get updated by <code>rig update</code>; your customizations stay untouched.</div>
+                    <div class="faq-a" data-en="GYRD generates <code>CLAUDE.md</code> for Claude Code, <code>.cursor/rules/</code> for Cursor, <code>AGENTS.md</code> for Copilot. Plus pre-commit hooks. All from one <code>gyrd.toml</code> config. Sections marked <code>[GYRD-MANAGED]</code> get updated by <code>gyrd update</code>; your customizations stay untouched." data-ru="GYRD генерирует <code>CLAUDE.md</code> для Claude Code, <code>.cursor/rules/</code> для Cursor, <code>AGENTS.md</code> для Copilot — плюс pre-commit хуки. Всё из одного <code>gyrd.toml</code>. Секции с тегом <code>[GYRD-MANAGED]</code> обновляются через <code>gyrd update</code>; ваши кастомизации остаются нетронутыми.">GYRD generates <code>CLAUDE.md</code> for Claude Code, <code>.cursor/rules/</code> for Cursor, <code>AGENTS.md</code> for Copilot. Plus pre-commit hooks. All from one <code>gyrd.toml</code> config. Sections marked <code>[GYRD-MANAGED]</code> get updated by <code>gyrd update</code>; your customizations stay untouched.</div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-q" data-en="How does it help teams?" data-ru="Чем это полезно командам?">How does it help teams?</div>
@@ -1060,7 +1074,7 @@
                 </div>
                 <div class="faq-item">
                     <div class="faq-q" data-en="Will my customizations survive updates?" data-ru="Мои кастомизации переживут обновления?">Will my customizations survive updates?</div>
-                    <div class="faq-a" data-en="Yes. RIG marks managed sections with <code>[RIG-MANAGED]</code> tags. <code>rig update</code> only touches those sections. Everything you've customized stays untouched." data-ru="Да. RIG помечает управляемые секции тегами <code>[RIG-MANAGED]</code>. Команда <code>rig update</code> обновляет только их. Всё, что вы настроили — остаётся.">Yes. RIG marks managed sections with <code>[RIG-MANAGED]</code> tags. <code>rig update</code> only touches those sections. Everything you've customized stays untouched.</div>
+                    <div class="faq-a" data-en="Yes. GYRD marks managed sections with <code>[GYRD-MANAGED]</code> tags. <code>gyrd update</code> only touches those sections. Everything you've customized stays untouched." data-ru="Да. GYRD помечает управляемые секции тегами <code>[GYRD-MANAGED]</code>. Команда <code>gyrd update</code> обновляет только их. Всё, что вы настроили — остаётся.">Yes. GYRD marks managed sections with <code>[GYRD-MANAGED]</code> tags. <code>gyrd update</code> only touches those sections. Everything you've customized stays untouched.</div>
                 </div>
             </div>
         </div>
@@ -1068,22 +1082,22 @@
 
     <!-- Footer -->
     <footer class="border-top">
-        <div class="footer-watermark">RIG</div>
+        <div class="footer-watermark">GYRD</div>
         <div class="container">
             <div class="footer-inner">
-                <div class="footer-brand">
-                    <strong>RIG</strong> — Managed AI dev practice. Rules, hooks, and workflows for teams who ship with AI.
+                <div class="footer-brand" data-en="<strong>GYRD</strong> — The practice layer for coding agents. Rules, hooks, and workflows for teams who ship with AI." data-ru="<strong>GYRD</strong> — слой практики для AI-агентов. Правила, хуки и процессы для команд, которые выкатывают с AI.">
+                    <strong>GYRD</strong> — The practice layer for coding agents. Rules, hooks, and workflows for teams who ship with AI.
                 </div>
                 <div class="footer-links">
                     <a href="#faq">FAQ</a>
-                    <a href="#waitlist" data-en="Waitlist" data-ru="Подключить">Waitlist</a>
+                    <a href="#waitlist" data-en="Waitlist" data-ru="Начать">Waitlist</a>
                     <a href="https://t.me/rig_dev" target="_blank">Telegram</a>
                 </div>
             </div>
             <div class="footer-copy">
                 <span class="footer-status"><span class="status-dot"></span> Online</span>
-                <span>&copy; 2026 RIG</span>
-                <span data-en="Built for people who ship with AI" data-ru="Для тех, кто шипит с AI">Built for people who ship with AI</span>
+                <span>&copy; 2026 GYRD</span>
+                <span data-en="Built for people who ship with AI" data-ru="Для тех, кто выкатывает с AI">Built for people who ship with AI</span>
             </div>
         </div>
     </footer>
@@ -1150,7 +1164,7 @@
         .then(r => {
             if (!r.ok) throw new Error(r.status);
             form.style.display = 'none';
-            const cmd = 'npx create-rig@latest';
+            const cmd = 'npx create-gyrd@latest';
             msg.innerHTML = lang === 'ru'
                 ? '<span style="color:var(--accent)">&#x2713;</span> Готово! Установите:'
                 : '<span style="color:var(--accent)">&#x2713;</span> You\u2019re in! Install now:';
@@ -1175,13 +1189,13 @@
             const hint = document.createElement('div');
             hint.className = 'pm-hint';
             hint.textContent = lang === 'ru'
-                ? 'Или скажите AI-ассистенту: \u00abустанови RIG в этот проект\u00bb'
-                : 'Or tell your AI assistant: \u201cinstall RIG in this project\u201d';
+                ? 'Или скажите AI-ассистенту: \u00abустанови GYRD в этот проект\u00bb'
+                : 'Or tell your AI assistant: \u201cinstall GYRD in this project\u201d';
             msg.appendChild(hint);
         })
         .catch(() => {
             btn.disabled = false;
-            btn.textContent = lang === 'ru' ? 'Подключить' : 'Get started';
+            btn.textContent = lang === 'ru' ? 'Начать' : 'Get started';
             msg.innerHTML = '<span style="color:#dc2626">' + (lang === 'ru' ? 'Что-то пошло не так. Попробуйте ещё раз.' : 'Something went wrong. Try again.') + '</span>';
         });
     });
@@ -1189,15 +1203,15 @@
     /* ── Terminal animation ── */
     const termBody = document.getElementById('termBody');
     const termLines = [
-        { type: 'prompt', text: 'npx create-rig@latest', delay: 0 },
+        { type: 'prompt', text: 'npx create-gyrd@latest', delay: 0 },
         { type: 'muted', text: '', delay: 500 },
-        { type: 'muted', text: 'Fetching RIG practice templates...', delay: 400 },
+        { type: 'muted', text: 'Fetching GYRD practice templates...', delay: 400 },
         { type: 'muted', text: '', delay: 600 },
         { type: 'green', text: '\u2713 Generated CLAUDE.md', delay: 200 },
         { type: 'green', text: '\u2713 Generated .cursor/rules/', delay: 180 },
         { type: 'green', text: '\u2713 Generated AGENTS.md', delay: 170 },
         { type: 'green', text: '\u2713 Installed pre-commit hooks', delay: 180 },
-        { type: 'green', text: '\u2713 Created rig.toml', delay: 160 },
+        { type: 'green', text: '\u2713 Created gyrd.toml', delay: 160 },
         { type: 'muted', text: '', delay: 400 },
         { type: 'box', title: 'READY', lines: [
             '<span style="font-weight:500">Your AI dev practice is configured.</span>',
@@ -1206,7 +1220,7 @@
             '<span class="t-muted">Pre-commit hooks enforce quality.</span>',
             '',
             'Next: <span class="t-green">claude "build my feature"</span>',
-            'Update: <span class="t-green">rig update</span>',
+            'Update: <span class="t-green">gyrd update</span>',
         ], delay: 350 },
         { type: 'muted', text: '', delay: 500 },
         { type: 'prompt-end', text: '', delay: 400 },

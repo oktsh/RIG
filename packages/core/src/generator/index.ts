@@ -1,8 +1,8 @@
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFile, readdir, chmod } from 'node:fs/promises';
-import { RigConfigSchema } from '../schemas/index.js';
-import type { RigConfig, FormatTarget } from '../schemas/index.js';
+import { GyrdConfigSchema } from '../schemas/index.js';
+import type { GyrdConfig, FormatTarget } from '../schemas/index.js';
 import { getContentSet } from '../registry/index.js';
 import { loadContent } from './content-loader.js';
 import type { LoadedAgent } from './content-loader.js';
@@ -50,7 +50,7 @@ function buildAgentFileContent(agent: LoadedAgent): string {
   return frontmatter.join('\n');
 }
 
-function applyDefaults(config: RigConfig): RigConfig {
+function applyDefaults(config: GyrdConfig): GyrdConfig {
   return {
     ...config,
     agents: {
@@ -77,14 +77,14 @@ function applyDefaults(config: RigConfig): RigConfig {
 }
 
 export async function generateProject(
-  config: RigConfig,
+  config: GyrdConfig,
   outputDir: string,
   options?: GenerateOptions,
 ): Promise<GenerationResult> {
   const startTime = performance.now();
 
   // 1. Validate config
-  const validatedConfig = RigConfigSchema.parse(config);
+  const validatedConfig = GyrdConfigSchema.parse(config);
   const fullConfig = applyDefaults(validatedConfig);
 
   // 2. Resolve content set
@@ -116,7 +116,7 @@ export async function generateProject(
 
   // 6. Load main templates
   const templateSources: Record<string, string> = {};
-  const mainTemplateFiles = ['claude-md.hbs', 'agents-md.hbs', 'rig-toml.hbs', 'cursor-mdc.hbs'];
+  const mainTemplateFiles = ['claude-md.hbs', 'agents-md.hbs', 'gyrd-toml.hbs', 'cursor-mdc.hbs'];
   for (const file of mainTemplateFiles) {
     templateSources[file] = await readFile(join(templatesRoot, file), 'utf8');
   }
@@ -132,17 +132,17 @@ export async function generateProject(
     formats: fullConfig.formats,
     updates: fullConfig.updates,
     presetMeta: contentSet.presetMeta,
-    rig_version: version,
+    gyrd_version: version,
   };
 
   // 8. Render output files
   const files: GeneratedFile[] = [];
   const formatsToGenerate: FormatTarget[] = fullConfig.formats?.generate ?? ['claude_md', 'agents_md', 'cursor_mdc'];
 
-  // rig.toml (always generated)
+  // gyrd.toml (always generated)
   files.push({
-    path: 'rig.toml',
-    content: engine.render(templateSources['rig-toml.hbs'], context),
+    path: 'gyrd.toml',
+    content: engine.render(templateSources['gyrd-toml.hbs'], context),
     component: 'config',
   });
 

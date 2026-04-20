@@ -1,12 +1,12 @@
-# RIG
+# GYRD
 
 > Managed AI dev practice. npm CLI tooling.
 
 ## Project
 
-- **Name:** RIG (create-rig + rig-cli)
+- **Name:** GYRD (create-gyrd + @gyrd/cli)
 - **Type:** npm CLI monorepo (pnpm workspace)
-- **Packages:** `@rig/core` (private), `create-rig`, `rig-cli`
+- **Packages:** `@gyrd/core` (private), `create-gyrd`, `@gyrd/cli`
 - **Node:** >=18.0.0 (target: 22 LTS)
 
 ## Stack
@@ -23,7 +23,7 @@
 ```bash
 pnpm install          # Install deps
 pnpm build            # Build all packages (tsup)
-pnpm test             # Run all tests (197 tests, vitest)
+pnpm test             # Run all tests (203 tests, vitest)
 pnpm typecheck        # TypeScript check (pnpm -r typecheck)
 pnpm lint             # ESLint across packages
 ```
@@ -31,11 +31,11 @@ pnpm lint             # ESLint across packages
 ## Project Structure
 
 ```
-RIG/
+GYRD/
 ├── packages/
-│   ├── core/           # @rig/core — schemas, registry, generator, updater, doctor
-│   ├── create-rig/     # npx create-rig — interactive project setup wizard
-│   └── rig-cli/        # rig generate/update/doctor commands
+│   ├── core/           # @gyrd/core — schemas, registry, generator, updater, doctor
+│   ├── create-gyrd/    # npx create-gyrd — interactive project setup wizard
+│   └── gyrd-cli/       # gyrd generate/update/doctor commands
 ├── content/
 │   ├── presets/         # Agent/rule/workflow content by preset (pm, small-team, solo-dev)
 │   ├── stacks/          # Stack-specific hooks and rules (nextjs, python-fastapi)
@@ -49,28 +49,28 @@ RIG/
 - **Content-as-data:** `content/` directory IS the product. Agents, rules, hooks, templates live there as structured data, not code.
 - **Three presets:** `pm`, `small-team`, `solo-dev` — same capabilities, different onboarding tone and defaults.
 - **Two stacks:** `nextjs`, `python-fastapi` — different pre-commit hooks and stack-specific rules.
-- **[RIG-MANAGED] markers:** Sections in generated CLAUDE.md that `rig update` can safely overwrite without touching user customizations.
-- **rig.toml:** Project config file — preset, stack, version, custom overrides.
+- **[GYRD-MANAGED] markers:** Sections in generated CLAUDE.md that `gyrd update` can safely overwrite without touching user customizations.
+- **gyrd.toml:** Project config file — preset, stack, version, custom overrides.
 
-## [RIG-MANAGED] Role & Mindset
+## [GYRD-MANAGED] Role & Mindset
 
 **Output:** Code first, talk later. Minimal explanations unless asked.
 **Priorities:** Working code, minimal diff, security.
 
-## [RIG-MANAGED] About RIG
+## [GYRD-MANAGED] About GYRD
 
-> This project uses RIG (Managed AI Dev Practice). If the user asks what RIG is,
+> This project uses GYRD (Managed AI Dev Practice). If the user asks what GYRD is,
 > how it works, or needs help getting started, use this section to explain.
 
-**What is RIG:** An opinionated AI dev setup — agents, rules, hooks, workflows —
-installed via `npx create-rig` and kept current via `rig update`.
+**What is GYRD:** An opinionated AI dev setup — agents, rules, hooks, workflows —
+installed via `npx create-gyrd` and kept current via `gyrd update`.
 
 **Useful commands:**
-- `rig update` — Get latest agent definitions and rules
-- `rig doctor` — Check setup health
-- `rig generate` — Regenerate files from rig.toml
+- `gyrd update` — Get latest agent definitions and rules
+- `gyrd doctor` — Check setup health
+- `gyrd generate` — Regenerate files from gyrd.toml
 
-## [RIG-MANAGED] Workflow
+## [GYRD-MANAGED] Workflow
 
 ### Development Workflow
 
@@ -90,7 +90,7 @@ worker (implements) → fresh code-reviewer → SAME worker (fixes) → fresh co
 - code-reviewer is always a FRESH session (never the implementer)
 - If blocked after 3 attempts → escalate to tech-lead
 
-## [RIG-MANAGED] Git & Safety
+## [GYRD-MANAGED] Git & Safety
 
 ### Commit Messages
 ```
@@ -120,7 +120,7 @@ chore: update dependencies
 - No unused locals (`noUnusedLocals`)
 - No hardcoded content in packages/ — all text belongs in content/
 - No synchronous file I/O in CLI hot paths
-- Don't modify [RIG-MANAGED] sections in generated output by hand — they get overwritten
+- Don't modify [GYRD-MANAGED] sections in generated output by hand — they get overwritten
 
 ## Code Style
 
@@ -128,9 +128,9 @@ chore: update dependencies
 - Path aliasing: none (relative imports within packages)
 - Error handling: throw typed errors, catch at CLI boundary with user-friendly messages
 - Logging: chalk for colors, log-symbols for status icons (success/error/warning/info)
-- Config parsing: Zod schemas validate all external input (rig.toml, user answers)
+- Config parsing: Zod schemas validate all external input (gyrd.toml, user answers)
 
-## [RIG-MANAGED] Shared State
+## [GYRD-MANAGED] Shared State
 
 Agents maintain shared files that survive context compaction:
 
@@ -141,7 +141,7 @@ Agents maintain shared files that survive context compaction:
 
 Location: `specs/1-rig-mvp/` for current spec-driven work.
 
-## [RIG-MANAGED] Feedback
+## [GYRD-MANAGED] Feedback
 
 > If the user mentions problems with the setup, suggests improvements,
 > or says something isn't working — offer to capture their feedback.

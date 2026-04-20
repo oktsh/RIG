@@ -53,7 +53,7 @@ export async function checkSchemaFreshness(dir: string): Promise<CheckResult> {
       name: 'schema-freshness',
       status: 'fail',
       message: `${invalid.length} agent file(s) have invalid schema: ${invalid.join(', ')}`,
-      remediation: 'Run `rig generate` to regenerate agent files.',
+      remediation: 'Run `gyrd generate` to regenerate agent files.',
     };
   }
 

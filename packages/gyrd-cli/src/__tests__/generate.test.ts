@@ -1,5 +1,5 @@
 /**
- * Unit tests for rig-cli generate command.
+ * Unit tests for gyrd-cli generate command.
  *
  * Runs the built CLI binary in subprocess with temp directories.
  * Build is done once in beforeAll.
@@ -22,7 +22,7 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..', '..', '..');
-const CLI_PATH = join(RIG_ROOT, 'packages', 'rig-cli', 'dist', 'index.js');
+const CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 const SAMPLE_RIG_TOML = `
 [project]
@@ -38,7 +38,7 @@ stack = "nextjs"
 let tempDirs: string[] = [];
 
 function makeTmpDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'rig-cli-test-'));
+  const dir = mkdtempSync(join(tmpdir(), 'gyrd-cli-test-'));
   tempDirs.push(dir);
   return dir;
 }
@@ -77,11 +77,11 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('rig generate', () => {
-  // 1. Full regeneration with valid rig.toml
-  it('regenerates all files from rig.toml', () => {
+describe('gyrd generate', () => {
+  // 1. Full regeneration with valid gyrd.toml
+  it('regenerates all files from gyrd.toml', () => {
     const dir = makeTmpDir();
-    writeFileSync(join(dir, 'rig.toml'), SAMPLE_RIG_TOML);
+    writeFileSync(join(dir, 'gyrd.toml'), SAMPLE_RIG_TOML);
 
     const { stdout, exitCode } = runRig('generate', dir);
 
@@ -89,16 +89,16 @@ describe('rig generate', () => {
     expect(stdout).toContain('Regenerated');
     expect(existsSync(join(dir, 'CLAUDE.md'))).toBe(true);
     expect(existsSync(join(dir, 'AGENTS.md'))).toBe(true);
-    expect(existsSync(join(dir, '.rig', 'manifest.yaml'))).toBe(true);
+    expect(existsSync(join(dir, '.gyrd', 'manifest.yaml'))).toBe(true);
     expect(existsSync(join(dir, '.claude', 'agents'))).toBe(true);
     expect(existsSync(join(dir, '.claude', 'rules'))).toBe(true);
     expect(existsSync(join(dir, '.cursor', 'rules'))).toBe(true);
   });
 
   // 2. Selective target: claude_md
-  it('rig generate claude_md regenerates only CLAUDE.md', () => {
+  it('gyrd generate claude_md regenerates only CLAUDE.md', () => {
     const dir = makeTmpDir();
-    writeFileSync(join(dir, 'rig.toml'), SAMPLE_RIG_TOML);
+    writeFileSync(join(dir, 'gyrd.toml'), SAMPLE_RIG_TOML);
 
     // First do full generation
     runRig('generate', dir);
@@ -121,7 +121,7 @@ describe('rig generate', () => {
   // 3. Invalid target
   it('exits 1 with helpful message for invalid target', () => {
     const dir = makeTmpDir();
-    writeFileSync(join(dir, 'rig.toml'), SAMPLE_RIG_TOML);
+    writeFileSync(join(dir, 'gyrd.toml'), SAMPLE_RIG_TOML);
 
     const { stdout, exitCode } = runRig('generate foobar', dir);
 
@@ -132,15 +132,15 @@ describe('rig generate', () => {
     expect(stdout).toContain('cursor_mdc');
   });
 
-  // 4. Missing rig.toml
-  it('exits 1 with helpful message when rig.toml is missing', () => {
+  // 4. Missing gyrd.toml
+  it('exits 1 with helpful message when gyrd.toml is missing', () => {
     const dir = makeTmpDir();
 
     const { stdout, exitCode } = runRig('generate', dir);
 
     expect(exitCode).toBe(1);
-    expect(stdout).toContain('No rig.toml found');
-    expect(stdout).toContain('create-rig');
+    expect(stdout).toContain('No gyrd.toml found');
+    expect(stdout).toContain('create-gyrd');
   });
 
   // 5. --version
@@ -163,7 +163,7 @@ describe('rig generate', () => {
   // 7. Determinism: run twice, output identical
   it('produces identical output on consecutive runs', () => {
     const dir = makeTmpDir();
-    writeFileSync(join(dir, 'rig.toml'), SAMPLE_RIG_TOML);
+    writeFileSync(join(dir, 'gyrd.toml'), SAMPLE_RIG_TOML);
 
     runRig('generate', dir);
     const claudeFirst = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
@@ -180,7 +180,7 @@ describe('rig generate', () => {
   // 8. gen alias works
   it('gen alias works the same as generate', () => {
     const dir = makeTmpDir();
-    writeFileSync(join(dir, 'rig.toml'), SAMPLE_RIG_TOML);
+    writeFileSync(join(dir, 'gyrd.toml'), SAMPLE_RIG_TOML);
 
     const { stdout, exitCode } = runRig('gen', dir);
 
@@ -190,13 +190,13 @@ describe('rig generate', () => {
   });
 
   // 9. Invalid TOML content
-  it('exits 1 with error for invalid rig.toml content', () => {
+  it('exits 1 with error for invalid gyrd.toml content', () => {
     const dir = makeTmpDir();
-    writeFileSync(join(dir, 'rig.toml'), '[project]\nname = "test"\n');
+    writeFileSync(join(dir, 'gyrd.toml'), '[project]\nname = "test"\n');
 
     const { stdout, exitCode } = runRig('generate', dir);
 
     expect(exitCode).toBe(1);
-    expect(stdout).toContain('Invalid rig.toml');
+    expect(stdout).toContain('Invalid gyrd.toml');
   });
 });

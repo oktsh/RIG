@@ -1,5 +1,5 @@
 /**
- * Unit tests for rig-cli update command.
+ * Unit tests for gyrd-cli update command.
  *
  * Runs the built CLI binary in subprocess with temp directories.
  * Build is done once in beforeAll.
@@ -23,7 +23,7 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..', '..', '..');
-const CLI_PATH = join(RIG_ROOT, 'packages', 'rig-cli', 'dist', 'index.js');
+const CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 const SAMPLE_RIG_TOML = `
 [project]
@@ -39,7 +39,7 @@ stack = "nextjs"
 let tempDirs: string[] = [];
 
 function makeTmpDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'rig-update-test-'));
+  const dir = mkdtempSync(join(tmpdir(), 'gyrd-update-test-'));
   tempDirs.push(dir);
   return dir;
 }
@@ -64,10 +64,10 @@ function runRig(args: string, cwd: string): { stdout: string; exitCode: number }
 }
 
 /**
- * Create a project via `rig generate` so it has rig.toml + manifest.
+ * Create a project via `gyrd generate` so it has gyrd.toml + manifest.
  */
 function createProject(dir: string): void {
-  writeFileSync(join(dir, 'rig.toml'), SAMPLE_RIG_TOML);
+  writeFileSync(join(dir, 'gyrd.toml'), SAMPLE_RIG_TOML);
   const { exitCode } = runRig('generate', dir);
   if (exitCode !== 0) {
     throw new Error(`Failed to generate project in ${dir}`);
@@ -108,8 +108,8 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('rig update', () => {
-  // 1. rig update in fresh project exits 0 (already up to date since same version)
+describe('gyrd update', () => {
+  // 1. gyrd update in fresh project exits 0 (already up to date since same version)
   it('exits 0 and reports up to date on fresh project', () => {
     const dir = makeTmpDir();
     createProject(dir);
@@ -120,7 +120,7 @@ describe('rig update', () => {
     expect(stdout).toContain('up to date');
   });
 
-  // 2. rig update --dry-run modifies no files
+  // 2. gyrd update --dry-run modifies no files
   it('--dry-run modifies no files', () => {
     const dir = makeTmpDir();
     createProject(dir);
@@ -144,7 +144,7 @@ describe('rig update', () => {
     }
   });
 
-  // 3. rig update --component agents runs without error
+  // 3. gyrd update --component agents runs without error
   it('--component agents runs without error', () => {
     const dir = makeTmpDir();
     createProject(dir);
@@ -154,31 +154,31 @@ describe('rig update', () => {
     expect(exitCode).toBe(0);
   });
 
-  // 4. Missing rig.toml exits 1
-  it('exits 1 when rig.toml is missing', () => {
+  // 4. Missing gyrd.toml exits 1
+  it('exits 1 when gyrd.toml is missing', () => {
     const dir = makeTmpDir();
 
     const { stdout, exitCode } = runRig('update', dir);
 
     expect(exitCode).toBe(1);
-    expect(stdout).toContain('No rig.toml found');
-    expect(stdout).toContain('create-rig');
+    expect(stdout).toContain('No gyrd.toml found');
+    expect(stdout).toContain('create-gyrd');
   });
 
   // 5. Missing manifest exits 1 with helpful message
   it('exits 1 with helpful message when manifest is missing', () => {
     const dir = makeTmpDir();
-    writeFileSync(join(dir, 'rig.toml'), SAMPLE_RIG_TOML);
+    writeFileSync(join(dir, 'gyrd.toml'), SAMPLE_RIG_TOML);
     // Don't run generate — no manifest
 
     const { stdout, exitCode } = runRig('update', dir);
 
     expect(exitCode).toBe(1);
     expect(stdout).toContain('No manifest found');
-    expect(stdout).toContain('rig generate');
+    expect(stdout).toContain('gyrd generate');
   });
 
-  // 6. rig update output contains summary sections (or "up to date")
+  // 6. gyrd update output contains summary sections (or "up to date")
   it('output contains update status', () => {
     const dir = makeTmpDir();
     createProject(dir);

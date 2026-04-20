@@ -31,7 +31,7 @@ export async function checkTemplateDrift(
       name: 'template-drift',
       status: 'warn',
       message: 'No manifest found — cannot verify template hashes',
-      remediation: 'Run `rig generate` to create manifest.',
+      remediation: 'Run `gyrd generate` to create manifest.',
     };
   }
 
@@ -64,7 +64,7 @@ export async function checkTemplateDrift(
       name: 'template-drift',
       status: 'warn',
       message: `${drifted.length} template(s) have drifted: ${drifted.join(', ')}`,
-      remediation: 'Run `rig generate` to sync templates.',
+      remediation: 'Run `gyrd generate` to sync templates.',
     };
   }
 

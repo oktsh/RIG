@@ -18,7 +18,7 @@ const PARTIALS_DIR = join(TEMPLATES_DIR, 'partials');
 
 const PARTIAL_NAMES = [
   'role-mindset',
-  'about-rig',
+  'about-gyrd',
   'commands',
   'workflow',
   'shared-state',
@@ -28,7 +28,7 @@ const PARTIAL_NAMES = [
 ] as const;
 
 const MAIN_TEMPLATES = [
-  'rig-toml',
+  'gyrd-toml',
   'claude-md',
   'agents-md',
   'cursor-mdc',
@@ -78,7 +78,7 @@ function buildClaudeMdContext(preset: Preset, stack: Stack) {
   }));
 
   return {
-    rig_version: '0.1.0',
+    gyrd_version: '0.1.0',
     project: {
       name: 'test-project',
       preset,
@@ -101,7 +101,7 @@ function buildClaudeMdContext(preset: Preset, stack: Stack) {
 
 function buildRigTomlContext(preset: Preset, stack: Stack) {
   return {
-    rig_version: '0.1.0',
+    gyrd_version: '0.1.0',
     project: { name: 'test-project', preset, stack },
     team: preset === 'small-team' ? { size: 3 } : undefined,
     agents: {
@@ -123,11 +123,11 @@ function buildRigTomlContext(preset: Preset, stack: Stack) {
   };
 }
 
-describe('rig-toml.hbs', () => {
+describe('gyrd-toml.hbs', () => {
   it('renders valid TOML that parses back cleanly', () => {
     const engine = buildEngine();
     const ctx = buildRigTomlContext('small-team', 'nextjs');
-    const output = engine.render(templates['rig-toml'] as string, ctx as unknown as Record<string, unknown>);
+    const output = engine.render(templates['gyrd-toml'] as string, ctx as unknown as Record<string, unknown>);
 
     // Should be parseable TOML
     const parsed = TOML.parse(output);
@@ -143,7 +143,7 @@ describe('rig-toml.hbs', () => {
   it('includes team section when team is provided', () => {
     const engine = buildEngine();
     const ctx = buildRigTomlContext('small-team', 'nextjs');
-    const output = engine.render(templates['rig-toml'] as string, ctx as unknown as Record<string, unknown>);
+    const output = engine.render(templates['gyrd-toml'] as string, ctx as unknown as Record<string, unknown>);
 
     const parsed = TOML.parse(output);
     const team = parsed['team'] as Record<string, unknown>;
@@ -184,20 +184,20 @@ describe('claude-md.hbs — all presets get full content', () => {
     }
   });
 
-  it('contains [RIG-MANAGED] markers on all RIG-owned sections', () => {
+  it('contains [GYRD-MANAGED] markers on all GYRD-owned sections', () => {
     const engine = buildEngine();
     const ctx = buildClaudeMdContext('pm', 'nextjs');
     const output = engine.render(templates['claude-md'] as string, ctx as unknown as Record<string, unknown>);
 
     const expectedSections = [
-      '[RIG-MANAGED] Role & Mindset',
-      '[RIG-MANAGED] About RIG',
-      '[RIG-MANAGED] Commands',
-      '[RIG-MANAGED] Workflow',
-      '[RIG-MANAGED] Agents',
-      '[RIG-MANAGED] Shared State',
-      '[RIG-MANAGED] Git & Safety',
-      '[RIG-MANAGED] Feedback',
+      '[GYRD-MANAGED] Role & Mindset',
+      '[GYRD-MANAGED] About GYRD',
+      '[GYRD-MANAGED] Commands',
+      '[GYRD-MANAGED] Workflow',
+      '[GYRD-MANAGED] Agents',
+      '[GYRD-MANAGED] Shared State',
+      '[GYRD-MANAGED] Git & Safety',
+      '[GYRD-MANAGED] Feedback',
     ];
 
     for (const section of expectedSections) {
@@ -207,17 +207,17 @@ describe('claude-md.hbs — all presets get full content', () => {
 });
 
 describe('claude-md.hbs — preset-specific onboarding (tone only)', () => {
-  it('PM preset includes About RIG with PM-specific onboarding', () => {
+  it('PM preset includes About GYRD with PM-specific onboarding', () => {
     const engine = buildEngine();
     const ctx = buildClaudeMdContext('pm', 'nextjs');
     const output = engine.render(templates['claude-md'] as string, ctx as unknown as Record<string, unknown>);
 
-    expect(output).toContain('About RIG');
+    expect(output).toContain('About GYRD');
     // PM-specific onboarding text
     expect(output).toContain('discovery workflow');
   });
 
-  it('small-team preset includes About RIG with PROGRESS.md reference', () => {
+  it('small-team preset includes About GYRD with PROGRESS.md reference', () => {
     const engine = buildEngine();
     const ctx = buildClaudeMdContext('small-team', 'nextjs');
     const output = engine.render(templates['claude-md'] as string, ctx as unknown as Record<string, unknown>);
@@ -225,14 +225,14 @@ describe('claude-md.hbs — preset-specific onboarding (tone only)', () => {
     expect(output).toContain('PROGRESS.md');
   });
 
-  it('ALL presets contain [RIG-MANAGED] markers', () => {
+  it('ALL presets contain [GYRD-MANAGED] markers', () => {
     for (const preset of ['pm', 'small-team', 'solo-dev'] as Preset[]) {
       const engine = buildEngine();
       const ctx = buildClaudeMdContext(preset, 'nextjs');
       const output = engine.render(templates['claude-md'] as string, ctx as unknown as Record<string, unknown>);
 
-      expect(output).toContain('[RIG-MANAGED]');
-      const markerCount = (output.match(/\[RIG-MANAGED\]/g) ?? []).length;
+      expect(output).toContain('[GYRD-MANAGED]');
+      const markerCount = (output.match(/\[GYRD-MANAGED\]/g) ?? []).length;
       // At least 8 managed sections
       expect(markerCount).toBeGreaterThanOrEqual(8);
     }
@@ -244,7 +244,7 @@ describe('claude-md.hbs — preset-specific onboarding (tone only)', () => {
       const ctx = buildClaudeMdContext(preset, 'nextjs');
       const output = engine.render(templates['claude-md'] as string, ctx as unknown as Record<string, unknown>);
 
-      expect(output).toContain('[RIG-MANAGED] Feedback');
+      expect(output).toContain('[GYRD-MANAGED] Feedback');
       expect(output).toContain('capture their feedback');
     }
   });

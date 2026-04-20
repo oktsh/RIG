@@ -5,27 +5,27 @@ import { tmpdir } from 'node:os';
 import { parse as parseToml } from '@iarna/toml';
 import { parse as parseYaml } from 'yaml';
 import { generateProject } from '../index.js';
-import type { RigConfig } from '../../schemas/index.js';
+import type { GyrdConfig } from '../../schemas/index.js';
 import { readManifest } from '../../manifest/index.js';
 
 const FIXED_DATE = '2025-01-01T00:00:00.000Z';
 const FIXED_VERSION = '0.1.0-test';
 
-function soloDevConfig(overrides?: Partial<RigConfig>): RigConfig {
+function soloDevConfig(overrides?: Partial<GyrdConfig>): GyrdConfig {
   return {
     project: { name: 'test-solo', preset: 'solo-dev', stack: 'nextjs' },
     ...overrides,
   };
 }
 
-function smallTeamConfig(overrides?: Partial<RigConfig>): RigConfig {
+function smallTeamConfig(overrides?: Partial<GyrdConfig>): GyrdConfig {
   return {
     project: { name: 'test-team', preset: 'small-team', stack: 'nextjs' },
     ...overrides,
   };
 }
 
-function pmConfig(overrides?: Partial<RigConfig>): RigConfig {
+function pmConfig(overrides?: Partial<GyrdConfig>): GyrdConfig {
   return {
     project: { name: 'test-pm', preset: 'pm', stack: 'nextjs' },
     ...overrides,
@@ -58,7 +58,7 @@ describe('generateProject', () => {
     const paths = result.files.map((f) => f.path);
 
     // Config
-    expect(paths).toContain('rig.toml');
+    expect(paths).toContain('gyrd.toml');
 
     // Formats
     expect(paths).toContain('CLAUDE.md');
@@ -83,14 +83,14 @@ describe('generateProject', () => {
     expect(result.duration).toBeGreaterThan(0);
   });
 
-  it('generated rig.toml is valid TOML', async () => {
+  it('generated gyrd.toml is valid TOML', async () => {
     const outDir = await makeTmpDir();
     const result = await generateProject(soloDevConfig(), outDir, {
       generatedAt: FIXED_DATE,
       version: FIXED_VERSION,
     });
 
-    const rigToml = result.files.find((f) => f.path === 'rig.toml');
+    const rigToml = result.files.find((f) => f.path === 'gyrd.toml');
     expect(rigToml).toBeDefined();
 
     const parsed = parseToml(rigToml!.content);
@@ -100,7 +100,7 @@ describe('generateProject', () => {
     expect((parsed.project as Record<string, unknown>).stack).toBe('nextjs');
   });
 
-  it('generated .rig/manifest.yaml contains SHA-256 hashes for all files', async () => {
+  it('generated .gyrd/manifest.yaml contains SHA-256 hashes for all files', async () => {
     const outDir = await makeTmpDir();
     const result = await generateProject(soloDevConfig(), outDir, {
       generatedAt: FIXED_DATE,
@@ -161,8 +161,8 @@ describe('generateProject', () => {
     }
 
     // Also check manifest is identical
-    const manifest1Raw = await readFile(join(dir1, '.rig', 'manifest.yaml'), 'utf8');
-    const manifest2Raw = await readFile(join(dir2, '.rig', 'manifest.yaml'), 'utf8');
+    const manifest1Raw = await readFile(join(dir1, '.gyrd', 'manifest.yaml'), 'utf8');
+    const manifest2Raw = await readFile(join(dir2, '.gyrd', 'manifest.yaml'), 'utf8');
     expect(manifest1Raw).toBe(manifest2Raw);
   });
 
@@ -235,14 +235,14 @@ describe('generateProject', () => {
     });
 
     // Spot-check a few files
-    const rigToml = await readFile(join(outDir, 'rig.toml'), 'utf8');
+    const rigToml = await readFile(join(outDir, 'gyrd.toml'), 'utf8');
     expect(rigToml).toContain('test-solo');
 
     const claudeMd = await readFile(join(outDir, 'CLAUDE.md'), 'utf8');
     expect(claudeMd).toContain('test-solo');
 
     // Manifest
-    const manifestYaml = await readFile(join(outDir, '.rig', 'manifest.yaml'), 'utf8');
-    expect(manifestYaml).toContain('rig_version');
+    const manifestYaml = await readFile(join(outDir, '.gyrd', 'manifest.yaml'), 'utf8');
+    expect(manifestYaml).toContain('gyrd_version');
   });
 });

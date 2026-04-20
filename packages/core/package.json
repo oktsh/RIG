@@ -1,8 +1,8 @@
 {
-  "name": "@rig/core",
+  "name": "@gyrd/core",
   "version": "0.1.0",
   "type": "module",
-  "description": "Core engine for RIG — schemas, generator, updater, doctor. Used by create-rig and rig-cli.",
+  "description": "Core engine for GYRD — schemas, generator, updater, doctor. Used by create-gyrd and @gyrd/cli.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -22,14 +22,14 @@
     "url": "https://github.com/oktsh/RIG.git",
     "directory": "packages/core"
   },
-  "homepage": "https://rig.dev",
+  "homepage": "https://gyrd.dev",
   "author": "oktsh",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
   },
   "keywords": [
-    "rig",
+    "gyrd",
     "ai-dev",
     "claude",
     "core"

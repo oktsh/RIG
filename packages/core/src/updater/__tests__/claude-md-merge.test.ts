@@ -2,25 +2,25 @@ import { describe, it, expect } from 'vitest';
 import { mergeClaudeMd } from '../claude-md-merge.js';
 
 describe('mergeClaudeMd', () => {
-  it('replaces RIG-MANAGED sections with new content', () => {
+  it('replaces GYRD-MANAGED sections with new content', () => {
     const existing = `# My Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Old agent list
 
-## [RIG-MANAGED] Workflow
+## [GYRD-MANAGED] Workflow
 
 Old workflow
 `;
 
     const newContent = `# My Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 New agent list with more agents
 
-## [RIG-MANAGED] Workflow
+## [GYRD-MANAGED] Workflow
 
 New workflow steps
 `;
@@ -32,10 +32,10 @@ New workflow steps
     expect(result).not.toContain('Old workflow');
   });
 
-  it('preserves user-added sections (no [RIG-MANAGED])', () => {
+  it('preserves user-added sections (no [GYRD-MANAGED])', () => {
     const existing = `# My Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Agent list
 
@@ -43,18 +43,18 @@ Agent list
 
 These are my notes that should survive updates.
 
-## [RIG-MANAGED] Workflow
+## [GYRD-MANAGED] Workflow
 
 Workflow steps
 `;
 
     const newContent = `# My Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Updated agent list
 
-## [RIG-MANAGED] Workflow
+## [GYRD-MANAGED] Workflow
 
 Updated workflow
 `;
@@ -69,7 +69,7 @@ Updated workflow
   it('maintains section order', () => {
     const existing = `# My Project
 
-## [RIG-MANAGED] Section A
+## [GYRD-MANAGED] Section A
 
 Content A
 
@@ -77,18 +77,18 @@ Content A
 
 Custom content
 
-## [RIG-MANAGED] Section B
+## [GYRD-MANAGED] Section B
 
 Content B
 `;
 
     const newContent = `# My Project
 
-## [RIG-MANAGED] Section A
+## [GYRD-MANAGED] Section A
 
 New Content A
 
-## [RIG-MANAGED] Section B
+## [GYRD-MANAGED] Section B
 
 New Content B
 `;
@@ -103,21 +103,21 @@ New Content B
     expect(customIdx).toBeLessThan(sectionBIdx);
   });
 
-  it('appends new RIG-MANAGED sections not in existing', () => {
+  it('appends new GYRD-MANAGED sections not in existing', () => {
     const existing = `# My Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Agent list
 `;
 
     const newContent = `# My Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Updated agent list
 
-## [RIG-MANAGED] Feedback
+## [GYRD-MANAGED] Feedback
 
 New feedback section
 `;
@@ -125,24 +125,24 @@ New feedback section
     const result = mergeClaudeMd(existing, newContent);
     expect(result).toContain('Updated agent list');
     expect(result).toContain('New feedback section');
-    expect(result).toContain('[RIG-MANAGED] Feedback');
+    expect(result).toContain('[GYRD-MANAGED] Feedback');
   });
 
   it('preserves the header (before first ##)', () => {
     const existing = `# My Cool Project
 
-> This is a RIG-managed project. My custom header text.
+> This is a GYRD-managed project. My custom header text.
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Agent list
 `;
 
     const newContent = `# Default Project Name
 
-> RIG header
+> GYRD header
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Updated agents
 `;
@@ -156,24 +156,24 @@ Updated agents
   it('does not remove empty user sections', () => {
     const existing = `# Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 Agents here
 
 ## My Empty Section
 
-## [RIG-MANAGED] Workflow
+## [GYRD-MANAGED] Workflow
 
 Workflow here
 `;
 
     const newContent = `# Project
 
-## [RIG-MANAGED] Agents
+## [GYRD-MANAGED] Agents
 
 New agents
 
-## [RIG-MANAGED] Workflow
+## [GYRD-MANAGED] Workflow
 
 New workflow
 `;
