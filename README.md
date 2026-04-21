@@ -11,7 +11,7 @@ Think of it as Django for AI dev practices — you get a working setup out of th
 ## Quick Start
 
 ```bash
-npx create-gyrd@latest
+npx @gyrd/cli init
 ```
 
 The wizard asks your stack and preset, then generates everything into your project:
@@ -32,14 +32,14 @@ your-project/
 
 | Command | What it does |
 |---------|-------------|
-| `npx create-gyrd` | Interactive setup wizard — creates complete AI dev practice config |
+| `gyrd init` | Interactive setup wizard — creates complete AI dev practice config |
 | `gyrd update` | Pull latest rules, agents, templates. `[GYRD-MANAGED]` sections update; your customizations stay |
 | `gyrd generate` | Regenerate all managed files from `gyrd.toml` |
 | `gyrd doctor` | Check setup health: missing files, outdated versions, broken references |
 
 ## How It Works
 
-1. **Install** — `npx create-gyrd` scaffolds CLAUDE.md, agents, rules, hooks for your stack
+1. **Install** — `gyrd init` scaffolds CLAUDE.md, agents, rules, hooks for your stack
 2. **Develop** — Your AI agents (Claude, Cursor, Copilot) follow the rules GYRD installed
 3. **Update** — `gyrd update` ships new rules when models change (e.g., Claude 4.7 adaptation)
 4. **Customize** — Edit anything outside `[GYRD-MANAGED]` markers — those sections are yours
@@ -102,8 +102,7 @@ pnpm typecheck
 GYRD/
 ├── packages/
 │   ├── core/           # @gyrd/core — schemas, registry, generator, updater, doctor
-│   ├── create-gyrd/    # npx create-gyrd — interactive setup wizard
-│   └── gyrd-cli/       # gyrd update / generate / doctor
+│   └── gyrd-cli/       # gyrd — init / update / generate / doctor
 ├── content/
 │   ├── presets/         # Agent/rule/workflow content by preset
 │   ├── stacks/         # Stack-specific hooks and rules

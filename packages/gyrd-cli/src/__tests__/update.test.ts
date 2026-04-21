@@ -162,7 +162,7 @@ describe('gyrd update', () => {
 
     expect(exitCode).toBe(1);
     expect(stdout).toContain('No gyrd.toml found');
-    expect(stdout).toContain('create-gyrd');
+    expect(stdout).toContain('gyrd init');
   });
 
   // 5. Missing manifest exits 1 with helpful message

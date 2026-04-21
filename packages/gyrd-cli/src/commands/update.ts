@@ -30,7 +30,7 @@ export async function runUpdate(options: { dryRun?: boolean; component?: string 
 
   // 1. Check for gyrd.toml
   if (!existsSync(join(cwd, 'gyrd.toml'))) {
-    Logger.error('No gyrd.toml found. Run `npx create-gyrd` first.');
+    Logger.error('No gyrd.toml found. Run `gyrd init` first.');
     process.exit(1);
   }
 

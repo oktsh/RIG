@@ -23,7 +23,7 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
+const CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -39,7 +39,7 @@ function makeTmpDir(): string {
 
 function generateProject(preset: string, stack: string, name: string): string {
   const dir = makeTmpDir();
-  execSync(`node ${CLI_PATH} --preset=${preset} --stack=${stack} --name=${name}`, {
+  execSync(`node ${CLI_PATH} init --preset=${preset} --stack=${stack} --name=${name}`, {
     cwd: dir,
     encoding: 'utf8',
     timeout: 30_000,

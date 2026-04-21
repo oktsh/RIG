@@ -1,7 +1,7 @@
 /**
  * E2E tests for `gyrd doctor` command.
  *
- * Full lifecycle: create-gyrd -> gyrd doctor -> verify exit codes.
+ * Full lifecycle: gyrd init -> gyrd doctor -> verify exit codes.
  */
 
 import { describe, it, expect, afterEach } from 'vitest';
@@ -19,7 +19,6 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
 const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
@@ -34,8 +33,8 @@ function makeTmpDir(): string {
   return dir;
 }
 
-function runCreate(args: string, cwd: string): string {
-  return execSync(`node ${CREATE_CLI_PATH} ${args}`, {
+function runInit(args: string, cwd: string): string {
+  return execSync(`node ${RIG_CLI_PATH} init ${args}`, {
     cwd,
     encoding: 'utf8',
     timeout: 30_000,
@@ -80,10 +79,10 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe('gyrd doctor E2E', () => {
-  // 1. create-gyrd -> gyrd doctor -> exit 0
-  it('fresh create-gyrd project passes doctor with exit 0', () => {
+  // 1. gyrd init -> gyrd doctor -> exit 0
+  it('fresh gyrd init project passes doctor with exit 0', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=e2e-doctor', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=e2e-doctor', dir);
 
     // Add required .gitignore patterns
     writeFileSync(join(dir, '.gitignore'), '.env*\n*.pem\n*.key\nnode_modules/\n');
@@ -93,10 +92,10 @@ describe('gyrd doctor E2E', () => {
     expect(stdout.length).toBeGreaterThan(0);
   });
 
-  // 2. create-gyrd -> delete file -> gyrd doctor -> exit non-zero
+  // 2. gyrd init -> delete file -> gyrd doctor -> exit non-zero
   it('project with deleted hooks fails doctor with non-zero exit', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=e2e-doctor-fail', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=e2e-doctor-fail', dir);
 
     // Add .gitignore so that check passes
     writeFileSync(join(dir, '.gitignore'), '.env*\n*.pem\n*.key\nnode_modules/\n');
@@ -111,7 +110,7 @@ describe('gyrd doctor E2E', () => {
   // 3. JSON output in e2e scenario is parseable and matches check count
   it('--json output is valid and contains all 8 checks', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=e2e-doctor-json', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=e2e-doctor-json', dir);
 
     writeFileSync(join(dir, '.gitignore'), '.env*\n*.pem\n*.key\nnode_modules/\n');
 

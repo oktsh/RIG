@@ -1003,7 +1003,7 @@
             <div class="how-steps">
                 <div>
                     <div class="step-num">01</div>
-                    <div class="step-code">npx create-gyrd</div>
+                    <div class="step-code">npx @gyrd/cli init</div>
                     <div class="step-text" data-en="Pick your preset and stack. GYRD generates CLAUDE.md, .cursorrules, agents, hooks — for every tool at once. 30 seconds." data-ru="Выбираете пресет и стек. GYRD генерирует CLAUDE.md, .cursorrules, агентов, хуки — для всех инструментов сразу. 30 секунд.">Pick your preset and stack. GYRD generates CLAUDE.md, .cursorrules, agents, hooks — for every tool at once. 30 seconds.</div>
                 </div>
                 <div>
@@ -1050,7 +1050,7 @@
                 </div>
                 <div class="faq-item">
                     <div class="faq-q" data-en="What is GYRD?" data-ru="Что такое GYRD?">What is GYRD?</div>
-                    <div class="faq-a" data-en="GYRD is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx create-gyrd</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use." data-ru="GYRD — управляемый набор правил, хуков и процессов для AI-разработки. Установите через <code>npx create-gyrd</code> — он сгенерирует конфиги, которые сделают ваших AI-агентов предсказуемыми. Это <strong>слой практики</strong> — не новый инструмент, а структура для тех инструментов, что вы уже используете.">GYRD is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx create-gyrd</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use.</div>
+                    <div class="faq-a" data-en="GYRD is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx @gyrd/cli init</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use." data-ru="GYRD — управляемый набор правил, хуков и процессов для AI-разработки. Установите через <code>npx @gyrd/cli init</code> — он сгенерирует конфиги, которые сделают ваших AI-агентов предсказуемыми. Это <strong>слой практики</strong> — не новый инструмент, а структура для тех инструментов, что вы уже используете.">GYRD is a managed set of rules, hooks, and workflows for AI-assisted development. Install with <code>npx @gyrd/cli init</code>, and it generates config files that make your AI agents produce more reliable code. It's a <strong>practice layer</strong> — not a new tool, but structure for the tools you already use.</div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-q" data-en="What are AI coding agents?" data-ru="Что такое AI-агенты для кода?">What are AI coding agents?</div>
@@ -1091,7 +1091,6 @@
                 <div class="footer-links">
                     <a href="#faq">FAQ</a>
                     <a href="#waitlist" data-en="Waitlist" data-ru="Начать">Waitlist</a>
-                    <a href="https://t.me/rig_dev" target="_blank">Telegram</a>
                 </div>
             </div>
             <div class="footer-copy">
@@ -1164,7 +1163,7 @@
         .then(r => {
             if (!r.ok) throw new Error(r.status);
             form.style.display = 'none';
-            const cmd = 'npx create-gyrd@latest';
+            const cmd = 'npx @gyrd/cli init@latest';
             msg.innerHTML = lang === 'ru'
                 ? '<span style="color:var(--accent)">&#x2713;</span> Готово! Установите:'
                 : '<span style="color:var(--accent)">&#x2713;</span> You\u2019re in! Install now:';
@@ -1203,7 +1202,7 @@
     /* ── Terminal animation ── */
     const termBody = document.getElementById('termBody');
     const termLines = [
-        { type: 'prompt', text: 'npx create-gyrd@latest', delay: 0 },
+        { type: 'prompt', text: 'npx @gyrd/cli init@latest', delay: 0 },
         { type: 'muted', text: '', delay: 500 },
         { type: 'muted', text: 'Fetching GYRD practice templates...', delay: 400 },
         { type: 'muted', text: '', delay: 600 },

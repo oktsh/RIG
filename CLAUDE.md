@@ -4,9 +4,9 @@
 
 ## Project
 
-- **Name:** GYRD (create-gyrd + @gyrd/cli)
+- **Name:** GYRD
 - **Type:** npm CLI monorepo (pnpm workspace)
-- **Packages:** `@gyrd/core` (private), `create-gyrd`, `@gyrd/cli`
+- **Packages:** `@gyrd/core` (private), `gyrd` (CLI)
 - **Node:** >=18.0.0 (target: 22 LTS)
 
 ## Stack
@@ -34,8 +34,7 @@ pnpm lint             # ESLint across packages
 GYRD/
 ├── packages/
 │   ├── core/           # @gyrd/core — schemas, registry, generator, updater, doctor
-│   ├── create-gyrd/    # npx create-gyrd — interactive project setup wizard
-│   └── gyrd-cli/       # gyrd generate/update/doctor commands
+│   └── gyrd-cli/       # gyrd — init/generate/update/doctor commands
 ├── content/
 │   ├── presets/         # Agent/rule/workflow content by preset (pm, small-team, solo-dev)
 │   ├── stacks/          # Stack-specific hooks and rules (nextjs, python-fastapi)
@@ -63,7 +62,7 @@ GYRD/
 > how it works, or needs help getting started, use this section to explain.
 
 **What is GYRD:** An opinionated AI dev setup — agents, rules, hooks, workflows —
-installed via `npx create-gyrd` and kept current via `gyrd update`.
+installed via `gyrd init` and kept current via `gyrd update`.
 
 **Useful commands:**
 - `gyrd update` — Get latest agent definitions and rules

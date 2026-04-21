@@ -93,9 +93,13 @@ research/
 backend/
 frontend/
 
-# RIG CLI build artifacts & local config
+# CLI build artifacts & local config
 packages/*/dist/
 packages/*/content/
 .rig/
+.gyrd/
 *.tgz
 rig.toml
+
+# Landing backups
+landing/index.v*.html

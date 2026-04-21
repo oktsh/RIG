@@ -91,7 +91,7 @@ export async function generateAction(target?: string): Promise<void> {
 
   // 1. Check gyrd.toml exists
   if (!existsSync(rigTomlPath)) {
-    Logger.error('No gyrd.toml found. Run `npx create-gyrd` first.');
+    Logger.error('No gyrd.toml found. Run `gyrd init` first.');
     process.exit(1);
   }
 

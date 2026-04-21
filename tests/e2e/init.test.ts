@@ -1,12 +1,11 @@
 /**
- * E2E tests for create-gyrd CLI.
+ * E2E tests for `gyrd init` command.
  *
- * Runs the *built* CLI binary (`packages/create-gyrd/dist/index.js`) inside
+ * Runs the *built* CLI binary (`packages/gyrd-cli/dist/index.js init`) inside
  * disposable temp directories and validates generated output — file structure,
  * content quality, manifest integrity, and preset-specific behavior.
  *
- * These tests complement (not duplicate) the unit-level CLI tests at
- * `packages/create-gyrd/src/__tests__/cli.test.ts` and the generator tests at
+ * These tests complement (not duplicate) the generator tests at
  * `packages/core/src/generator/__tests__/generate.test.ts`.
  */
 
@@ -31,7 +30,7 @@ import { computeHash } from '@gyrd/core';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
+const CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 const PRESETS = ['pm', 'small-team', 'solo-dev'] as const;
 const STACKS = ['nextjs', 'python-fastapi'] as const;
@@ -62,7 +61,7 @@ function makeTmpDir(): string {
 }
 
 function runCreate(args: string, cwd: string): string {
-  return execSync(`node ${CLI_PATH} ${args}`, {
+  return execSync(`node ${CLI_PATH} init ${args}`, {
     cwd,
     encoding: 'utf8',
     timeout: 30_000,
@@ -99,7 +98,7 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('create-gyrd E2E', () => {
+describe('gyrd init E2E', () => {
   // 1. Solo-dev + nextjs — all expected file categories exist
   it('solo-dev + nextjs generates all expected file categories', () => {
     const dir = makeTmpDir();

@@ -1,6 +1,6 @@
 {
   "name": "@gyrd/cli",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Manage your AI dev practice — gyrd update, gyrd doctor, gyrd generate. Living updates for Claude Code, Cursor, Copilot rules.",
   "type": "module",
   "bin": {
@@ -45,6 +45,7 @@
   ],
   "dependencies": {
     "@iarna/toml": "^2.2.5",
+    "@inquirer/prompts": "^8.4.1",
     "@gyrd/core": "workspace:^",
     "commander": "^14.0.3"
   }

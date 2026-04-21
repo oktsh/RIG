@@ -70,7 +70,7 @@ export async function runChecks(dir: string, options?: RunChecksOptions): Promis
         name: 'config',
         status: 'fail',
         message: 'No gyrd.toml found. This does not appear to be a GYRD project.',
-        remediation: 'Run `npx create-gyrd` to initialize.',
+        remediation: 'Run `gyrd init` to initialize.',
       }],
       overall: 'fail',
     };

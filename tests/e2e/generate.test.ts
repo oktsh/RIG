@@ -1,7 +1,7 @@
 /**
  * E2E tests for `gyrd generate` command.
  *
- * Full lifecycle: create-gyrd -> modify gyrd.toml -> gyrd generate -> verify changes.
+ * Full lifecycle: gyrd init -> modify gyrd.toml -> gyrd generate -> verify changes.
  * Complements unit tests at packages/gyrd-cli/src/__tests__/generate.test.ts.
  */
 
@@ -24,7 +24,6 @@ import { computeHash } from '@gyrd/core';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..');
-const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
 const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
@@ -39,8 +38,8 @@ function makeTmpDir(): string {
   return dir;
 }
 
-function runCreate(args: string, cwd: string): string {
-  return execSync(`node ${CREATE_CLI_PATH} ${args}`, {
+function runInit(args: string, cwd: string): string {
+  return execSync(`node ${RIG_CLI_PATH} init ${args}`, {
     cwd,
     encoding: 'utf8',
     timeout: 30_000,
@@ -89,7 +88,7 @@ describe('gyrd generate E2E', () => {
     const dir = makeTmpDir();
 
     // Step 1: Create project with solo-dev preset
-    runCreate('--preset=solo-dev --stack=nextjs --name=e2e-project', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=e2e-project', dir);
 
     const claudeBefore = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
     expect(claudeBefore).toMatch(/[Jj]ust code/); // solo-dev onboarding
@@ -116,7 +115,7 @@ describe('gyrd generate E2E', () => {
     const dir = makeTmpDir();
 
     // Create initial project
-    runCreate('--preset=solo-dev --stack=nextjs --name=e2e-manifest', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=e2e-manifest', dir);
 
     const manifestBefore = readFileSync(join(dir, '.gyrd', 'manifest.yaml'), 'utf8');
 
@@ -149,7 +148,7 @@ describe('gyrd generate E2E', () => {
     const dir = makeTmpDir();
 
     // Create initial project
-    runCreate('--preset=solo-dev --stack=nextjs --name=e2e-selective', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=e2e-selective', dir);
 
     const agentsBefore = readFileSync(join(dir, 'AGENTS.md'), 'utf8');
 
@@ -174,7 +173,7 @@ describe('gyrd generate E2E', () => {
   it('consecutive gyrd generate produces identical output', () => {
     const dir = makeTmpDir();
 
-    runCreate('--preset=small-team --stack=python-fastapi --name=e2e-idempotent', dir);
+    runInit('--preset=small-team --stack=python-fastapi --name=e2e-idempotent', dir);
 
     // First regeneration
     runRig('generate', dir);

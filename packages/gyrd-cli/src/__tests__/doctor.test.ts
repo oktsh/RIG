@@ -15,7 +15,6 @@ import { tmpdir } from 'node:os';
 // ---------------------------------------------------------------------------
 
 const RIG_ROOT = join(import.meta.dirname, '..', '..', '..', '..');
-const CREATE_CLI_PATH = join(RIG_ROOT, 'packages', 'create-gyrd', 'dist', 'index.js');
 const RIG_CLI_PATH = join(RIG_ROOT, 'packages', 'gyrd-cli', 'dist', 'index.js');
 
 // ---------------------------------------------------------------------------
@@ -30,8 +29,8 @@ function makeTmpDir(): string {
   return dir;
 }
 
-function runCreate(args: string, cwd: string): string {
-  return execSync(`node ${CREATE_CLI_PATH} ${args}`, {
+function runInit(args: string, cwd: string): string {
+  return execSync(`node ${RIG_CLI_PATH} init ${args}`, {
     cwd,
     encoding: 'utf8',
     timeout: 30_000,
@@ -79,7 +78,7 @@ describe('gyrd doctor CLI', () => {
   // 1. Fresh project exits 0
   it('fresh project — exits 0', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=doctor-test', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=doctor-test', dir);
 
     // Add .gitignore for security-baseline check
     const { writeFileSync } = require('node:fs');
@@ -94,7 +93,7 @@ describe('gyrd doctor CLI', () => {
   // 2. --json outputs valid JSON array
   it('--json outputs valid JSON array', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=doctor-json', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=doctor-json', dir);
 
     const { writeFileSync } = require('node:fs');
     writeFileSync(join(dir, '.gitignore'), '.env*\n*.pem\n*.key\nnode_modules/\n');
@@ -111,7 +110,7 @@ describe('gyrd doctor CLI', () => {
   // 3. JSON results have required fields
   it('--json results have required fields', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=doctor-fields', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=doctor-fields', dir);
 
     const { writeFileSync } = require('node:fs');
     writeFileSync(join(dir, '.gitignore'), '.env*\n*.pem\n*.key\nnode_modules/\n');
@@ -132,7 +131,7 @@ describe('gyrd doctor CLI', () => {
   // 4. Broken project (delete hooks) exits 2
   it('broken project (missing hooks) — exits 2', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=doctor-broken', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=doctor-broken', dir);
 
     const { writeFileSync } = require('node:fs');
     writeFileSync(join(dir, '.gitignore'), '.env*\n*.pem\n*.key\nnode_modules/\n');
@@ -154,7 +153,7 @@ describe('gyrd doctor CLI', () => {
   // 6. check alias works
   it('check alias works', () => {
     const dir = makeTmpDir();
-    runCreate('--preset=solo-dev --stack=nextjs --name=doctor-alias', dir);
+    runInit('--preset=solo-dev --stack=nextjs --name=doctor-alias', dir);
 
     const { writeFileSync } = require('node:fs');
     writeFileSync(join(dir, '.gitignore'), '.env*\n*.pem\n*.key\nnode_modules/\n');
