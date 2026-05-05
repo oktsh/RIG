@@ -1,133 +1,155 @@
 # GYRD
 
-**Managed AI dev practice. Rules, hooks, workflows — installed via npm, kept current via `gyrd update`.**
+**Stop re-explaining your standards to every new agent session.**
 
-> Your agents. Our structure.
-
-GYRD gives your project an opinionated setup for AI-assisted development: agent definitions, quality rules, pre-commit hooks, and workflow guidance — all configured for your stack and team size.
-
-Think of it as Django for AI dev practices — you get a working setup out of the box, not a blank canvas.
-
-## Quick Start
+> One config. Every coding agent follows your team's playbook. Rules adapt when models change.
 
 ```bash
 npx @gyrd/cli init
 ```
 
-The wizard asks your stack and preset, then generates everything into your project:
+---
 
+## Why GYRD?
+
+- **30 seconds to production setup** — Not 3 hours of CLAUDE.md tuning. Working agents, rules, hooks — immediately.
+- **Living updates** — Claude 4.8 drops? `gyrd update` ships adapted rules. Your setup never rots.
+- **Automatic code review** — Three-angle review (break it, understand it, secure it) runs before every merge. Zero manual invocation.
+- **Cross-agent portability** — One `gyrd.toml` → Claude Code + Cursor + Codex + Cline follow the same rules.
+- **Pre-commit gates** — Lint + typecheck before every commit. Deterministic. Can't be skipped.
+- **Sources → rules mapping** — `gyrd update --check` tells you WHICH rules need updating and WHY.
+
+---
+
+## Quick Start
+
+```bash
+# Install and configure
+npx @gyrd/cli init
+
+# What you get:
+# ├── CLAUDE.md              → AI instructions (Claude Code)
+# ├── AGENTS.md              → Cross-tool instructions (Cursor, Copilot, Codex)
+# ├── gyrd.toml              → Single source of truth
+# ├── .claude/agents/        → code-reviewer, tech-lead, spec-writer...
+# ├── .claude/rules/         → security, context-discipline, orchestration
+# ├── .claude/hooks/         → pre-commit quality gates
+# └── .cursor/rules/         → Cursor MDC rules (auto-generated)
 ```
-your-project/
-├── CLAUDE.md              # AI instructions (Claude Code, Claude Desktop)
-├── AGENTS.md              # Cross-tool instructions (Cursor, Copilot, Codex)
-├── gyrd.toml              # GYRD configuration
-├── .claude/
-│   ├── agents/            # Agent definitions (code-reviewer, tech-lead, etc.)
-│   ├── rules/             # Always-loaded rules (security, context discipline)
-│   └── hooks/             # Pre-commit quality gates (lint + typecheck)
-└── .cursor/rules/         # Cursor IDE rules (MDC format)
-```
+
+---
 
 ## Commands
 
 | Command | What it does |
 |---------|-------------|
-| `gyrd init` | Interactive setup wizard — creates complete AI dev practice config |
-| `gyrd update` | Pull latest rules, agents, templates. `[GYRD-MANAGED]` sections update; your customizations stay |
-| `gyrd generate` | Regenerate all managed files from `gyrd.toml` |
-| `gyrd doctor` | Check setup health: missing files, outdated versions, broken references |
+| `gyrd init` | Interactive setup — creates your AI dev practice in 30 seconds |
+| `gyrd update` | Pull latest rules and agents. Your customizations stay untouched |
+| `gyrd update --check` | Show what needs updating and WHY (ecosystem → rules → assumptions) |
+| `gyrd generate` | Regenerate managed files from `gyrd.toml` |
+| `gyrd doctor` | Health check: missing files, outdated rules, broken references |
+
+---
 
 ## How It Works
 
-1. **Install** — `gyrd init` scaffolds CLAUDE.md, agents, rules, hooks for your stack
-2. **Develop** — Your AI agents (Claude, Cursor, Copilot) follow the rules GYRD installed
-3. **Update** — `gyrd update` ships new rules when models change (e.g., Claude 4.7 adaptation)
-4. **Customize** — Edit anything outside `[GYRD-MANAGED]` markers — those sections are yours
-
-### Managed vs Custom
-
-```markdown
-## [GYRD-MANAGED] Git & Safety          ← GYRD updates this
-- Review git status before commit
-- Stage specific files (not git add .)
-
-## My Custom Rules                      ← GYRD never touches this
-- Use Jira ticket IDs in commit messages
-- Always deploy to staging first
+```
+gyrd.toml (you own this)
+    ↓ generators
+    ├── CLAUDE.md           ← Claude Code reads this
+    ├── AGENTS.md           ← Codex, Copilot read this
+    ├── .claude/agents/     ← Agent definitions
+    ├── .claude/rules/      ← Always-loaded rules
+    ├── .claude/hooks/      ← Pre-commit gates
+    └── .cursor/rules/      ← Cursor rules
 ```
 
-## Presets
+**Managed vs Custom:**
+- `[GYRD-MANAGED]` sections → GYRD updates when ecosystem changes
+- Everything else → yours, never touched
 
-| Preset | For | Defaults |
-|--------|-----|----------|
-| **pm** | Product managers building with AI | Spec-driven workflow, review gates, product-focused language |
-| **small-team** | Teams of 2-5 devs | Shared state protocols, agent pipeline, collaboration rules |
-| **solo-dev** | Individual developers | Minimal ceremony, direct workflow, lean setup |
+---
 
-Same agents and capabilities in all presets. Different onboarding tone and process structure.
+## Living Updates
+
+GYRD tracks ecosystem sources (model releases, tool updates, security advisories) and maps them to your rules:
+
+```bash
+$ gyrd update --check
+
+ℹ Update available: 0.3.0 → 0.4.0
+
+ℹ 3 rules affected by ecosystem changes.
+
+⚠ agent-orchestration (.claude/rules/agent-orchestration.md)
+    Reason: Updated based on changes from: Claude Model Releases
+    Assumptions to verify:
+      • Sequential pipeline is optimal for current model capabilities
+      • Model-per-tier mapping (opus=oversight, sonnet=workers) is cost-effective
+
+⚠ code-reviewer (.claude/agents/code-reviewer.md)
+    Reason: Updated based on changes from: Claude Model Releases, OWASP Security Updates
+    Assumptions to verify:
+      • Three-angle review covers all risk categories
+      • 80% confidence threshold prevents false positives
+```
+
+Every rule is a **testable assumption**. When the assumption breaks → the rule needs updating → GYRD tells you.
+
+---
+
+## Code Review (Built-in)
+
+GYRD's generated setup includes an automatic code reviewer that runs before every merge:
+
+- **Three angles**: Saboteur (break it), New Hire (understand it), Security Auditor (secure it)
+- **Plain language**: Findings explained clearly with concrete fix suggestions
+- **No manual trigger**: Rule in CLAUDE.md makes the agent review automatically before push/merge
+- **Project-aware**: Reads your DECISIONS.md and team memory — won't flag intentional choices
+
+---
 
 ## Stacks
 
-| Stack | Pre-commit hooks | Stack-specific rules |
-|-------|-------------------|---------------------|
+| Stack | Pre-commit hooks | Stack rules |
+|-------|-----------------|-------------|
 | **nextjs** | ESLint + tsc | App Router, Server Components, import aliases |
 | **python-fastapi** | ruff + mypy | FastAPI patterns, Pydantic, async conventions |
+| *(more coming)* | Auto-detect | Community-contributed stack packs |
 
-## Why GYRD?
+Stack is optional. GYRD works for any language — hooks auto-detect from lockfile.
 
-- **Out of the box** — Working setup in 30 seconds, not 3 hours of CLAUDE.md tuning
-- **Living updates** — When Claude 4.7 drops, `gyrd update` ships adapted rules within days
-- **Pre-commit gates** — Lint + typecheck before every commit (human and agent)
-- **Team memory** — Shared state files (PROGRESS.md, DECISIONS.md) survive context compaction [Coming]
+---
 
-## Requirements
+## What GYRD is NOT
 
-- Node.js >= 18
-- pnpm, npm, or yarn
+- **Not a coding agent** — Claude Code, Cursor, Codex do the work. GYRD makes them do it YOUR way.
+- **Not enterprise governance** — No SCIM, no procurement. `npm install`, working in 30 seconds.
+- **Not a prompt library** — 2,400+ skills exist. GYRD tells you which 12 work for your team.
+- **Not vendor-locked** — Works across every tool that reads CLAUDE.md, AGENTS.md, or .cursor/rules.
+
+---
 
 ## Development
 
 ```bash
-git clone https://github.com/oktsh/gyrd.git
-cd gyrd
-pnpm install
-pnpm build
-pnpm test          # 203 tests
-pnpm typecheck
+git clone https://github.com/oktsh/GYRD.git
+cd GYRD && pnpm install && pnpm build
+pnpm test          # 202 tests
+pnpm typecheck     # strict mode
 ```
 
-### Project Structure
+**Architecture:** `content/` = the product (agents, rules, hooks as data). `packages/` = infra (CLI, generator, updater).
 
-```
-GYRD/
-├── packages/
-│   ├── core/           # @gyrd/core — schemas, registry, generator, updater, doctor
-│   └── gyrd-cli/       # gyrd — init / update / generate / doctor
-├── content/
-│   ├── presets/         # Agent/rule/workflow content by preset
-│   ├── stacks/         # Stack-specific hooks and rules
-│   └── templates/      # Handlebars templates for output generation
-├── tests/e2e/          # End-to-end tests
-└── landing/            # Landing page (gyrd.dev)
-```
-
-### Content-as-Data
-
-The `content/` directory IS the product. Agents, rules, hooks, templates live there as structured data — not hardcoded in source. When you run `gyrd update`, this is what gets refreshed.
+---
 
 ## Contributing
 
-1. Fork and clone
-2. `pnpm install && pnpm build`
-3. Create a feature branch
-4. Make changes, run `pnpm test && pnpm typecheck`
-5. Open a PR
-
-Content contributions (agents, rules, presets) → `content/`. Code changes → `packages/`.
+Content (agents, rules, stacks) → `content/`. Code → `packages/`. PRs welcome.
 
 ## See Also
 
-- [codbash](https://github.com/vakovalskii/codbash) — Dashboard + CLI for AI coding agent sessions (view, search, analyze costs)
+- [codbash](https://github.com/vakovalskii/codbash) — Session dashboard for AI coding agents
 
 ## License
 

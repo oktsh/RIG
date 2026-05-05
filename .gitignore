@@ -101,5 +101,6 @@ packages/*/content/
 *.tgz
 rig.toml
 
-# Landing backups
-landing/index.v*.html
+# Landing (deployed separately via CF Pages, not in public repo)
+landing/
+LANDING-DECISIONS.md
