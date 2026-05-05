@@ -1,5 +1,5 @@
-export { GyrdConfigSchema, PresetSchema, StackSchema, FormatTargetSchema, UpdateChannelSchema } from './gyrd-toml.js';
-export type { GyrdConfig, Preset, Stack, FormatTarget } from './gyrd-toml.js';
+export { GyrdConfigSchema, PresetSchema, StackSchema, FormatTargetSchema, UpdateChannelSchema, UpdateSourceSchema, SourceTypeSchema } from './gyrd-toml.js';
+export type { GyrdConfig, Preset, Stack, FormatTarget, UpdateSource, SourceType } from './gyrd-toml.js';
 
 export { ManifestSchema } from './manifest.js';
 export type { Manifest } from './manifest.js';

@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import {
   checkForUpdates,
   performUpdate,
+  loadSourceRegistry,
+  explainUpdates,
   Logger,
 } from '@gyrd/core';
 import type { UpdatePlan, UpdateResult } from '@gyrd/core';
@@ -22,9 +24,9 @@ function resolveContentRoot(): string {
  * Run the `gyrd update` command.
  *
  * Checks the current project against the installed GYRD version,
- * prints a diff plan, and applies changes (unless --dry-run).
+ * prints a diff plan, and applies changes (unless --dry-run or --check).
  */
-export async function runUpdate(options: { dryRun?: boolean; component?: string }): Promise<void> {
+export async function runUpdate(options: { check?: boolean; dryRun?: boolean; component?: string }): Promise<void> {
   const cwd = process.cwd();
   const contentRoot = resolveContentRoot();
 
@@ -55,7 +57,57 @@ export async function runUpdate(options: { dryRun?: boolean; component?: string 
     return;
   }
 
-  // 5. Print update plan
+  // 5. --check mode: explain WHY rules need updating using sources registry
+  if (options.check) {
+    try {
+      const registry = await loadSourceRegistry(contentRoot);
+      const checkResult = explainUpdates(plan, registry);
+
+      console.log('');
+      Logger.info(`Update available: ${plan.currentVersion} → ${plan.newVersion}`);
+      console.log('');
+
+      if (checkResult.affectedRules.length > 0) {
+        Logger.info(checkResult.summary);
+        console.log('');
+
+        for (const rule of checkResult.affectedRules) {
+          Logger.warn(`  ${rule.ruleId} (${rule.file})`);
+          Logger.dim(`    Reason: ${rule.reason}`);
+          Logger.dim(`    Assumptions to verify:`);
+          for (const assumption of rule.assumptions) {
+            Logger.dim(`      • ${assumption}`);
+          }
+          console.log('');
+        }
+      } else {
+        // Changes exist but no source-mapped rules affected
+        const totalFiles = plan.changes.reduce((sum, c) => sum + c.files.length, 0);
+        Logger.info(`${totalFiles} file${totalFiles === 1 ? '' : 's'} updated (content improvements).`);
+        console.log('');
+        for (const change of plan.changes) {
+          const fileCount = change.files.length;
+          Logger.dim(`  ${change.component}: ${fileCount} file${fileCount === 1 ? '' : 's'}`);
+        }
+      }
+
+      console.log('');
+      Logger.dim('Run `gyrd update` to apply, or `gyrd update --dry-run` for file-level details.');
+      console.log('');
+    } catch {
+      // Fallback to basic plan if sources registry not available
+      Logger.info(`Update available: ${plan.currentVersion} → ${plan.newVersion}`);
+      for (const change of plan.changes) {
+        const fileCount = change.files.length;
+        Logger.dim(`  ${change.component}: ${fileCount} file${fileCount === 1 ? '' : 's'} changed`);
+      }
+      console.log('');
+      Logger.dim('Run `gyrd update` to apply.');
+    }
+    return;
+  }
+
+  // 6. Print update plan
   console.log('');
   Logger.info(`Update available: ${plan.currentVersion} → ${plan.newVersion}`);
   console.log('');
@@ -65,7 +117,7 @@ export async function runUpdate(options: { dryRun?: boolean; component?: string 
   }
   console.log('');
 
-  // 6. Dry run — show what would change, exit
+  // 7. Dry run — show what would change, exit
   if (options.dryRun) {
     Logger.info('Dry run — no files modified.');
     console.log('');
@@ -79,7 +131,7 @@ export async function runUpdate(options: { dryRun?: boolean; component?: string 
     return;
   }
 
-  // 7. Apply update
+  // 8. Apply update
   let result: UpdateResult;
   try {
     result = await performUpdate(cwd, { ...options, contentRoot });
@@ -88,7 +140,7 @@ export async function runUpdate(options: { dryRun?: boolean; component?: string 
     process.exit(1);
   }
 
-  // 8. Print results
+  // 9. Print results
   console.log('');
 
   if (result.applied.length > 0) {

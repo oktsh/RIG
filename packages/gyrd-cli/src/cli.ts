@@ -38,6 +38,7 @@ export function createProgram(): Command {
   program
     .command('update')
     .description('Update GYRD configuration to latest version')
+    .option('--check', 'Show what needs updating and why (sources → rules mapping)')
     .option('--dry-run', 'Show proposed changes without applying')
     .option('--component <name>', 'Update only a specific component (agents, rules, hooks, formats, templates)')
     .action(async (options) => runUpdate(options));

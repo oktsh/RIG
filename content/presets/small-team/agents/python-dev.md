@@ -12,7 +12,12 @@ tools:
   - Bash
   - Grep
   - Glob
+triggers:
+  - Task assigned to python-dev in tasks.md
+  - "implement the backend for"
+  - "build this endpoint"
 memory: project
+effort: high
 ---
 
 # Python Dev Worker

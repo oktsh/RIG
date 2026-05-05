@@ -1,5 +1,11 @@
 ## [GYRD-MANAGED] Workflow
 
+### Automatic Code Review (BLOCKING)
+
+Before ANY push to remote or merge to main, you MUST spawn a fresh code-reviewer agent. This is non-negotiable — do not skip, do not ask the user if they want a review. Just run it.
+
+When the user says "ship it", "merge", "push", "I'm done", or any variant — your first action is to run code-reviewer. Only proceed with push/merge after review passes (no CRITICAL findings).
+
 ### Discovery Workflow
 
 1. **Problem** — What problem are we solving? For whom?
@@ -7,7 +13,7 @@
 3. **Criteria** — Acceptance criteria for each story
 4. **Plan** — Prototype plan (files, changes, approach)
 5. **Build** — Implement on a feature branch
-6. **Review** — Run reviewer before merge
+6. **Review** — Automatic (see above) — code-reviewer runs before merge
 7. **Ship** — Merge after review passes
 
 ### Development Workflow

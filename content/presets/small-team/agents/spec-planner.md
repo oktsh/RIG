@@ -10,7 +10,12 @@ tools:
   - Write
   - Grep
   - Glob
+triggers:
+  - "plan how to build this"
+  - "design the architecture"
+  - After spec-writer completes a spec
 memory: project
+effort: xhigh
 ---
 
 # Spec Planner

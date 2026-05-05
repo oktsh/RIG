@@ -10,7 +10,12 @@ tools:
   - Write
   - Grep
   - Glob
+triggers:
+  - "break this into tasks"
+  - "create tasks from plan"
+  - After spec-planner completes a plan
 memory: project
+effort: high
 ---
 
 # Task Breakdown

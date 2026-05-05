@@ -10,7 +10,13 @@ tools:
   - Grep
   - Glob
   - Bash
+triggers:
+  - "debug this"
+  - "why is this failing"
+  - "find the root cause"
+  - When a test fails and the cause isn't obvious
 memory: project
+effort: high
 ---
 
 # Debugger

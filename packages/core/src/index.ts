@@ -35,4 +35,8 @@ export { runChecks } from './doctor/index.js';
 export type { RunChecksOptions } from './doctor/index.js';
 export type { CheckResult, CheckStatus, DoctorResult } from './doctor/types.js';
 
+// Sources
+export { loadSourceRegistry, explainUpdates } from './sources/index.js';
+export type { SourceRegistry, SourceEntry, SourceCheckResult, AffectedRule } from './sources/index.js';
+
 export { VERSION } from './constants.js';

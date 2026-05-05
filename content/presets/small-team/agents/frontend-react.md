@@ -12,7 +12,12 @@ tools:
   - Bash
   - Grep
   - Glob
+triggers:
+  - Task assigned to frontend-react in tasks.md
+  - "implement the frontend for"
+  - "build this component"
 memory: project
+effort: high
 ---
 
 # Frontend React Worker

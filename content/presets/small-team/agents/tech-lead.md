@@ -10,7 +10,13 @@ tools:
   - Grep
   - Glob
   - Bash
+triggers:
+  - "checkpoint review"
+  - "is this ready to ship?"
+  - "go/no-go on this feature"
+  - After all tasks in a phase are marked complete
 memory: team
+effort: xhigh
 ---
 
 # Tech Lead

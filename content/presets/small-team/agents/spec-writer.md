@@ -10,7 +10,13 @@ tools:
   - Write
   - Grep
   - Glob
+triggers:
+  - "write a spec for"
+  - "I want to build"
+  - "spec this feature"
+  - When user describes a feature without clear requirements
 memory: project
+effort: xhigh
 ---
 
 # Spec Writer
