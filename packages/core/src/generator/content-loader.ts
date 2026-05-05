@@ -13,7 +13,9 @@ export interface LoadedAgent {
   model: string;
   file_ownership: { read: string[]; write: string[] };
   tools: string[];
+  triggers?: string[];
   memory: string;
+  effort?: string;
   body: string;
 }
 
@@ -93,7 +95,9 @@ async function loadAgent(def: AgentDef, contentRoot: string): Promise<LoadedAgen
     model: validated.model,
     file_ownership: validated.file_ownership,
     tools: validated.tools ?? [],
+    triggers: (frontmatter.triggers as string[] | undefined) ?? undefined,
     memory: validated.memory ?? 'project',
+    effort: (frontmatter.effort as string | undefined) ?? undefined,
     body,
   };
 }

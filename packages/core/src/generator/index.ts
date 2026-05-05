@@ -42,7 +42,16 @@ function buildAgentFileContent(agent: LoadedAgent): string {
       frontmatter.push(`  - ${tool}`);
     }
   }
+  if (agent.triggers && agent.triggers.length > 0) {
+    frontmatter.push('triggers:');
+    for (const trigger of agent.triggers) {
+      frontmatter.push(`  - "${trigger}"`);
+    }
+  }
   frontmatter.push(`memory: ${agent.memory}`);
+  if (agent.effort) {
+    frontmatter.push(`effort: ${agent.effort}`);
+  }
   frontmatter.push('---');
   frontmatter.push('');
   frontmatter.push(agent.body);
