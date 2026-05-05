@@ -1,6 +1,6 @@
 {
   "name": "@gyrd/cli",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Manage your AI dev practice — gyrd update, gyrd doctor, gyrd generate. Living updates for Claude Code, Cursor, Copilot rules.",
   "type": "module",
   "bin": {
