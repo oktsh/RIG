@@ -38,8 +38,8 @@ out/
 # Claude Code (all — personal dev tools, not product)
 .claude/
 
-# Internal development docs
-specs/
+# Internal development docs (not in public repo)
+docs/
 /DECISIONS.md
 /PROGRESS.md
 /AGENTS.md
@@ -85,11 +85,9 @@ temp/
 # yarn.lock
 # pnpm-lock.yaml
 
-# Prototypes & Reference
+# Prototypes & Reference (deleted, keeping in gitignore for safety)
 ref/
 research/
-
-# Old platform (pre-CLI)
 backend/
 frontend/
 

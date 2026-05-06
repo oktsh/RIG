@@ -23,7 +23,7 @@
 ```bash
 pnpm install          # Install deps
 pnpm build            # Build all packages (tsup)
-pnpm test             # Run all tests (203 tests, vitest)
+pnpm test             # Run all tests (202 tests, vitest)
 pnpm typecheck        # TypeScript check (pnpm -r typecheck)
 pnpm lint             # ESLint across packages
 ```
@@ -40,7 +40,7 @@ GYRD/
 │   ├── stacks/          # Stack-specific hooks and rules (nextjs, python-fastapi)
 │   └── templates/       # Handlebars templates (.hbs) for output generation
 ├── tests/e2e/           # End-to-end tests
-└── specs/1-rig-mvp/     # Spec, design, tasks, progress, decisions
+└── docs/                # Roadmap, vision, decisions, research
 ```
 
 ## Key Concepts
@@ -138,7 +138,7 @@ Agents maintain shared files that survive context compaction:
 | `PROGRESS.md` | Task status, checkpoints, blockers |
 | `DECISIONS.md` | Architectural decisions with rationale |
 
-Location: `specs/1-rig-mvp/` for current spec-driven work.
+Location: `docs/` for roadmap, decisions, and research.
 
 ## [GYRD-MANAGED] Feedback
 
