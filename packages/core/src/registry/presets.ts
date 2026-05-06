@@ -25,6 +25,7 @@ export const CORE_AGENTS: AgentDef[] = [
 export const CORE_RULES: RuleDef[] = [
   { id: 'context-discipline', preset: 'shared', filename: 'context-discipline.md' },
   { id: 'security', preset: 'shared', filename: 'security.md' },
+  { id: 'never-guess', preset: 'shared', filename: 'never-guess.md' },
   { id: 'agent-orchestration', preset: 'small-team', filename: 'agent-orchestration.md' },
   { id: 'tool-gate', preset: 'small-team', filename: 'tool-gate.md' },
   { id: 'safety-guardrails', preset: 'pm', filename: 'pm-guardrails.md' },
@@ -38,6 +39,7 @@ export const CORE_WORKFLOWS: WorkflowDef[] = [
 export const CORE_PROTOCOLS: ProtocolDef[] = [
   { id: 'checkpoint-commits', preset: 'small-team', filename: 'checkpoint-commits.md' },
   { id: 'team-coordination', preset: 'small-team', filename: 'team-coordination.md' },
+  { id: 'load-bearing-rules', preset: 'small-team', filename: 'load-bearing-rules.md' },
 ];
 
 // Shared templates

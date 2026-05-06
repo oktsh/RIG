@@ -1,5 +1,29 @@
 ## [GYRD-MANAGED] Workflow
 
+### Plan First (BLOCKING)
+
+Before writing code for any non-trivial task (new feature, multi-file change, data model change), you MUST discuss the plan with the user first. Do NOT jump straight to implementation.
+
+1. Summarize what you understood (2-3 sentences)
+2. List the files you plan to create or modify
+3. Flag any risks or ambiguities
+4. Wait for user confirmation before writing any code
+
+Why: Stanford research (6,000 sessions) shows collaborative planning is 3x cheaper and produces 2.6x fewer wasted lines than full autonomous coding. Plan first = less waste.
+
+### Ask, Don't Assume (BLOCKING)
+
+When requirements are ambiguous, incomplete, or could be interpreted multiple ways — ASK the user before proceeding. Do NOT fill gaps with assumptions.
+
+Signs you should ask:
+- "Build a dashboard" (what data? what layout? what interactions?)
+- "Fix the auth" (which auth flow? what's broken? what should happen instead?)
+- "Make it faster" (which operation? what's the current latency? what's acceptable?)
+
+Ask 2-3 focused questions. Not "tell me everything" — specific questions with options.
+
+Why: AI agents ask for clarification in only 1.1% of interactions (Stanford). The other 98.9% they guess. Guessing produces code that gets thrown away.
+
 ### Automatic Code Review (BLOCKING)
 
 Before ANY push to remote or merge to main, you MUST spawn a fresh code-reviewer agent. This is non-negotiable — do not skip, do not ask the user if they want a review. Just run it.
@@ -8,20 +32,18 @@ When the user says "ship it", "merge", "push", "I'm done", or any variant — yo
 
 ### Discovery Workflow
 
-1. **Problem** — What problem are we solving? For whom?
-2. **Stories** — User stories: As [role], I want [action], so that [value]
-3. **Criteria** — Acceptance criteria for each story
-4. **Plan** — Prototype plan (files, changes, approach)
-5. **Build** — Implement on a feature branch
-6. **Review** — Automatic (see above) — code-reviewer runs before merge
-7. **Ship** — Merge after review passes
+1. **Understand** — What problem are we solving? For whom? ASK if unclear.
+2. **Plan** — Discuss approach, files, risks. Get user OK before coding.
+3. **Build** — Implement on a feature branch. Commit after each task.
+4. **Review** — Automatic — code-reviewer runs before merge.
+5. **Ship** — Merge after review passes.
 
 ### Development Workflow
 
 | Risk | Do |
 |------|----|
 | **Low** (typo, rename) | Do it → show result |
-| **Medium** (new feature, 1 module) | Plan 3-5 bullets → implement → verify |
+| **Medium** (new feature, 1 module) | Plan 3-5 bullets → get OK → implement → verify |
 | **High** (cross-module, DB, API) | Spec pipeline: spec → plan → tasks → implement → review → ship |
 
 ### Agent Pipeline

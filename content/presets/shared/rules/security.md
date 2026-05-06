@@ -22,6 +22,25 @@ When reviewing or writing code, check for:
 - **Access control**: Can user A access user B's resources? Check every endpoint.
 - **Deserialization**: Unvalidated structured input from external sources (JSON.parse, pickle, yaml.load)
 
+### Dangerous Code Patterns (BLOCK on sight)
+
+These patterns are the most common AI-generated vulnerabilities (Stanford SWE-chat, 6K sessions: vibe coding = 0.76 vulns per 1,000 lines).
+
+**NEVER write these. If you see them in existing code, flag immediately:**
+
+| Pattern | Why dangerous | Safe alternative |
+|---------|--------------|-----------------|
+| `subprocess.run(cmd, shell=True)` | Command injection (CWE-78) | `subprocess.run([cmd, arg1, arg2], shell=False)` |
+| `os.system(user_input)` | Command injection | `subprocess.run()` with argument list |
+| `eval(user_input)` / `exec(user_input)` | Arbitrary code execution | Parse with safe parser (JSON.parse, ast.literal_eval) |
+| `f"SELECT * FROM {table}"` | SQL injection (CWE-89) | Parameterized queries: `cursor.execute("SELECT * FROM ?", (table,))` |
+| `innerHTML = user_data` | XSS (CWE-79) | `textContent` or sanitize with DOMPurify |
+| `path.join(base, user_input)` without validation | Path traversal (CWE-22) | Validate: `resolved.startsWith(base)` after resolve |
+| `yaml.load(data)` without Loader | Arbitrary code execution | `yaml.safe_load(data)` |
+| `pickle.loads(untrusted_data)` | Arbitrary code execution | Use JSON or msgpack for untrusted data |
+| `chmod 777` / world-writable files | Permission escalation | Use minimal permissions (644 files, 755 dirs) |
+| Hardcoded API keys / passwords in source | Credential exposure | Environment variables or secret manager |
+
 ### What NOT to Flag (False-Positive Exclusion)
 
 Do not report these categories — they waste time and erode trust in security reviews:
