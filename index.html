@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYRD — Safety Harness for AI Coding Agents</title>
+    <meta name="description" content="Auto-review before every merge. Dangerous ops blocked. Plan first, code second. One command — full safety harness for Claude Code, Cursor, Codex.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #111111;
+            --text: #ffffff;
+            --text-muted: #999999;
+            --text-dim: #555555;
+            --border: rgba(255, 255, 255, 0.12);
+            --accent: #8BC34A;
+            --accent-hover: #9CCC65;
+            --accent-soft: rgba(139, 195, 74, 0.12);
+            --green: #34D399;
+            --amber: #FBBF24;
+            --font-display: 'Syne', sans-serif;
+            --font: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
+            --max-w: 1100px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        ::selection { background: var(--accent); color: #000; }
+        .accent { color: var(--accent); }
+
+        .container {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .border-top { border-top: 1px solid var(--border); }
+
+        /* ── Header ── */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 1.25rem 2rem;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mix-blend-mode: exclusion;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .nav-group {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            height: 32px;
+            padding: 0 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--text);
+            font-size: 0.7rem;
+            font-family: var(--font);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .nav-btn--accent {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            font-family: var(--mono);
+            font-weight: 500;
+            font-size: 0.7rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-btn--accent:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: #000;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #dither-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-left {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .hero-left::before {
+            content: '';
+            position: absolute;
+            top: -2rem; left: -3rem; right: -2rem; bottom: -2rem;
+            background: radial-gradient(ellipse at center, rgba(17,17,17,0.85) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .hero-label {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 1.25rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-sub {
+            font-size: 1.05rem;
+            max-width: 460px;
+            color: #bbb;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .rotating-tool {
+            display: inline-block;
+            transition: opacity 0.4s, transform 0.4s;
+        }
+
+        .rotating-tool.fade-out {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        .cursor-blink {
+            color: var(--accent);
+            animation: blink 1s step-end infinite;
+            font-weight: 300;
+        }
+
+
+        /* Hero right — terminal */
+        .hero-right {
+            width: 340px;
+            flex-shrink: 0;
+        }
+
+        .terminal {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .terminal-bar {
+            display: flex;
+            gap: 6px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .td { width: 10px; height: 10px; border-radius: 50%; }
+        .td-r { background: #ff5f57; }
+        .td-y { background: #febc2e; }
+        .td-g { background: #28c840; }
+
+        .terminal-body {
+            padding: 14px;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            line-height: 1.7;
+            min-height: 240px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .t-line { white-space: pre-wrap; }
+        .t-prompt { color: var(--accent); }
+        .t-dollar { color: var(--text-dim); }
+        .t-cmd { color: var(--text); }
+        .t-green { color: var(--accent); }
+        .t-muted { color: var(--text-dim); }
+        .t-accent { color: var(--accent); }
+
+        .t-box {
+            margin: 4px 0;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .t-box-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--green);
+            margin-bottom: 6px;
+        }
+
+        .t-cursor {
+            display: inline-block;
+            width: 7px;
+            height: 14px;
+            background: var(--text);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+/* ── Sections ── */
+        .section {
+            padding: 4rem 0;
+            position: relative;
+            z-index: 5;
+            background: var(--bg);
+        }
+
+        /* ── Problem section ── */
+        .problem-frame {
+            font-size: 1.15rem;
+            color: #dc2626;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem 4rem;
+        }
+
+        .problem-card {
+            position: relative;
+        }
+
+        .problem-num {
+            font-family: var(--font-display);
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.03em;
+        }
+
+        .problem-quote {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-style: normal;
+        }
+
+        .problem-detail {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* ── Comparison ── */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .comp-col {
+            padding: 0;
+        }
+
+        .comp-label {
+            font-family: var(--mono);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.25rem;
+        }
+
+        .comp-col--before .comp-label { color: #dc2626; }
+        .comp-col--after .comp-label { color: var(--accent); }
+
+        .comp-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .comp-list li {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .comp-col--before .comp-list li::before {
+            content: '\00d7';
+            position: absolute;
+            left: 0;
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .comp-col--after .comp-list li::before {
+            content: '\2713';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .s-label {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+        }
+
+        .s-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 0.75rem;
+        }
+
+        .s-sub {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+        }
+
+        .feat {
+            border-left: 2px solid var(--accent);
+            padding-left: 1.25rem;
+        }
+
+        .feat h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+        }
+
+        .feat p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .feat code {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            background: var(--accent-soft);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
+        /* ── Quote ── */
+        .quote-block {
+            margin-top: 4rem;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--border);
+            max-width: 640px;
+        }
+
+        .quote-block blockquote {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 400;
+            line-height: 1.5;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .quote-block blockquote em { color: var(--accent); font-style: italic; }
+
+        /* ── Stats row ── */
+        .stats-row {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-item {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .stat-val {
+            display: block;
+            font-family: var(--mono);
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.03em;
+            margin-bottom: 0.25rem;
+        }
+
+        /* ── Team features ── */
+        .coming-badge {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: var(--accent-soft);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 999px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        /* ── How it works ── */
+        .how-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .step-num {
+            font-family: var(--mono);
+            font-size: 2rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.06);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+            line-height: 1;
+        }
+
+        .step-code {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            display: block;
+            font-weight: 500;
+        }
+
+        .step-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* ── Waitlist ── */
+        /* ── CTA Section ── */
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2.5rem auto 0;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 56px;
+            padding: 0 2rem;
+            font-family: var(--mono);
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s, border-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .cta-btn--primary {
+            background: var(--accent);
+            color: #000;
+            border: 1px solid var(--accent);
+        }
+
+        .cta-btn--primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .cta-btn--secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .cta-btn--secondary:hover {
+            border-color: var(--text-muted);
+        }
+
+        .cta-fine {
+            margin-top: 0.75rem;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        /* ── FAQ ── */
+        .faq-grid {
+            max-width: 700px;
+        }
+
+        .faq-item {
+            border-top: 1px solid var(--border);
+            padding: 1.25rem 0;
+        }
+
+        .faq-q {
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .faq-q::after {
+            content: '+';
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+        .faq-a {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, margin-top 0.3s;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 400px;
+            margin-top: 0.75rem;
+        }
+
+        .faq-a code {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            background: var(--accent-soft);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 4rem 0 2rem;
+            position: relative;
+            z-index: 5;
+            background: var(--bg);
+            overflow: hidden;
+        }
+
+        .footer-watermark {
+            position: absolute;
+            bottom: -30px;
+            right: -20px;
+            font-family: var(--font-display);
+            font-size: 12rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.02);
+            pointer-events: none;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            user-select: none;
+        }
+
+        .footer-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: blink 1.5s step-end infinite;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        .footer-brand strong { color: var(--text); }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--text); }
+
+        .footer-copy {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        /* ── Cyrillic: Syne has no Cyrillic, fall back to Space Grotesk ── */
+        :lang(ru) .hero-title,
+        :lang(ru) .s-title,
+        /* (waitlist-title removed — CTA section uses s-title now) */
+
+        /* ── Mobile ── */
+        @media (max-width: 900px) {
+            .hero-content { flex-direction: column; gap: 2.5rem; }
+            .hero-right { width: 100%; }
+            .hero { padding-top: 80px; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 1rem 1.5rem; }
+            .container { padding: 0 1.5rem; }
+            .hero-title { font-size: 2.8rem; }
+            .hero-sub { font-size: 0.95rem; }
+            #dither-canvas { opacity: 0.15; }
+            .hero-right { width: 100%; }
+            .terminal-body { font-size: 0.65rem; min-height: 200px; max-height: 260px; }
+            .problems-grid { grid-template-columns: 1fr; }
+            .comparison { grid-template-columns: 1fr; gap: 2rem; }
+            .features-list { grid-template-columns: 1fr; gap: 2rem; }
+            .how-steps { grid-template-columns: 1fr; gap: 2rem; }
+            .stats-row { flex-direction: column; gap: 1.5rem; }
+            .cta-buttons { flex-direction: column; align-items: stretch; }
+            .cta-btn { font-size: 0.9rem; height: 48px; }
+            .nav-group .nav-btn:not(#langToggle):not(.nav-btn--accent) { display: none; }
+            .footer-inner { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">GYRD</div>
+        <nav class="nav-group">
+            <a href="#faq" class="nav-btn">FAQ</a>
+            <button class="nav-btn" id="langToggle">RU</button>
+            <a href="https://github.com/oktsh/GYRD" target="_blank" class="nav-btn nav-btn--accent">github</a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <canvas id="dither-canvas"></canvas>
+        <div class="container">
+            <div class="hero-content">
+
+                <!-- Left: copy -->
+                <div class="hero-left">
+                    <span style="display:inline-block;font-family:var(--mono);font-size:0.7rem;color:var(--accent);border:1px solid rgba(139,195,74,0.3);border-radius:999px;padding:0.25rem 0.75rem;margin-bottom:1rem;">v0.4 — open source, actively developed</span>
+                    <span class="hero-label" data-en="safety harness for coding agents" data-ru="страховка для AI-агентов">safety harness for coding agents</span>
+                    <h1 class="hero-title" data-en="Your AI agent is<br><span class='accent'>fast</span>. Make it <span class='accent'>safe</span>." data-ru="Твой AI-агент<br><span class='accent'>быстрый</span>. Сделай его <span class='accent'>безопасным</span>.">Your AI agent is<br><span class="accent">fast</span>. Make it <span class="accent">safe</span>.</h1>
+                    <p class="hero-sub"><span data-en="Auto-review before every merge. Dangerous ops blocked. Plan first, code second. <strong>One command</strong> — full safety harness for any coding agent." data-ru="Авто-ревью перед каждым мержем. Опасные операции заблокированы. Сначала план, потом код. <strong>Одна команда</strong> — полная страховка для любого AI-агента.">Auto-review before every merge. Dangerous ops blocked. Plan first, code second. <strong>One command</strong> — full safety harness for any coding agent.</span><br><span data-en="Works with" data-ru="Работает с">Works with</span> <span class="rotating-tool accent" id="rotatingTool">Claude Code</span><span class="cursor-blink">_</span></p>
+
+                    <div class="cta-buttons" style="margin-top:2rem;justify-content:flex-start;">
+                        <a class="cta-btn cta-btn--primary" onclick="navigator.clipboard.writeText('npx @gyrd/cli init')" title="click to copy">$ npx @gyrd/cli init</a>
+                        <a href="https://github.com/oktsh/GYRD" target="_blank" class="cta-btn cta-btn--secondary">view on github</a>
+                    </div>
+                </div>
+
+                <!-- Right: terminal -->
+                <div class="hero-right">
+                    <div class="terminal">
+                        <div class="terminal-bar">
+                            <span class="td td-r"></span>
+                            <span class="td td-y"></span>
+                            <span class="td td-g"></span>
+                        </div>
+                        <div class="terminal-body" id="termBody"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+<!-- The Problem -->
+    <section class="section border-top">
+        <div class="container">
+            <div class="s-label" data-en="the problem" data-ru="проблема">the problem</div>
+            <div class="problem-frame" data-en="AI agents ship code fast. But without guardrails, they ship bugs faster." data-ru="AI-агенты пишут код быстро. Но без ограничений баги — ещё быстрее.">AI agents ship code fast. But without guardrails, they ship bugs faster.</div>
+            <h2 class="s-title" data-en="The numbers don't lie. <a href='https://arxiv.org/abs/2604.20779' target='_blank' style='color:var(--text-muted);font-size:0.5em;vertical-align:super;text-decoration:none'>Stanford, 6K sessions ↗</a>" data-ru="Цифры не врут. <a href='https://arxiv.org/abs/2604.20779' target='_blank' style='color:var(--text-muted);font-size:0.5em;vertical-align:super;text-decoration:none'>Stanford, 6K сессий ↗</a>">The numbers don't lie. <a href="https://arxiv.org/abs/2604.20779" target="_blank" style="color:var(--text-muted);font-size:0.5em;vertical-align:super;text-decoration:none">Stanford, 6K sessions ↗</a></h2>
+
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-num">9×</div>
+                    <div class="problem-quote" data-en="&ldquo;Vibe coding introduces 9× more security vulnerabilities than manual coding.&rdquo;" data-ru="&laquo;Вайбкодинг создаёт в 9 раз больше уязвимостей, чем ручное написание кода.&raquo;">&ldquo;Vibe coding introduces 9× more security vulnerabilities than manual coding.&rdquo;</div>
+                    <div class="problem-detail" data-en="0.76 vulnerabilities per 1,000 lines. SQL injection, command injection, path traversal — agents reproduce what's in training data." data-ru="0.76 уязвимостей на 1 000 строк. SQL-инъекции, command injection, path traversal — агенты воспроизводят паттерны из обучающих данных.">0.76 vulnerabilities per 1,000 lines. SQL injection, command injection, path traversal — agents reproduce what's in training data.</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-num">56%</div>
+                    <div class="problem-quote" data-en="&ldquo;56% of AI-generated code gets thrown away or rewritten by humans.&rdquo;" data-ru="&laquo;56% кода от AI-агента выбрасывается или переписывается людьми.&raquo;">&ldquo;56% of AI-generated code gets thrown away or rewritten by humans.&rdquo;</div>
+                    <div class="problem-detail" data-en="Only 44% of agent-written code survives to commit. Planning before coding cuts waste by 3×." data-ru="Только 44% кода агента доживает до коммита. Планирование до кодинга снижает потери в 3 раза.">Only 44% of agent-written code survives to commit. Planning before coding cuts waste by 3×.</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-num">1.1%</div>
+                    <div class="problem-quote" data-en="&ldquo;AI agents ask for clarification in only 1.1% of interactions. The rest — they guess.&rdquo;" data-ru="&laquo;AI-агенты просят уточнение лишь в 1.1% случаев. В остальных — угадывают.&raquo;">&ldquo;AI agents ask for clarification in only 1.1% of interactions. The rest — they guess.&rdquo;</div>
+                    <div class="problem-detail" data-en="Agents confidently write wrong code instead of asking. Your review catches it — or nobody does." data-ru="Агенты уверенно пишут неправильный код вместо того, чтобы спросить. Либо ты ловишь на ревью — либо никто.">Agents confidently write wrong code instead of asking. Your review catches it — or nobody does.</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-num">3×</div>
+                    <div class="problem-quote" data-en="&ldquo;Collaborative mode is 3× cheaper than full autonomy — and produces fewer bugs.&rdquo;" data-ru="&laquo;Совместный режим в 3 раза дешевле полной автономии — и даёт меньше багов.&raquo;">&ldquo;Collaborative mode is 3× cheaper than full autonomy — and produces fewer bugs.&rdquo;</div>
+                    <div class="problem-detail" data-en="Full vibe coding: $0.13/100 lines. Collaborative: $0.05. GYRD nudges agents toward the efficient mode." data-ru="Чистый вайбкодинг: $0.13 за 100 строк. Совместный: $0.05. GYRD подталкивает агентов к эффективному режиму.">Full vibe coding: $0.13/100 lines. Collaborative: $0.05. GYRD nudges agents toward the efficient mode.</div>
+                </div>
+            </div>
+
+            <!-- Comparison -->
+            <div class="comparison">
+                <div class="comp-col comp-col--before">
+                    <div class="comp-label" data-en="Without harness" data-ru="Без страховки">Without harness</div>
+                    <ul class="comp-list">
+                        <li data-en="9× more vulnerabilities (Stanford, 6K sessions)" data-ru="В 9 раз больше уязвимостей (Stanford, 6K сессий)">9× more vulnerabilities (Stanford, 6K sessions)</li>
+                        <li data-en="56% of AI code thrown away" data-ru="56% кода от AI — в мусор">56% of AI code thrown away</li>
+                        <li data-en="Agent guesses instead of asking (1.1% clarification)" data-ru="Агент угадывает вместо вопроса (1.1% уточнений)">Agent guesses instead of asking (1.1% clarification)</li>
+                        <li data-en="No review before merge — bugs ship to prod" data-ru="Нет ревью перед мержем — баги едут в прод">No review before merge — bugs ship to prod</li>
+                    </ul>
+                </div>
+                <div class="comp-col comp-col--after">
+                    <div class="comp-label" data-en="With GYRD" data-ru="С GYRD">With GYRD</div>
+                    <ul class="comp-list">
+                        <li data-en="Dangerous ops blocked. Security patterns checked." data-ru="Опасные операции заблокированы. Секьюрити-паттерны проверяются.">Dangerous ops blocked. Security patterns checked.</li>
+                        <li data-en="Plan first → 3× less waste, 3× cheaper" data-ru="Сначала план → в 3 раза меньше потерь, в 3 раза дешевле">Plan first → 3× less waste, 3× cheaper</li>
+                        <li data-en="Agent asks before acting on ambiguous tasks" data-ru="Агент спрашивает, прежде чем браться за неясную задачу">Agent asks before acting on ambiguous tasks</li>
+                        <li data-en="Auto-review on every merge — three-angle check" data-ru="Авто-ревью на каждом мерже — проверка с трёх сторон">Auto-review on every merge — three-angle check</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What you get -->
+    <section class="section border-top">
+        <div class="container">
+            <div class="s-label" data-en="what you get" data-ru="что внутри">what you get</div>
+            <h2 class="s-title" data-en="one command. <span class='accent'>full safety harness</span>." data-ru="одна команда. <span class='accent'>полная страховка</span>.">one command. <span class="accent">full safety harness</span>.</h2>
+            <p class="s-sub" data-en="GYRD doesn't replace your AI tools. It's the safety layer between the agent and your codebase — built on research, not vibes." data-ru="GYRD не заменяет твои AI-инструменты. Это защитный слой между агентом и кодбейсом — построенный на исследованиях, а не вайбах.">GYRD doesn't replace your AI tools. It's the safety layer between the agent and your codebase — built on research, not vibes.</p>
+
+            <div class="features-list">
+                <div class="feat">
+                    <h3 data-en="automatic code review" data-ru="автоматическое ревью">automatic code review</h3>
+                    <p data-en="Three-angle review runs <span class='accent'>before every merge</span> — break it, understand it, secure it. Plain language findings with concrete fixes. Zero manual trigger." data-ru="Ревью с трёх сторон <span class='accent'>перед каждым мержем</span> — сломать, понять, защитить. Понятные находки с конкретными фиксами. Без ручного запуска.">Three-angle review runs <span class="accent">before every merge</span> — break it, understand it, secure it. Plain language findings with concrete fixes. Zero manual trigger.</p>
+                </div>
+                <div class="feat">
+                    <h3 data-en="dangerous ops blocked" data-ru="опасные операции заблокированы">dangerous ops blocked</h3>
+                    <p data-en="DROP TABLE, rm&nbsp;-rf, shell=True, force push — <span class='accent'>explicitly banned</span>. 10 CWE patterns with safe alternatives. Because instructions alone don't stop agents." data-ru="DROP TABLE, rm&nbsp;-rf, shell=True, force push — <span class='accent'>явно запрещены</span>. 10 CWE-паттернов с безопасными альтернативами. Потому что промптов недостаточно.">DROP TABLE, rm&nbsp;-rf, shell=True, force push — <span class="accent">explicitly banned</span>. 10 CWE patterns with safe alternatives. Because instructions alone don't stop agents.</p>
+                </div>
+                <div class="feat">
+                    <h3 data-en="plan first, code second" data-ru="сначала план, потом код">plan first, code second</h3>
+                    <p data-en="Agent discusses the plan before writing code. <span class='accent'>3× cheaper</span>, 3× less waste. Collaborative mode beats full autonomy on every metric." data-ru="Агент обсуждает план до написания кода. <span class='accent'>В 3 раза дешевле</span>, в 3 раза меньше потерь. Совместный режим бьёт автономию по всем метрикам.">Agent discusses the plan before writing code. <span class="accent">3× cheaper</span>, 3× less waste. Collaborative mode beats full autonomy on every metric.</p>
+                </div>
+                <div class="feat">
+                    <h3 data-en="living updates" data-ru="живые обновления">living updates</h3>
+                    <p data-en="<code>gyrd update --check</code> shows which rules need updating and <span class='accent'>why</span>. New model? Changed tool? GYRD maps ecosystem changes to your specific rules." data-ru="<code>gyrd update --check</code> показывает какие правила пора обновить и <span class='accent'>почему</span>. Новая модель? Обновился инструмент? GYRD отслеживает изменения экосистемы и адаптирует твои правила."><code>gyrd update --check</code> shows which rules need updating and <span class="accent">why</span>. New model? Changed tool? GYRD maps ecosystem changes to your specific rules.</p>
+                </div>
+            </div>
+
+            <!-- Quote -->
+            <div class="quote-block">
+                <blockquote data-en="&ldquo;I didn't understand what I was doing before doing it.&rdquo;<br>— an AI agent, after deleting a production database" data-ru="&laquo;Я не понимал, что делаю, пока не сделал.&raquo;<br>— AI-агент, после удаления прод-базы">&ldquo;I didn't understand what I was doing before doing it.&rdquo;<br>— an AI agent, after deleting a production database</blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team features -->
+    <section class="section border-top">
+        <div class="container">
+            <div class="s-label" data-en="team features" data-ru="для команд">team features</div>
+            <h2 class="s-title" data-en="one config. <span class='accent'>whole team</span> aligned." data-ru="один конфиг. <span class='accent'>вся команда</span> на одной волне.">one config. <span class="accent">whole team</span> aligned.</h2>
+            <p class="s-sub" data-en="When your team uses GYRD, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI." data-ru="Когда команда на GYRD, каждый агент — на каждой машине — следует одним правилам. Никакого &laquo;у меня работает&raquo; для AI.">When your team uses GYRD, every agent — on every machine — follows the same conventions. No more &ldquo;works on my machine&rdquo; for AI.</p>
+
+            <div class="features-list">
+                <div class="feat">
+                    <h3 data-en="shared conventions" data-ru="общие правила">shared conventions</h3>
+                    <p data-en="Commit <code>CLAUDE.md</code> and <code>.cursor/rules/</code> to your repo. Every teammate's agent inherits the <span class='accent'>same rules</span> — code style, review process, security." data-ru="Закоммить <code>CLAUDE.md</code> и <code>.cursor/rules/</code> в репо. Агент каждого коллеги наследует <span class='accent'>одни правила</span> — стиль кода, ревью, безопасность.">Commit <code>CLAUDE.md</code> and <code>.cursor/rules/</code> to your repo. Every teammate's agent inherits the <span class="accent">same rules</span> — code style, review process, security.</p>
+                </div>
+                <div class="feat">
+                    <h3 data-en="shared context" data-ru="общий контекст">shared context</h3>
+                    <p data-en="Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class='accent'>knows what the dev's agent</span> just shipped." data-ru="Агенты шарят <code>PROGRESS.md</code> и <code>DECISIONS.md</code> — статус, блокеры, архитектурные решения. Агент PM'а <span class='accent'>знает, что зашипил</span> агент разработчика.">Agents share <code>PROGRESS.md</code> and <code>DECISIONS.md</code> — status, blockers, architectural decisions. Your PM's agent <span class="accent">knows what the dev's agent</span> just shipped.</p>
+                </div>
+                <div class="feat">
+                    <h3><span class="coming-badge">coming</span> <span data-en="shared memory" data-ru="общая память">shared memory</span></h3>
+                    <p data-en="Persistent memory across machines — patterns learned, mistakes avoided. <span class='accent'>Your team's AI gets smarter</span> with every session." data-ru="Общая память на все машины — паттерны запомнены, ошибки не повторяются. <span class='accent'>AI команды умнеет</span> с каждой сессией.">Persistent memory across machines — patterns learned, mistakes avoided. <span class="accent">Your team's AI gets smarter</span> with every session.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section border-top">
+        <div class="container">
+            <div class="s-label" data-en="how it works" data-ru="как это работает">how it works</div>
+            <div class="how-steps">
+                <div>
+                    <div class="step-num">01</div>
+                    <div class="step-code">npx @gyrd/cli init</div>
+                    <div class="step-text" data-en="Pick your preset and stack. GYRD generates CLAUDE.md, .cursorrules, agents, hooks — for every tool at once. 30 seconds." data-ru="Выбираешь пресет и стек. GYRD генерирует CLAUDE.md, .cursorrules, агентов, хуки — для всех инструментов сразу. 30 секунд.">Pick your preset and stack. GYRD generates CLAUDE.md, .cursorrules, agents, hooks — for every tool at once. 30 seconds.</div>
+                </div>
+                <div>
+                    <div class="step-num">02</div>
+                    <div class="step-code">code with AI</div>
+                    <div class="step-text" data-en="Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster." data-ru="Агенты теперь следуют правилам. Pre-commit хуки ловят ошибки. Код-ревью запускается само. Ты шипишь быстрее.">Your agents now follow your rules. Pre-commit hooks catch mistakes. Code review runs automatically. You ship faster.</div>
+                </div>
+                <div>
+                    <div class="step-num">03</div>
+                    <div class="step-code">gyrd update</div>
+                    <div class="step-text" data-en="Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance." data-ru="Claude обновился? Cursor изменился? Мы выпускаем новые правила. Одна команда — и твой сетап актуален. Никакой ручной возни.">Claude changed? Cursor updated? We ship new rules. One command — your setup stays current. No manual maintenance.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Get Started -->
+    <section class="section border-top" id="waitlist">
+        <div class="container" style="text-align:center;">
+            <div class="s-label" data-en="get started" data-ru="начать">get started</div>
+            <h2 class="s-title" data-en="stop configuring. <span class='accent'>start building</span>." data-ru="хватит настраивать. <span class='accent'>пора строить</span>.">stop configuring. <span class="accent">start building</span>.</h2>
+
+            <div class="cta-buttons">
+                <a class="cta-btn cta-btn--primary" onclick="navigator.clipboard.writeText('npx @gyrd/cli init')" title="click to copy">$ npx @gyrd/cli init</a>
+                <a href="https://github.com/oktsh/GYRD" target="_blank" class="cta-btn cta-btn--secondary">view on github</a>
+            </div>
+
+            <div class="stats-row" style="margin-top:1.5rem;justify-content:center;border-top:none;padding-top:0;">
+                <div class="stat-item" style="text-align:center;"><span class="stat-val">30 sec</span><span data-en="to full setup" data-ru="до полного сетапа">to full setup</span></div>
+                <div class="stat-item" style="text-align:center;"><span class="stat-val">9 agents</span><span data-en="review + security" data-ru="ревью + безопасность">review + security</span></div>
+                <div class="stat-item" style="text-align:center;"><span class="stat-val">7+ tools</span><span data-en="Claude, Cursor, Codex..." data-ru="Claude, Cursor, Codex...">Claude, Cursor, Codex...</span></div>
+                <div class="stat-item" style="text-align:center;"><span class="stat-val">$0</span><span data-en="open source. MIT." data-ru="open source. MIT.">open source. MIT.</span></div>
+            </div>
+            <div class="cta-fine" data-en="MIT license. free forever." data-ru="лицензия MIT. бесплатно навсегда.">MIT license. free forever.</div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section border-top" id="faq">
+        <div class="container">
+            <div class="s-label">FAQ</div>
+            <h2 class="s-title" data-en="common <span class='accent'>questions</span>" data-ru="частые <span class='accent'>вопросы</span>">common <span class="accent">questions</span></h2>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-q" data-en="I already set up my AI agent rules. Why switch?" data-ru="У меня уже настроены правила для AI-агента. Зачем менять?">I already set up my AI agent rules. Why switch?</div>
+                    <div class="faq-a" data-en="Hand-written rules rot in a month — models change, tools update, your rules don't. GYRD adds security patterns, auto-review, dangerous ops blocklist, and <code>gyrd update</code> to keep everything current. Works with Claude Code, Cursor, Codex, Cline — one config for all your tools. Your custom rules stay untouched." data-ru="Правила, написанные руками, протухают за месяц — модели меняются, тулы обновляются, правила нет. GYRD добавляет паттерны безопасности, авто-ревью, блокировку опасных операций и <code>gyrd update</code> для актуализации. Работает с Claude Code, Cursor, Codex, Cline — один конфиг для всех. Твои кастомные правила не трогаются.">Hand-written rules rot in a month — models change, tools update, your rules don't. GYRD adds security patterns, auto-review, dangerous ops blocklist, and <code>gyrd update</code> to keep everything current. Works with Claude Code, Cursor, Codex, Cline — one config for all your tools. Your custom rules stay untouched.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" data-en="I'm not a developer. Can I use this?" data-ru="Я не разработчик. Мне подходит?">I'm not a developer. Can I use this?</div>
+                    <div class="faq-a" data-en="Yes — that's the point. If you build with any AI coding agent, GYRD gives you the safety net that experienced developers set up manually. Auto-review catches bugs in plain language. Dangerous ops get blocked before they happen. You don't need to know what <code>shell=True</code> means — GYRD blocks it for you." data-ru="Да — в этом и суть. Если ты строишь с любым AI-агентом, GYRD даёт ту же страховку, которую опытные разработчики настраивают вручную. Авто-ревью ловит баги понятным языком. Опасные операции блокируются до того, как случатся. Не нужно знать что такое <code>shell=True</code> — GYRD блокирует за тебя.">Yes — that's the point. If you build with any AI coding agent, GYRD gives you the safety net that experienced developers set up manually. Auto-review catches bugs in plain language. Dangerous ops get blocked before they happen. You don't need to know what <code>shell=True</code> means — GYRD blocks it for you.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" data-en="How is this different from built-in security tools?" data-ru="Чем это отличается от встроенных инструментов безопасности?">How is this different from built-in security tools?</div>
+                    <div class="faq-a" data-en="Built-in security scanners (like Claude Code Security or GitHub code scanning) find vulnerabilities <em>after</em> code is written — post-hoc, often enterprise-only. GYRD works <em>during</em> coding: plan-first workflow, auto-review before merge, dangerous patterns blocked in real time. Free, works with any agent, any repo. Prevention > detection." data-ru="Встроенные сканеры (Claude Code Security, GitHub code scanning) ищут уязвимости <em>после</em> написания кода — постфактум, часто только для Enterprise. GYRD работает <em>во время</em> кодинга: сначала план, авто-ревью перед мержем, опасные паттерны блокируются в реальном времени. Бесплатно, любой агент, любой репо. Предотвращение > обнаружение.">Built-in security scanners (like Claude Code Security or GitHub code scanning) find vulnerabilities <em>after</em> code is written — post-hoc, often enterprise-only. GYRD works <em>during</em> coding: plan-first workflow, auto-review before merge, dangerous patterns blocked in real time. Free, works with any agent, any repo. Prevention > detection.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" data-en="Which AI coding tools does it support?" data-ru="Какие AI-инструменты поддерживаются?">Which AI coding tools does it support?</div>
+                    <div class="faq-a" data-en="Claude Code, Cursor, GitHub Copilot, Codex CLI, Cline, Windsurf, and any tool that reads <code>CLAUDE.md</code>, <code>AGENTS.md</code>, or <code>.cursor/rules/</code>. One <code>gyrd.toml</code> generates configs for all of them at once." data-ru="Claude Code, Cursor, GitHub Copilot, Codex CLI, Cline, Windsurf и любой инструмент, который читает <code>CLAUDE.md</code>, <code>AGENTS.md</code> или <code>.cursor/rules/</code>. Один <code>gyrd.toml</code> генерирует конфиги для всех сразу.">Claude Code, Cursor, GitHub Copilot, Codex CLI, Cline, Windsurf, and any tool that reads <code>CLAUDE.md</code>, <code>AGENTS.md</code>, or <code>.cursor/rules/</code>. One <code>gyrd.toml</code> generates configs for all of them at once.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" data-en="Will it slow me down?" data-ru="Это замедлит работу?">Will it slow me down?</div>
+                    <div class="faq-a" data-en="The opposite. Stanford shows planning before coding is 3× cheaper and produces 3× less waste. Auto-review catches bugs before they ship — not after. 30 seconds on <code>gyrd init</code> saves hours of debugging AI-generated code." data-ru="Наоборот. Stanford показывает: планирование до кодинга в 3 раза дешевле и даёт в 3 раза меньше потерь. Авто-ревью ловит баги до шипа — не после. 30 секунд на <code>gyrd init</code> экономят часы дебага AI-кода.">The opposite. Stanford shows planning before coding is 3× cheaper and produces 3× less waste. Auto-review catches bugs before they ship — not after. 30 seconds on <code>gyrd init</code> saves hours of debugging AI-generated code.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" data-en="Is it free?" data-ru="Бесплатно?">Is it free?</div>
+                    <div class="faq-a" data-en="Yes. Open source, MIT license, free forever. Premium team features (memory sync, audit trail) are planned — the core safety harness stays free." data-ru="Да. Open source, лицензия MIT, бесплатно навсегда. Премиум командные фичи (синхронизация памяти, аудит) в планах — основная страховка всегда будет бесплатной.">Yes. Open source, MIT license, free forever. Premium team features (memory sync, audit trail) are planned — the core safety harness stays free.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-top">
+        <div class="footer-watermark">GYRD</div>
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand" data-en="<strong>GYRD</strong> — The practice layer for coding agents. Rules, hooks, and workflows for teams who ship with AI." data-ru="<strong>GYRD</strong> — слой практики для AI-агентов. Правила, хуки и воркфлоу для команд, которые шипят с AI.">
+                    <strong>GYRD</strong> — The practice layer for coding agents. Rules, hooks, and workflows for teams who ship with AI.
+                </div>
+                <div class="footer-links">
+                    <a href="#faq">FAQ</a>
+                    <a href="#waitlist" data-en="get started" data-ru="начать">get started</a>
+                </div>
+            </div>
+            <div class="footer-copy">
+                <span class="footer-status"><span class="status-dot"></span> Online</span>
+                <span>&copy; 2026 GYRD</span>
+                <span data-en="Built for people who ship with AI" data-ru="для тех, кто шипит с AI">Built for people who ship with AI</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    /* ── Language toggle ── */
+    const langBtn = document.getElementById('langToggle');
+    let lang = 'en';
+
+    function applyLang() {
+        langBtn.textContent = lang === 'en' ? 'RU' : 'EN';
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-en]').forEach(el => {
+            const t = el.getAttribute('data-' + lang);
+            if (t) el.innerHTML = t;
+        });
+    }
+
+    langBtn.addEventListener('click', () => {
+        lang = lang === 'en' ? 'ru' : 'en';
+        applyLang();
+    });
+
+    applyLang();
+
+    /* ── FAQ accordion ── */
+    document.querySelectorAll('.faq-q').forEach(q => {
+        q.addEventListener('click', () => {
+            const item = q.parentElement;
+            const wasOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+            if (!wasOpen) item.classList.add('open');
+        });
+    });
+
+    /* ── Rotating tool name ── */
+    const rotEl = document.getElementById('rotatingTool');
+    const tools = ['Claude Code', 'Cursor', 'GitHub Copilot', 'Windsurf', 'Codex CLI', 'Cline', 'Aider'];
+    let toolIdx = 0;
+    setInterval(() => {
+        rotEl.classList.add('fade-out');
+        setTimeout(() => {
+            toolIdx = (toolIdx + 1) % tools.length;
+            rotEl.textContent = tools[toolIdx];
+            rotEl.classList.remove('fade-out');
+        }, 400);
+    }, 2500);
+
+    /* ── Terminal animation ── */
+    const termBody = document.getElementById('termBody');
+    const termLines = [
+        { type: 'prompt', text: 'npx @gyrd/cli init@latest', delay: 0 },
+        { type: 'muted', text: '', delay: 500 },
+        { type: 'muted', text: 'Fetching GYRD practice templates...', delay: 400 },
+        { type: 'muted', text: '', delay: 600 },
+        { type: 'green', text: '\u2713 Generated CLAUDE.md', delay: 200 },
+        { type: 'green', text: '\u2713 Generated .cursor/rules/', delay: 180 },
+        { type: 'green', text: '\u2713 Generated AGENTS.md', delay: 170 },
+        { type: 'green', text: '\u2713 Installed pre-commit hooks', delay: 180 },
+        { type: 'green', text: '\u2713 Created gyrd.toml', delay: 160 },
+        { type: 'muted', text: '', delay: 400 },
+        { type: 'box', title: 'READY', lines: [
+            '<span style="font-weight:500">Your AI dev practice is configured.</span>',
+            '',
+            '<span class="t-muted">Your agents now follow your rules.</span>',
+            '<span class="t-muted">Pre-commit hooks enforce quality.</span>',
+            '',
+            'Next: <span class="t-green">claude "build my feature"</span>',
+            'Update: <span class="t-green">gyrd update</span>',
+        ], delay: 350 },
+        { type: 'muted', text: '', delay: 500 },
+        { type: 'prompt-end', text: '', delay: 400 },
+    ];
+
+    function renderTerminal() {
+        termBody.innerHTML = '';
+        let total = 300;
+        termLines.forEach(line => {
+            total += line.delay;
+            const d = total;
+            setTimeout(() => {
+                const el = document.createElement('div');
+                el.className = 't-line';
+                if (line.type === 'prompt') {
+                    el.innerHTML = '<span class="t-prompt">~</span> <span class="t-dollar">$</span> <span class="t-cmd">' + line.text + '</span>';
+                } else if (line.type === 'prompt-end') {
+                    el.innerHTML = '<span class="t-prompt">~/my-project</span> <span class="t-dollar">$</span> <span class="t-cursor"></span>';
+                } else if (line.type === 'green') {
+                    el.innerHTML = '<span class="t-green">' + line.text + '</span>';
+                } else if (line.type === 'box') {
+                    el.className = 't-line t-box';
+                    el.innerHTML = '<div class="t-box-label">' + line.title + '</div>' +
+                        line.lines.map(l => '<div>' + (l || '&nbsp;') + '</div>').join('');
+                } else {
+                    el.innerHTML = '<span class="t-muted">' + (line.text || '&nbsp;') + '</span>';
+                }
+                termBody.appendChild(el);
+                termBody.scrollTop = termBody.scrollHeight;
+            }, d);
+        });
+    }
+
+    const termObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                renderTerminal();
+                termObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.2 });
+    termObs.observe(document.querySelector('.terminal'));
+
+    /* ── Dither Canvas Animation ── */
+    const canvas = document.getElementById('dither-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, t = 0;
+
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const bayer = [
+        [0, 8, 2, 10],
+        [12, 4, 14, 6],
+        [3, 11, 1, 9],
+        [15, 7, 13, 5]
+    ];
+
+    function draw() {
+        ctx.fillStyle = '#111111';
+        ctx.fillRect(0, 0, w, h);
+
+        const g = 6;
+        const cols = Math.ceil(w / g);
+        const rows = Math.ceil(h / g);
+        const cy = rows * 0.55;
+        const amp = rows / 5;
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const wave1 = Math.sin(x * 0.04 + t) * amp;
+                const wave2 = Math.cos(x * 0.02 - t * 0.7) * (amp * 0.5);
+                const wave3 = Math.sin(x * 0.07 + t * 1.3) * (amp * 0.25);
+                const dist = Math.abs(y - (cy + wave1 + wave2 + wave3));
+
+                let intensity = Math.max(0, 1 - dist / 12);
+                intensity += (Math.random() - 0.5) * 0.08;
+
+                const threshold = (bayer[y % 4][x % 4] / 16) - 0.5;
+
+                if (intensity + threshold > 0.5) {
+                    ctx.fillStyle = intensity > 0.7
+                        ? 'rgb(' + Math.floor(140 + intensity * 60) + ',' + Math.floor(140 + intensity * 60) + ',255)'
+                        : '#eee';
+                    ctx.fillRect(x * g, y * g, g - 1, g - 1);
+                }
+            }
+        }
+
+        t += 0.015;
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+    </script>
+</body>
+</html>
