@@ -780,7 +780,7 @@
                     <p class="hero-sub"><span data-en="Auto-review before every merge. Dangerous ops blocked. Plan first, code second. <strong>One command</strong> — full safety harness for any coding agent." data-ru="Авто-ревью перед каждым мержем. Опасные операции заблокированы. Сначала план, потом код. <strong>Одна команда</strong> — полная страховка для любого AI-агента.">Auto-review before every merge. Dangerous ops blocked. Plan first, code second. <strong>One command</strong> — full safety harness for any coding agent.</span><br><span data-en="Works with" data-ru="Работает с">Works with</span> <span class="rotating-tool accent" id="rotatingTool">Claude Code</span><span class="cursor-blink">_</span></p>
 
                     <div class="cta-buttons" style="margin-top:2rem;justify-content:flex-start;">
-                        <a class="cta-btn cta-btn--primary" onclick="navigator.clipboard.writeText('npx @gyrd/cli init')" title="click to copy">$ npx @gyrd/cli init</a>
+                        <a class="cta-btn cta-btn--primary" onclick="copyCmd(this)" title="click to copy">$ npx @gyrd/cli init</a>
                         <a href="https://github.com/oktsh/GYRD" target="_blank" class="cta-btn cta-btn--secondary">view on github</a>
                     </div>
                 </div>
@@ -943,7 +943,7 @@
             <h2 class="s-title" data-en="stop configuring. <span class='accent'>start building</span>." data-ru="хватит настраивать. <span class='accent'>пора строить</span>.">stop configuring. <span class="accent">start building</span>.</h2>
 
             <div class="cta-buttons">
-                <a class="cta-btn cta-btn--primary" onclick="navigator.clipboard.writeText('npx @gyrd/cli init')" title="click to copy">$ npx @gyrd/cli init</a>
+                <a class="cta-btn cta-btn--primary" onclick="copyCmd(this)" title="click to copy">$ npx @gyrd/cli init</a>
                 <a href="https://github.com/oktsh/GYRD" target="_blank" class="cta-btn cta-btn--secondary">view on github</a>
             </div>
 
@@ -1177,6 +1177,19 @@
     }
 
     draw();
+
+    /* ── Copy command ── */
+    function copyCmd(el) {
+        navigator.clipboard.writeText('npx @gyrd/cli init').then(() => {
+            const orig = el.textContent;
+            el.textContent = '✓ copied!';
+            el.style.opacity = '0.85';
+            setTimeout(() => {
+                el.textContent = orig;
+                el.style.opacity = '';
+            }, 1800);
+        });
+    }
     </script>
 </body>
 </html>
